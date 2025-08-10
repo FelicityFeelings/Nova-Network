@@ -189,6 +189,7 @@
 			filter: none;
 		}
 
+		/* Music Toggle Button - similar to other sidebar buttons but with dynamic icon */
 		#musicToggleBtn {
 			display: flex;
 			align-items: center;
@@ -238,6 +239,7 @@
 			transition: filter 0.3s ease;
 		}
 
+		/* Music icon states */
 		#musicToggleBtn .icon.music-off {
 			filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(93deg) brightness(105%) contrast(105%);
 		}
@@ -246,6 +248,7 @@
 			filter: brightness(0) saturate(100%) invert(73%) sepia(84%) saturate(2598%) hue-rotate(68deg) brightness(96%) contrast(88%);
 		}
 
+		/* Loading indicator */
 		.loading-overlay {
 			position: absolute;
 			top: 0;
@@ -286,6 +289,7 @@
 			}
 		}
 
+		/* Music Player Styles */
 		.music-player {
 			position: fixed;
 			bottom: 20px;
@@ -514,6 +518,7 @@
 			background: rgba(255, 255, 255, 0.08);
 		}
 
+		/* Custom scrollbar */
 		.playlist-container::-webkit-scrollbar {
 			width: 2px;
 		}
@@ -533,40 +538,41 @@
 	<div id="sidebar">
 		<div class="sidebar-scroll">
 			<div class="flex flex-col items-start gap-3 justify-start w-full">
-				<button data-url="/nova/home.html" aria-label="Home">
+				<button data-url="/nova/nova" class="active" aria-label="Home">
 					<img src="https://img.icons8.com/?size=100&id=7NYOrZQoHLa1&format=png&color=ffffff" alt="Home Icon" class="icon" />
 					<span class="label">Home</span>
 				</button>
-				<button data-url="/static/index.html" aria-label="Search">
+				<button data-url="https://example.com/" aria-label="Search">
 					<img src="https://img.icons8.com/?size=100&id=2sWrwEXiaegS&format=png&color=ffffff" alt="Search Icon" class="icon" />
 					<span class="label">Search</span>
 				</button>
-				<button data-url="/nova/games.html" aria-label="Games">
+				<button data-url="/nova/games" aria-label="Games">
 					<img src="https://img.icons8.com/?size=100&id=C6pSWdxiAGbl&format=png&color=ffffff" alt="Games Icon" class="icon" />
 					<span class="label">Games</span>
 				</button>
-				<button data-url="/nova/apps.html" aria-label="Apps">
+				<button data-url="/nova/apps" aria-label="Apps">
 					<img src="https://img.icons8.com/?size=100&id=JCtrMfKlpJVk&format=png&color=ffffff" alt="Apps Icon" class="icon" />
 					<span class="label">Apps</span>
 				</button>
-				<button data-url="/nova/exploits.html" aria-label="Exploits">
+				<button data-url="/nova/exploits" aria-label="Exploits">
 					<img src="https://img.icons8.com/?size=100&id=CDjGigSJvEH8&format=png&color=ffffff" alt="Exploits Icon" class="icon" />
 					<span class="label">Exploits</span>
 				</button>
-				<button data-url="/nova/movies.html" aria-label="Media">
+				<button data-url="/mo" aria-label="Media">
 					<img src="https://img.icons8.com/?size=100&id=bBgwYTIo4Jtz&format=png&color=000000" alt="Media Icon" class="icon" />
 					<span class="label">Movies</span>
 				</button>
-				<button data-url="/nova/shows.html" aria-label="TV Shows">
+				<button data-url="/sh" aria-label="TV Shows">
 					<img src="https://img.icons8.com/?size=100&id=cp2ZavhzxUTz&format=png&color=000000" alt="TV Shows Icon" class="icon" />
 					<span class="label">TV Shows</span>
 				</button>
-				<button data-url="/nova/extras.html" aria-label="Extras">
+				<button data-url="/nova/extras" aria-label="Extras">
 					<img src="https://img.icons8.com/?size=100&id=QADawoQS3Rcg&format=png&color=ffffff" alt="Extras Icon" class="icon" />
 					<span class="label">Extras</span>
 				</button>
 			</div>
 			<div id="bottomButtons">
+				<!-- Music Player Toggle Button -->
 				<button id="musicToggleBtn" aria-label="Toggle Music Player">
 					<img src="https://img.icons8.com/?size=100&id=si4U2sLqwIFA&format=png&color=89F336" alt="Music Icon" class="icon music-on" />
 					<span class="label">Lobby Beats</span>
@@ -582,13 +588,15 @@
 
 	<div class="flex-1 content">
 		<div style="position: relative; width: 100%; height: 100%;">
-			<iframe id="iframeViewer" src="/nova/nova" class="w-full h-full border-0"></iframe>
+			<iframe id="iframeViewer" src="/nova/nova"
+				class="w-full h-full border-0"></iframe>
 			<div id="loadingOverlay" class="loading-overlay">
 				<div class="spinner"></div>
 			</div>
 		</div>
 	</div>
 
+	<!-- Enhanced Music Player -->
 	<div id="musicPlayer" class="music-player">
 		<div id="collapsedView" class="collapsed-player">
 			<i class="fas fa-music collapsed-icon"></i>
@@ -633,21 +641,28 @@
 				</button>
 			</div>
 
-			<div class="playlist-container" id="playlistContainer"></div>
+			<div class="playlist-container" id="playlistContainer">
+				<!-- Playlist items will be populated by JavaScript -->
+			</div>
 		</div>
 	</div>
 
+	<!-- Hidden Audio Element -->
 	<audio id="audioPlayer" preload="metadata"></audio>
 
 	<script>
+		// Initialize lucide icons
 		if (typeof lucide !== 'undefined') {
 			lucide.createIcons();
 		}
 
+		// Get DOM elements
 		const iframe = document.getElementById('iframeViewer');
 		const loadingOverlay = document.getElementById('loadingOverlay');
 		const sidebar = document.getElementById('sidebar');
 		const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+		// Music Player Elements
 		const musicPlayer = document.getElementById('musicPlayer');
 		const collapsedView = document.getElementById('collapsedView');
 		const expandedView = document.getElementById('expandedView');
@@ -659,32 +674,52 @@
 		const progressFill = document.getElementById('progressFill');
 		const audioPlayer = document.getElementById('audioPlayer');
 		const playlistContainer = document.getElementById('playlistContainer');
+
+		// Music Toggle Button Elements
 		const musicToggleBtn = document.getElementById('musicToggleBtn');
 		const musicIcon = musicToggleBtn.querySelector('.icon');
 
-		let expanded = false;
-		let track = 0;
-		let wasPlaying = false;
-		let musicEnabled = true;
+		// Music Player State
+		let isExpanded = false;
+		let currentTrack = 0;
+		let wasPlaying = false; // Track if music was playing before track change
+		let isMusicPlayerEnabled = true; // Track if music player is enabled
 
-		const songs = [
-			{ title: 'Chill Synthwave', artist: 'Nova Network', url: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3' },
-			{ title: 'Neon Dreams', artist: 'Cyber Sound', url: 'https://www.soundjay.com/misc/sounds/bell-ringing-04.mp3' },
-			{ title: 'Digital Horizon', artist: 'Tech Beats', url: 'https://www.soundjay.com/misc/sounds/bell-ringing-03.mp3' },
-			{ title: 'Virtual Reality', artist: 'Future Waves', url: 'https://www.soundjay.com/misc/sounds/bell-ringing-02.mp3' }
+		// Sample MP3 tracks - Replace these URLs with your actual MP3 files
+		const tracks = [
+			{ 
+				title: 'Chill Synthwave', 
+				artist: 'Nova Network', 
+				url: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3'
+			},
+			{ 
+				title: 'Neon Dreams', 
+				artist: 'Cyber Sound', 
+				url: 'https://www.soundjay.com/misc/sounds/bell-ringing-04.mp3'
+			},
+			{ 
+				title: 'Digital Horizon', 
+				artist: 'Tech Beats', 
+				url: 'https://www.soundjay.com/misc/sounds/bell-ringing-03.mp3'
+			},
+			{ 
+				title: 'Virtual Reality', 
+				artist: 'Future Waves', 
+				url: 'https://www.soundjay.com/misc/sounds/bell-ringing-02.mp3'
+			}
 		];
 
-		function loadPage(url, btn) {
-			console.log('Loading:', url);
+		function loadIframe(url, button) {
+			console.log('Loading URL:', url);
 			
 			loadingOverlay.classList.add('show');
 			
-			document.querySelectorAll('#sidebar button').forEach(b => {
-				b.classList.remove('active');
+			document.querySelectorAll('#sidebar button[data-url]').forEach(btn => {
+				btn.classList.remove('active');
 			});
 			
-			if (btn) {
-				btn.classList.add('active');
+			if (button) {
+				button.classList.add('active');
 			}
 			
 			iframe.src = url;
@@ -694,10 +729,11 @@
 			}, 2000);
 		}
 
-		function toggleMusic() {
-			musicEnabled = !musicEnabled;
+		// Music Player Toggle Function
+		function toggleMusicPlayer() {
+			isMusicPlayerEnabled = !isMusicPlayerEnabled;
 			
-			if (musicEnabled) {
+			if (isMusicPlayerEnabled) {
 				musicPlayer.classList.remove('hidden');
 				musicIcon.classList.remove('music-off');
 				musicIcon.classList.add('music-on');
@@ -708,13 +744,15 @@
 				musicIcon.classList.add('music-off');
 				musicIcon.src = 'https://img.icons8.com/?size=100&id=si4U2sLqwIFA&format=png&color=000000';
 				
+				// Pause music if it's playing
 				if (!audioPlayer.paused) {
 					audioPlayer.pause();
 					playIcon.className = 'fas fa-play';
 				}
 				
-				if (expanded) {
-					expanded = false;
+				// Collapse the player if it's expanded
+				if (isExpanded) {
+					isExpanded = false;
 					musicPlayer.classList.remove('expanded');
 					collapsedView.style.display = 'flex';
 					expandedView.style.display = 'none';
@@ -722,12 +760,13 @@
 			}
 		}
 
-		function toggleExpanded() {
-			if (!musicEnabled) return;
+		// Music Player Functions
+		function togglePlayer() {
+			if (!isMusicPlayerEnabled) return;
 			
-			expanded = !expanded;
+			isExpanded = !isExpanded;
 			
-			if (expanded) {
+			if (isExpanded) {
 				musicPlayer.classList.add('expanded');
 				collapsedView.style.display = 'none';
 				expandedView.style.display = 'block';
@@ -738,14 +777,14 @@
 			}
 		}
 
-		function playPause() {
-			if (!musicEnabled) return;
+		function togglePlayPause() {
+			if (!isMusicPlayerEnabled) return;
 			
 			if (audioPlayer.paused) {
 				audioPlayer.play().then(() => {
 					playIcon.className = 'fas fa-pause';
 				}).catch(e => {
-					console.error('Play error:', e);
+					console.error('Error playing audio:', e);
 				});
 			} else {
 				audioPlayer.pause();
@@ -753,33 +792,38 @@
 			}
 		}
 
-		function loadSong(i, play = false) {
-			if (!musicEnabled) return;
+		function loadTrack(index, autoPlay = false) {
+			if (!isMusicPlayerEnabled) return;
 			
-			if (i >= 0 && i < songs.length) {
-				track = i;
+			if (index >= 0 && index < tracks.length) {
+				currentTrack = index;
 				
-				const shouldPlay = play || !audioPlayer.paused;
+				// Store if we should auto-play
+				const shouldAutoPlay = autoPlay || !audioPlayer.paused;
 				
-				audioPlayer.src = songs[i].url;
-				document.getElementById('trackTitle').textContent = songs[i].title;
-				document.getElementById('trackArtist').textContent = songs[i].artist;
+				audioPlayer.src = tracks[index].url;
+				document.getElementById('trackTitle').textContent = tracks[index].title;
+				document.getElementById('trackArtist').textContent = tracks[index].artist;
 				
-				updatePlaylist();
+				// Update playlist active state
+				updatePlaylistUI();
 				
+				// Reset progress
 				progressFill.style.width = '0%';
 				progressBar.style.setProperty('--progress', '0%');
 				document.getElementById('currentTime').textContent = '0:00';
 				
-				if (shouldPlay) {
-					audioPlayer.addEventListener('loadeddata', function startPlay() {
+				// If we should auto-play, wait for the track to load and then play
+				if (shouldAutoPlay) {
+					audioPlayer.addEventListener('loadeddata', function playOnLoad() {
 						audioPlayer.play().then(() => {
 							playIcon.className = 'fas fa-pause';
 						}).catch(e => {
-							console.error('Auto-play error:', e);
+							console.error('Error auto-playing track:', e);
 							playIcon.className = 'fas fa-play';
 						});
-						audioPlayer.removeEventListener('loadeddata', startPlay);
+						// Remove the event listener after use
+						audioPlayer.removeEventListener('loadeddata', playOnLoad);
 					});
 				} else {
 					playIcon.className = 'fas fa-play';
@@ -787,80 +831,81 @@
 			}
 		}
 
-		function nextPrev(dir, play = false) {
-			if (!musicEnabled) return;
+		function changeTrack(direction, autoPlay = false) {
+			if (!isMusicPlayerEnabled) return;
 			
-			if (dir === 'next') {
-				track = (track + 1) % songs.length;
+			if (direction === 'next') {
+				currentTrack = (currentTrack + 1) % tracks.length;
 			} else {
-				track = (track - 1 + songs.length) % songs.length;
+				currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
 			}
 			
-			loadSong(track, play);
+			loadTrack(currentTrack, autoPlay);
 		}
 
 		function updateProgress() {
 			if (audioPlayer.duration) {
-				const prog = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-				progressFill.style.width = prog + '%';
-				progressBar.style.setProperty('--progress', prog + '%');
+				const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+				progressFill.style.width = progress + '%';
+				progressBar.style.setProperty('--progress', progress + '%');
 				
+				// Update time display
 				document.getElementById('currentTime').textContent = formatTime(audioPlayer.currentTime);
 				document.getElementById('totalTime').textContent = formatTime(audioPlayer.duration);
 			}
 		}
 
-		function formatTime(sec) {
-			const m = Math.floor(sec / 60);
-			const s = Math.floor(sec % 60);
-			return `${m}:${s.toString().padStart(2, '0')}`;
+		function formatTime(seconds) {
+			const minutes = Math.floor(seconds / 60);
+			const secs = Math.floor(seconds % 60);
+			return `${minutes}:${secs.toString().padStart(2, '0')}`;
 		}
 
-		function setTime(e) {
-			if (!musicEnabled) return;
+		function setProgress(e) {
+			if (!isMusicPlayerEnabled) return;
 			
 			if (audioPlayer.duration) {
 				const rect = progressBar.getBoundingClientRect();
-				const x = e.clientX - rect.left;
-				const w = rect.width;
-				const newTime = (x / w) * audioPlayer.duration;
+				const clickX = e.clientX - rect.left;
+				const width = rect.width;
+				const newTime = (clickX / width) * audioPlayer.duration;
 				audioPlayer.currentTime = newTime;
 			}
 		}
 
-		function updatePlaylist() {
+		function updatePlaylistUI() {
 			playlistContainer.innerHTML = '';
-			songs.forEach((song, i) => {
+			tracks.forEach((track, index) => {
 				const item = document.createElement('div');
-				item.className = `playlist-item ${i === track ? 'active' : ''}`;
-				item.textContent = `${song.title} - ${song.artist}`;
+				item.className = `playlist-item ${index === currentTrack ? 'active' : ''}`;
+				item.textContent = `${track.title} - ${track.artist}`;
 				item.addEventListener('click', () => {
-					if (!musicEnabled) return;
-					const playing = !audioPlayer.paused;
-					loadSong(i, playing);
+					if (!isMusicPlayerEnabled) return;
+					const wasCurrentlyPlaying = !audioPlayer.paused;
+					loadTrack(index, wasCurrentlyPlaying);
 				});
 				playlistContainer.appendChild(item);
 			});
 		}
 
-		// events
-		document.querySelectorAll('#sidebar button[data-url]').forEach(btn => {
-			btn.addEventListener('click', function(e) {
+		// Event Listeners
+		document.querySelectorAll('#sidebar button[data-url]').forEach(button => {
+			button.addEventListener('click', function(e) {
 				e.preventDefault();
 				const url = this.getAttribute('data-url');
-				loadPage(url, this);
+				loadIframe(url, this);
 			});
 		});
 
 		iframe.addEventListener('load', () => {
-			console.log('loaded ok');
+			console.log('Iframe loaded successfully');
 			loadingOverlay.classList.remove('show');
 		});
 
 		iframe.addEventListener('error', (e) => {
-			console.error('iframe error:', e);
+			console.error('Iframe failed to load:', e);
 			loadingOverlay.classList.remove('show');
-			alert('Failed to load page');
+			alert('Failed to load the requested page. Please try again.');
 		});
 
 		sidebar.addEventListener('mouseenter', () => {
@@ -872,38 +917,50 @@
 		});
 
 		fullscreenBtn.addEventListener('click', () => {
-			const container = iframe.parentElement;
+			const iframeContainer = iframe.parentElement;
 			
 			if (!document.fullscreenElement) {
-				if (container.requestFullscreen) {
-					container.requestFullscreen().catch(err => {
-						console.error('Fullscreen error:', err);
-						alert(`Fullscreen failed: ${err.message}`);
+				if (iframeContainer.requestFullscreen) {
+					iframeContainer.requestFullscreen().catch(err => {
+						console.error('Error attempting to enable fullscreen:', err);
+						alert(`Error attempting to enable fullscreen: ${err.message}`);
 					});
+				} else if (iframeContainer.webkitRequestFullscreen) {
+					iframeContainer.webkitRequestFullscreen();
+				} else if (iframeContainer.msRequestFullscreen) {
+					iframeContainer.msRequestFullscreen();
 				}
 			} else {
 				if (document.exitFullscreen) {
 					document.exitFullscreen();
+				} else if (document.webkitExitFullscreen) {
+					document.webkitExitFullscreen();
+				} else if (document.msExitFullscreen) {
+					document.msExitFullscreen();
 				}
 			}
 		});
 
-		musicToggleBtn.addEventListener('click', toggleMusic);
-		collapsedView.addEventListener('click', toggleExpanded);
-		collapseBtn.addEventListener('click', toggleExpanded);
-		playBtn.addEventListener('click', playPause);
-		progressBar.addEventListener('click', setTime);
+		// Music Player Toggle Event Listener
+		musicToggleBtn.addEventListener('click', toggleMusicPlayer);
+
+		// Music Player Event Listeners
+		collapsedView.addEventListener('click', togglePlayer);
+		collapseBtn.addEventListener('click', togglePlayer);
+		playBtn.addEventListener('click', togglePlayPause);
+		progressBar.addEventListener('click', setProgress);
 
 		document.getElementById('prevBtn').addEventListener('click', () => {
-			const playing = !audioPlayer.paused;
-			nextPrev('prev', playing);
+			const wasCurrentlyPlaying = !audioPlayer.paused;
+			changeTrack('prev', wasCurrentlyPlaying);
 		});
 		
 		document.getElementById('nextBtn').addEventListener('click', () => {
-			const playing = !audioPlayer.paused;
-			nextPrev('next', playing);
+			const wasCurrentlyPlaying = !audioPlayer.paused;
+			changeTrack('next', wasCurrentlyPlaying);
 		});
 
+		// Audio Player Event Listeners
 		audioPlayer.addEventListener('timeupdate', updateProgress);
 		audioPlayer.addEventListener('loadedmetadata', () => {
 			if (audioPlayer.duration && !isNaN(audioPlayer.duration)) {
@@ -911,13 +968,16 @@
 			}
 		});
 		
+		// Enhanced auto-play functionality when song ends
 		audioPlayer.addEventListener('ended', () => {
-			if (musicEnabled) {
-				console.log('song ended, next track');
-				nextPrev('next', true);
+			if (isMusicPlayerEnabled) {
+				console.log('Song ended, switching to next track with auto-play');
+				// Move to next track and auto-play it
+				changeTrack('next', true);
 			}
 		});
 
+		// Handle play/pause state changes
 		audioPlayer.addEventListener('play', () => {
 			playIcon.className = 'fas fa-pause';
 		});
@@ -926,24 +986,21 @@
 			playIcon.className = 'fas fa-play';
 		});
 
+		// Handle audio loading errors
 		audioPlayer.addEventListener('error', (e) => {
-			console.error('audio error:', e);
+			console.error('Audio loading error:', e);
 			playIcon.className = 'fas fa-play';
 		});
 
-		// init stuff
-		document.addEventListener('DOMContentLoaded', () => {
-			const home = document.querySelector('button[data-url="/nova/home"]');
-			if (home) {
-				home.classList.add('active');
-			}
-			
-			loadSong(0);
+		// Initialize everything when page loads
+		window.addEventListener('DOMContentLoaded', () => {
+			// Initialize music player
+			loadTrack(0);
 			audioPlayer.volume = 0.7;
-			updatePlaylist();
+			updatePlaylistUI();
 		});
 
-		console.log('nova loaded');
+		console.log('Nova Network with Music Player Toggle loaded successfully');
 	</script>
 </body>
 
