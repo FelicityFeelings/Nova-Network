@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<script src="/nova/tab.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="icon" type="image/x-icon" href="/nova/classroom.png">
+	<title>Google Classroom</title>
+	<link rel="icon" type="image/x-icon" href="nova.png" />
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script src="https://unpkg.com/lucide@latest"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+	<style>
+		:root {
+			--gradient-start: #ff2e91;
+			--gradient-mid: #ff7b5c;
+			--gradient-end: #ff5c00;
+		}
+
+		body {
+			background-color: #120314;
+			transition: filter 0.3s ease;
+			margin: 0;
+		}
+
+		body.sidebar-hovered .content {
+			filter: blur(5px);
+		}
+
+		#sidebar {
+			position: fixed;
+			top: 0;
+			left: 0;
+			height: 100vh;
+			width: 4rem;
+			transition: width 0.3s ease;
+			z-index: 20;
+			background-color: black;
+			color: white;
+			padding: 1rem 0;
+			overflow: hidden;
+		}
+
+		#sidebar::after {
+			content: "";
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 2px;
+			height: 100%;
+			background: linear-gradient(0deg, #2563eb, #ffffff, #2563eb, #ffffff);
+			background-size: 100% 400%;
+			animation: gradientBg 3s linear infinite;
+			box-shadow: 0 0 8px rgba(37, 99, 235, 0.4), 0 0 16px rgba(255, 255, 255, 0.2);
+		}
+
+		#sidebar:hover::after {
+			box-shadow: 0 0 20px rgba(37, 99, 235, 0.6), 0 0 40px rgba(255, 255, 255, 0.3);
+			width: 2px;
+		}
+
+		@keyframes gradientBg {
+			0% {
+				background-position: 0% 0%;
+			}
+
+			100% {
+				background-position: 0% 400%;
+			}
+		}
+
+		.sidebar-scroll {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			overflow-y: auto;
+			width: 100%;
+		}
+
+		#sidebar:hover {
+			width: 13rem;
+		}
+
+		#sidebar button {
+			display: flex;
+			align-items: center;
+			width: 100%;
+			padding: 0.5rem 1rem;
+			color: white;
+			background: none;
+			border: none;
+			cursor: pointer;
+			font-size: 1rem;
+			font-weight: 500;
+			transition: background-color 0.2s ease, color 0.2s ease;
+			border-radius: 0.5rem;
+			position: relative;
+			overflow: hidden;
+		}
+
+		#sidebar button::after {
+			content: "";
+			position: absolute;
+			inset: 0;
+			background-color: rgba(255, 255, 255, 0.2);
+			opacity: 0;
+			transition: opacity 0.3s ease;
+			border-radius: 0.5rem;
+			z-index: -1;
+		}
+
+		#sidebar button:hover::after {
+			opacity: 1;
+		}
+
+		#sidebar button:hover {
+			color: #ffe0f0;
+		}
+
+		#sidebar button.active {
+			background-color: rgba(255, 255, 255, 0.2);
+			color: #ffe0f0;
+		}
+
+		#sidebar button.active .label {
+			color: #ffe0f0;
+		}
+
+		#sidebar svg,
+		#sidebar img.icon {
+			width: 28px;
+			height: 28px;
+			flex-shrink: 0;
+			display: block;
+			filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(93deg) brightness(105%) contrast(105%);
+		}
+
+		.label {
+			opacity: 0;
+			transform: translateX(-10px);
+			margin-left: 0;
+			transition: opacity 0.3s ease, transform 0.3s ease, margin-left 0.3s ease, color 0.3s ease;
+			white-space: nowrap;
+			color: white;
+		}
+
+		#sidebar:hover .label {
+			opacity: 1;
+			transform: translateX(0);
+			margin-left: 1rem;
+		}
+
+		#sidebar button:hover .label,
+		#sidebar button.active .label {
+			color: #ffe0f0;
+			transform: translateX(6px);
+		}
+
+		.content {
+			margin-left: 4rem;
+			transition: filter 0.3s ease;
+			height: 100vh;
+			overflow: auto;
+		}
+
+		#bottomButtons {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			width: 100%;
+			margin-top: auto;
+			gap: 0.75rem;
+			padding: 0 1rem;
+		}
+
+		#fullscreenBtn .label {
+			opacity: 0;
+		}
+
+		#sidebar:hover #fullscreenBtn .label {
+			opacity: 1;
+			transform: translateX(0);
+			margin-left: 1rem;
+		}
+
+		#fullscreenBtn .icon {
+			filter: none;
+		}
+
+		#musicToggleBtn {
+			display: flex;
+			align-items: center;
+			width: 100%;
+			padding: 0.5rem 1rem;
+			color: white;
+			background: none;
+			border: none;
+			cursor: pointer;
+			font-size: 1rem;
+			font-weight: 500;
+			transition: background-color 0.2s ease, color 0.2s ease;
+			border-radius: 0.5rem;
+			position: relative;
+			overflow: hidden;
+		}
+
+		#musicToggleBtn::after {
+			content: "";
+			position: absolute;
+			inset: 0;
+			background-color: rgba(255, 255, 255, 0.2);
+			opacity: 0;
+			transition: opacity 0.3s ease;
+			border-radius: 0.5rem;
+			z-index: -1;
+		}
+
+		#musicToggleBtn:hover::after {
+			opacity: 1;
+		}
+
+		#musicToggleBtn:hover {
+			color: #ffe0f0;
+		}
+
+		#musicToggleBtn:hover .label {
+			color: #ffe0f0;
+			transform: translateX(6px);
+		}
+
+		#musicToggleBtn .icon {
+			width: 28px;
+			height: 28px;
+			flex-shrink: 0;
+			display: block;
+			transition: filter 0.3s ease;
+		}
+
+		#musicToggleBtn .icon.music-off {
+			filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(93deg) brightness(105%) contrast(105%);
+		}
+
+		#musicToggleBtn .icon.music-on {
+			filter: brightness(0) saturate(100%) invert(73%) sepia(84%) saturate(2598%) hue-rotate(68deg) brightness(96%) contrast(88%);
+		}
+
+		.loading-overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-color: rgba(0, 0, 0, 0.8);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			z-index: 10;
+			opacity: 0;
+			transition: opacity 0.3s ease;
+			pointer-events: none;
+		}
+
+		.loading-overlay.show {
+			opacity: 1;
+			pointer-events: all;
+		}
+
+		.spinner {
+			width: 40px;
+			height: 40px;
+			border: 4px solid rgba(255, 255, 255, 0.3);
+			border-top: 4px solid #ffffff;
+			border-radius: 50%;
+			animation: spin 1s linear infinite;
+		}
+
+		@keyframes spin {
+			0% {
+				transform: rotate(0deg);
+			}
+
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+
+		.music-player {
+			position: fixed;
+			bottom: 20px;
+			right: 20px;
+			z-index: 30;
+			background: rgba(15, 15, 15, 0.95);
+			backdrop-filter: blur(15px);
+			border: 1px solid rgba(255, 255, 255, 0.08);
+			border-radius: 16px;
+			box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+			transition: all 0.3s ease;
+			overflow: hidden;
+			width: 60px;
+			height: 60px;
+		}
+
+		.music-player.hidden {
+			opacity: 0;
+			pointer-events: none;
+			transform: translateY(20px);
+		}
+
+		.music-player.expanded {
+			width: 320px;
+			height: 450px;
+		}
+
+		.player-header {
+			padding: 12px 16px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+		}
+
+		.player-title {
+			color: rgba(255, 255, 255, 0.9);
+			font-weight: 500;
+			font-size: 14px;
+		}
+
+		.toggle-btn {
+			background: none;
+			border: none;
+			color: white;
+			cursor: pointer;
+			padding: 5px;
+			border-radius: 50%;
+			transition: all 0.3s ease;
+		}
+
+		.toggle-btn:hover {
+			background: rgba(255, 255, 255, 0.1);
+			transform: scale(1.1);
+		}
+
+		.album-art {
+			width: 180px;
+			height: 180px;
+			margin: 15px auto;
+			border-radius: 12px;
+			background: linear-gradient(135deg, rgba(30, 30, 30, 0.8), rgba(60, 60, 60, 0.6));
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+			overflow: hidden;
+			border: 1px solid rgba(255, 255, 255, 0.1);
+		}
+
+		.album-art i {
+			color: rgba(255, 255, 255, 0.6);
+			font-size: 40px;
+			z-index: 1;
+		}
+
+		.track-info {
+			text-align: center;
+			padding: 0 16px;
+			margin-bottom: 15px;
+		}
+
+		.track-title {
+			color: white;
+			font-size: 16px;
+			font-weight: 500;
+			margin-bottom: 4px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.track-artist {
+			color: rgba(255, 255, 255, 0.6);
+			font-size: 13px;
+		}
+
+		.progress-container {
+			padding: 0 16px;
+			margin-bottom: 15px;
+		}
+
+		.progress-bar {
+			width: 100%;
+			height: 4px;
+			background: rgba(255, 255, 255, 0.15);
+			border-radius: 2px;
+			cursor: pointer;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.progress-fill {
+			height: 100%;
+			background: rgba(255, 255, 255, 0.8);
+			border-radius: 2px;
+			width: 0%;
+			transition: width 0.1s ease;
+		}
+
+		.progress-bar::after {
+			content: '';
+			position: absolute;
+			top: 50%;
+			left: var(--progress, 0%);
+			width: 8px;
+			height: 8px;
+			background: white;
+			border-radius: 50%;
+			transform: translate(-50%, -50%);
+			opacity: 0;
+			transition: opacity 0.2s ease;
+		}
+
+		.progress-bar:hover::after {
+			opacity: 1;
+		}
+
+		.time-info {
+			display: flex;
+			justify-content: space-between;
+			color: rgba(255, 255, 255, 0.5);
+			font-size: 11px;
+			margin-top: 6px;
+		}
+
+		.controls {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 15px;
+			padding: 0 16px 15px;
+		}
+
+		.control-btn {
+			background: none;
+			border: none;
+			color: rgba(255, 255, 255, 0.7);
+			cursor: pointer;
+			padding: 8px;
+			border-radius: 50%;
+			transition: all 0.2s ease;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.control-btn:hover {
+			color: white;
+			background: rgba(255, 255, 255, 0.08);
+		}
+
+		.play-btn {
+			background: rgba(255, 255, 255, 0.9);
+			color: #000;
+			width: 48px;
+			height: 48px;
+			font-size: 18px;
+		}
+
+		.play-btn:hover {
+			background: rgba(255, 255, 255, 0.95);
+		}
+
+		.collapsed-player {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+		}
+
+		.collapsed-icon {
+			color: white;
+			font-size: 20px;
+			transition: all 0.3s ease;
+		}
+
+		.collapsed-player:hover .collapsed-icon {
+			transform: scale(1.1);
+		}
+
+		.playlist-container {
+			max-height: 120px;
+			overflow-y: auto;
+			border-top: 1px solid rgba(255, 255, 255, 0.05);
+		}
+
+		.playlist-item {
+			padding: 8px 16px;
+			color: rgba(255, 255, 255, 0.6);
+			cursor: pointer;
+			transition: all 0.2s ease;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+			font-size: 12px;
+		}
+
+		.playlist-item:hover {
+			background: rgba(255, 255, 255, 0.05);
+			color: rgba(255, 255, 255, 0.8);
+		}
+
+		.playlist-item.active {
+			color: white;
+			background: rgba(255, 255, 255, 0.08);
+		}
+
+		.playlist-container::-webkit-scrollbar {
+			width: 2px;
+		}
+
+		.playlist-container::-webkit-scrollbar-track {
+			background: rgba(255, 255, 255, 0.05);
+		}
+
+		.playlist-container::-webkit-scrollbar-thumb {
+			background: rgba(255, 255, 255, 0.3);
+			border-radius: 1px;
+		}
+	</style>
+</head>
+
+<body class="flex h-screen">
+	<div id="sidebar">
+		<div class="sidebar-scroll">
+			<div class="flex flex-col items-start gap-3 justify-start w-full">
+				<button data-url="/nova/nova" aria-label="Home">
+					<img src="https://img.icons8.com/?size=100&id=7NYOrZQoHLa1&format=png&color=ffffff" alt="Home Icon" class="icon" />
+					<span class="label">Home</span>
+				</button>
+				<button data-url="https://example.com/" aria-label="Search">
+					<img src="https://img.icons8.com/?size=100&id=2sWrwEXiaegS&format=png&color=ffffff" alt="Search Icon" class="icon" />
+					<span class="label">Search</span>
+				</button>
+				<button data-url="/nova/games" aria-label="Games">
+					<img src="https://img.icons8.com/?size=100&id=C6pSWdxiAGbl&format=png&color=ffffff" alt="Games Icon" class="icon" />
+					<span class="label">Games</span>
+				</button>
+				<button data-url="/nova/apps" aria-label="Apps">
+					<img src="https://img.icons8.com/?size=100&id=JCtrMfKlpJVk&format=png&color=ffffff" alt="Apps Icon" class="icon" />
+					<span class="label">Apps</span>
+				</button>
+				<button data-url="/nova/exploits" aria-label="Exploits">
+					<img src="https://img.icons8.com/?size=100&id=CDjGigSJvEH8&format=png&color=ffffff" alt="Exploits Icon" class="icon" />
+					<span class="label">Exploits</span>
+				</button>
+				<button data-url="/mo" aria-label="Media">
+					<img src="https://img.icons8.com/?size=100&id=bBgwYTIo4Jtz&format=png&color=000000" alt="Media Icon" class="icon" />
+					<span class="label">Movies</span>
+				</button>
+				<button data-url="/sh" aria-label="TV Shows">
+					<img src="https://img.icons8.com/?size=100&id=cp2ZavhzxUTz&format=png&color=000000" alt="TV Shows Icon" class="icon" />
+					<span class="label">TV Shows</span>
+				</button>
+				<button data-url="/nova/extras" aria-label="Extras">
+					<img src="https://img.icons8.com/?size=100&id=QADawoQS3Rcg&format=png&color=ffffff" alt="Extras Icon" class="icon" />
+					<span class="label">Extras</span>
+				</button>
+			</div>
+			<div id="bottomButtons">
+				<button id="musicToggleBtn" aria-label="Toggle Music Player">
+					<img src="https://img.icons8.com/?size=100&id=si4U2sLqwIFA&format=png&color=89F336" alt="Music Icon" class="icon music-on" />
+					<span class="label">Lobby Beats</span>
+				</button>
+
+				<button id="fullscreenBtn" aria-label="Fullscreen">
+					<img src="https://img.icons8.com/?size=100&id=LMDhZAbV4zOg&format=png&color=000000" alt="Fullscreen Icon" class="icon" />
+					<span class="label">Fullscreen</span>
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="flex-1 content">
+		<div style="position: relative; width: 100%; height: 100%;">
+			<iframe id="iframeViewer" src="/nova/nova" class="w-full h-full border-0"></iframe>
+			<div id="loadingOverlay" class="loading-overlay">
+				<div class="spinner"></div>
+			</div>
+		</div>
+	</div>
+
+	<div id="musicPlayer" class="music-player">
+		<div id="collapsedView" class="collapsed-player">
+			<i class="fas fa-music collapsed-icon"></i>
+		</div>
+
+		<div id="expandedView" style="display: none;">
+			<div class="player-header">
+				<span class="player-title">Lobby Beats</span>
+				<button class="toggle-btn" id="collapseBtn">
+					<i class="fas fa-chevron-down"></i>
+				</button>
+			</div>
+
+			<div class="album-art" id="albumArt">
+				<i class="fas fa-music"></i>
+			</div>
+
+			<div class="track-info">
+				<div class="track-title" id="trackTitle">Loading...</div>
+				<div class="track-artist" id="trackArtist">Nova Network</div>
+			</div>
+
+			<div class="progress-container">
+				<div class="progress-bar" id="progressBar">
+					<div class="progress-fill" id="progressFill"></div>
+				</div>
+				<div class="time-info">
+					<span id="currentTime">0:00</span>
+					<span id="totalTime">0:00</span>
+				</div>
+			</div>
+
+			<div class="controls">
+				<button class="control-btn" id="prevBtn">
+					<i class="fas fa-step-backward"></i>
+				</button>
+				<button class="control-btn play-btn" id="playBtn">
+					<i class="fas fa-play" id="playIcon"></i>
+				</button>
+				<button class="control-btn" id="nextBtn">
+					<i class="fas fa-step-forward"></i>
+				</button>
+			</div>
+
+			<div class="playlist-container" id="playlistContainer"></div>
+		</div>
+	</div>
+
+	<audio id="audioPlayer" preload="metadata"></audio>
+
+	<script>
+		if (typeof lucide !== 'undefined') {
+			lucide.createIcons();
+		}
+
+		const iframe = document.getElementById('iframeViewer');
+		const loadingOverlay = document.getElementById('loadingOverlay');
+		const sidebar = document.getElementById('sidebar');
+		const fullscreenBtn = document.getElementById('fullscreenBtn');
+		const musicPlayer = document.getElementById('musicPlayer');
+		const collapsedView = document.getElementById('collapsedView');
+		const expandedView = document.getElementById('expandedView');
+		const collapseBtn = document.getElementById('collapseBtn');
+		const playBtn = document.getElementById('playBtn');
+		const playIcon = document.getElementById('playIcon');
+		const albumArt = document.getElementById('albumArt');
+		const progressBar = document.getElementById('progressBar');
+		const progressFill = document.getElementById('progressFill');
+		const audioPlayer = document.getElementById('audioPlayer');
+		const playlistContainer = document.getElementById('playlistContainer');
+		const musicToggleBtn = document.getElementById('musicToggleBtn');
+		const musicIcon = musicToggleBtn.querySelector('.icon');
+
+		let expanded = false;
+		let track = 0;
+		let wasPlaying = false;
+		let musicEnabled = true;
+
+		const songs = [
+			{ title: 'Chill Synthwave', artist: 'Nova Network', url: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3' },
+			{ title: 'Neon Dreams', artist: 'Cyber Sound', url: 'https://www.soundjay.com/misc/sounds/bell-ringing-04.mp3' },
+			{ title: 'Digital Horizon', artist: 'Tech Beats', url: 'https://www.soundjay.com/misc/sounds/bell-ringing-03.mp3' },
+			{ title: 'Virtual Reality', artist: 'Future Waves', url: 'https://www.soundjay.com/misc/sounds/bell-ringing-02.mp3' }
+		];
+
+		function loadPage(url, btn) {
+			console.log('Loading:', url);
+			
+			loadingOverlay.classList.add('show');
+			
+			document.querySelectorAll('#sidebar button').forEach(b => {
+				b.classList.remove('active');
+			});
+			
+			if (btn) {
+				btn.classList.add('active');
+			}
+			
+			iframe.src = url;
+			
+			setTimeout(() => {
+				loadingOverlay.classList.remove('show');
+			}, 2000);
+		}
+
+		function toggleMusic() {
+			musicEnabled = !musicEnabled;
+			
+			if (musicEnabled) {
+				musicPlayer.classList.remove('hidden');
+				musicIcon.classList.remove('music-off');
+				musicIcon.classList.add('music-on');
+				musicIcon.src = 'https://img.icons8.com/?size=100&id=si4U2sLqwIFA&format=png&color=89F336';
+			} else {
+				musicPlayer.classList.add('hidden');
+				musicIcon.classList.remove('music-on');
+				musicIcon.classList.add('music-off');
+				musicIcon.src = 'https://img.icons8.com/?size=100&id=si4U2sLqwIFA&format=png&color=000000';
+				
+				if (!audioPlayer.paused) {
+					audioPlayer.pause();
+					playIcon.className = 'fas fa-play';
+				}
+				
+				if (expanded) {
+					expanded = false;
+					musicPlayer.classList.remove('expanded');
+					collapsedView.style.display = 'flex';
+					expandedView.style.display = 'none';
+				}
+			}
+		}
+
+		function toggleExpanded() {
+			if (!musicEnabled) return;
+			
+			expanded = !expanded;
+			
+			if (expanded) {
+				musicPlayer.classList.add('expanded');
+				collapsedView.style.display = 'none';
+				expandedView.style.display = 'block';
+			} else {
+				musicPlayer.classList.remove('expanded');
+				collapsedView.style.display = 'flex';
+				expandedView.style.display = 'none';
+			}
+		}
+
+		function playPause() {
+			if (!musicEnabled) return;
+			
+			if (audioPlayer.paused) {
+				audioPlayer.play().then(() => {
+					playIcon.className = 'fas fa-pause';
+				}).catch(e => {
+					console.error('Play error:', e);
+				});
+			} else {
+				audioPlayer.pause();
+				playIcon.className = 'fas fa-play';
+			}
+		}
+
+		function loadSong(i, play = false) {
+			if (!musicEnabled) return;
+			
+			if (i >= 0 && i < songs.length) {
+				track = i;
+				
+				const shouldPlay = play || !audioPlayer.paused;
+				
+				audioPlayer.src = songs[i].url;
+				document.getElementById('trackTitle').textContent = songs[i].title;
+				document.getElementById('trackArtist').textContent = songs[i].artist;
+				
+				updatePlaylist();
+				
+				progressFill.style.width = '0%';
+				progressBar.style.setProperty('--progress', '0%');
+				document.getElementById('currentTime').textContent = '0:00';
+				
+				if (shouldPlay) {
+					audioPlayer.addEventListener('loadeddata', function startPlay() {
+						audioPlayer.play().then(() => {
+							playIcon.className = 'fas fa-pause';
+						}).catch(e => {
+							console.error('Auto-play error:', e);
+							playIcon.className = 'fas fa-play';
+						});
+						audioPlayer.removeEventListener('loadeddata', startPlay);
+					});
+				} else {
+					playIcon.className = 'fas fa-play';
+				}
+			}
+		}
+
+		function nextPrev(dir, play = false) {
+			if (!musicEnabled) return;
+			
+			if (dir === 'next') {
+				track = (track + 1) % songs.length;
+			} else {
+				track = (track - 1 + songs.length) % songs.length;
+			}
+			
+			loadSong(track, play);
+		}
+
+		function updateProgress() {
+			if (audioPlayer.duration) {
+				const prog = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+				progressFill.style.width = prog + '%';
+				progressBar.style.setProperty('--progress', prog + '%');
+				
+				document.getElementById('currentTime').textContent = formatTime(audioPlayer.currentTime);
+				document.getElementById('totalTime').textContent = formatTime(audioPlayer.duration);
+			}
+		}
+
+		function formatTime(sec) {
+			const m = Math.floor(sec / 60);
+			const s = Math.floor(sec % 60);
+			return `${m}:${s.toString().padStart(2, '0')}`;
+		}
+
+		function setTime(e) {
+			if (!musicEnabled) return;
+			
+			if (audioPlayer.duration) {
+				const rect = progressBar.getBoundingClientRect();
+				const x = e.clientX - rect.left;
+				const w = rect.width;
+				const newTime = (x / w) * audioPlayer.duration;
+				audioPlayer.currentTime = newTime;
+			}
+		}
+
+		function updatePlaylist() {
+			playlistContainer.innerHTML = '';
+			songs.forEach((song, i) => {
+				const item = document.createElement('div');
+				item.className = `playlist-item ${i === track ? 'active' : ''}`;
+				item.textContent = `${song.title} - ${song.artist}`;
+				item.addEventListener('click', () => {
+					if (!musicEnabled) return;
+					const playing = !audioPlayer.paused;
+					loadSong(i, playing);
+				});
+				playlistContainer.appendChild(item);
+			});
+		}
+
+		// events
+		document.querySelectorAll('#sidebar button[data-url]').forEach(btn => {
+			btn.addEventListener('click', function(e) {
+				e.preventDefault();
+				const url = this.getAttribute('data-url');
+				loadPage(url, this);
+			});
+		});
+
+		iframe.addEventListener('load', () => {
+			console.log('loaded ok');
+			loadingOverlay.classList.remove('show');
+		});
+
+		iframe.addEventListener('error', (e) => {
+			console.error('iframe error:', e);
+			loadingOverlay.classList.remove('show');
+			alert('Failed to load page');
+		});
+
+		sidebar.addEventListener('mouseenter', () => {
+			document.body.classList.add('sidebar-hovered');
+		});
+
+		sidebar.addEventListener('mouseleave', () => {
+			document.body.classList.remove('sidebar-hovered');
+		});
+
+		fullscreenBtn.addEventListener('click', () => {
+			const container = iframe.parentElement;
+			
+			if (!document.fullscreenElement) {
+				if (container.requestFullscreen) {
+					container.requestFullscreen().catch(err => {
+						console.error('Fullscreen error:', err);
+						alert(`Fullscreen failed: ${err.message}`);
+					});
+				}
+			} else {
+				if (document.exitFullscreen) {
+					document.exitFullscreen();
+				}
+			}
+		});
+
+		musicToggleBtn.addEventListener('click', toggleMusic);
+		collapsedView.addEventListener('click', toggleExpanded);
+		collapseBtn.addEventListener('click', toggleExpanded);
+		playBtn.addEventListener('click', playPause);
+		progressBar.addEventListener('click', setTime);
+
+		document.getElementById('prevBtn').addEventListener('click', () => {
+			const playing = !audioPlayer.paused;
+			nextPrev('prev', playing);
+		});
+		
+		document.getElementById('nextBtn').addEventListener('click', () => {
+			const playing = !audioPlayer.paused;
+			nextPrev('next', playing);
+		});
+
+		audioPlayer.addEventListener('timeupdate', updateProgress);
+		audioPlayer.addEventListener('loadedmetadata', () => {
+			if (audioPlayer.duration && !isNaN(audioPlayer.duration)) {
+				document.getElementById('totalTime').textContent = formatTime(audioPlayer.duration);
+			}
+		});
+		
+		audioPlayer.addEventListener('ended', () => {
+			if (musicEnabled) {
+				console.log('song ended, next track');
+				nextPrev('next', true);
+			}
+		});
+
+		audioPlayer.addEventListener('play', () => {
+			playIcon.className = 'fas fa-pause';
+		});
+
+		audioPlayer.addEventListener('pause', () => {
+			playIcon.className = 'fas fa-play';
+		});
+
+		audioPlayer.addEventListener('error', (e) => {
+			console.error('audio error:', e);
+			playIcon.className = 'fas fa-play';
+		});
+
+		// init stuff
+		document.addEventListener('DOMContentLoaded', () => {
+			const home = document.querySelector('button[data-url="/nova/nova"]');
+			if (home) {
+				home.classList.add('active');
+			}
+			
+			loadSong(0);
+			audioPlayer.volume = 0.7;
+			updatePlaylist();
+		});
+
+		console.log('nova loaded');
+	</script>
+</body>
+
+</html>
