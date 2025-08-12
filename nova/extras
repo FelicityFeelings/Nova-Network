@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+/* Base styles with monochrome colors */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: #000000;
+    color: #ffffff;
+}
+
+.settings-container {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    height: 100vh;
+}
+
+/* Sidebar styles */
+.settings-sidebar {
+    background: #1a1a1a;
+    border-right: 1px solid #333333;
+    padding: 20px;
+}
+
+.sidebar-item {
+    padding: 12px 15px;
+    margin: 5px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar-item:hover {
+    background: #333333;
+}
+
+.sidebar-item.active {
+    background: #666666;
+}
+
+.sidebar-item::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: #666666;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.sidebar-item:hover::after {
+    transform: scaleX(1);
+}
+
+/* Discord specific hover styles */
+.sidebar-item[data-section="discord"]:hover {
+    background: #5865F2;
+}
+
+.sidebar-item[data-section="discord"]::after {
+    background: #ffffff;
+}
+
+.sidebar-item[data-section="discord"]:hover::after {
+    background: #ffffff;
+}
+
+/* Main content styles */
+.settings-content {
+    padding: 30px;
+    overflow-y: auto;
+    animation: fadeSlideIn 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.content-iframe {
+    width: 100%;
+    height: calc(100vh - 60px);
+    border: none;
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+.settings-section {
+    margin-bottom: 40px;
+}
+
+.section-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #cccccc;
+}
+
+/* Settings items */
+.setting-item {
+    background: #1a1a1a;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border: 1px solid #333333;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.setting-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 102, 102, 0.2);
+}
+
+.setting-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.setting-title {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.setting-description {
+    font-size: 14px;
+    opacity: 0.7;
+    margin-bottom: 15px;
+}
+
+/* Controls */
+.toggle-switch {
+    position: relative;
+    width: 50px;
+    height: 26px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #333;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #666666;
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+/* Input styles */
+.setting-input {
+    width: 100%;
+    padding: 10px 12px;
+    background: #333333;
+    border: 1px solid #555555;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.setting-input:focus {
+    outline: none;
+    border-color: #666666;
+}
+
+.setting-button {
+    background: #666666;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 10px 10px 0 0;
+    transition: background 0.3s ease;
+}
+
+.setting-button:hover {
+    background: #777777;
+}
+
+.setting-button.secondary {
+    background: #555555;
+}
+
+.setting-button.secondary:hover {
+    background: #666666;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Status indicator */
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-left: 10px;
+}
+
+.status-active {
+    background: #4CAF50;
+}
+
+.status-inactive {
+    background: #f44336;
+}
+
+/* Button container */
+.button-container {
+    margin-top: 15px;
+}
+
+/* Success/Error messages */
+.message {
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.message.success {
+    background: rgba(76, 175, 80, 0.2);
+    border: 1px solid #4CAF50;
+    color: #4CAF50;
+}
+
+.message.error {
+    background: rgba(244, 67, 54, 0.2);
+    border: 1px solid #f44336;
+    color: #f44336;
+}
+
+/* Animation styles */
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="settings-container">
+    <!-- Sidebar -->
+    <div class="settings-sidebar">
+        <div class="sidebar-item active" data-section="tab">
+            <i class="fa-solid fa-user-secret"></i>
+            <span>Tab</span>
+        </div>
+        <div class="sidebar-item" data-section="partners">
+            <i class="fa-solid fa-handshake"></i>
+            <span>Partners</span>
+        </div>
+        <div class="sidebar-item" data-section="devs">
+            <i class="fa-solid fa-code"></i>
+            <span>Devs</span>
+        </div>
+        <div class="sidebar-item" data-section="about">
+            <i class="fas fa-info-circle"></i>
+            <span>About</span>
+        </div>
+        <div class="sidebar-item" data-section="discord">
+            <i class="fa-brands fa-discord"></i>
+            <span>Discord</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="settings-content">
+        <!-- Tab Section (default visible) -->
+        <div id="tab-section" class="content-section">
+            <div class="settings-section">
+                <h2 class="section-title">Tab Management</h2>
+
+                <!-- Tab Cloaker -->
+                <div class="setting-item">
+                    <div class="setting-header">
+                        <div class="setting-title">Tab Cloaker</div>
+                        <span id="cloaker-status" class="status-indicator status-inactive"></span>
+                    </div>
+                    <div class="setting-description">
+                        <p>Enter a URL to cloak this tab with that site's title and favicon. (Doesn't work on about:blank).</p>
+                        <p>VERY BUGGY</p>
+                    </div>
+                    <input type="url" class="setting-input" id="cloaker-url" placeholder="/nova/index">
+                    <div class="button-container">
+                        <button class="setting-button" onclick="NovaTab.applyCloaker()">Apply Cloak</button>
+                        <button class="setting-button secondary" onclick="NovaTab.removeCloaker()">Remove Cloak</button>
+                    </div>
+                    <div id="cloaker-message"></div>
+                </div>
+
+                <!-- Anti-Close -->
+                <div class="setting-item">
+                    <div class="setting-header">
+                        <div class="setting-title">Anti-Close Protection</div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="anticlose-toggle" onchange="NovaTab.toggleAntiClose()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-description">
+                        Prevents accidental tab closure with a confirmation dialog
+                    </div>
+                </div>
+
+                <!-- Open in about:blank -->
+                <div class="setting-item">
+                    <div class="setting-header">
+                        <div class="setting-title">about:blank</div>
+                    </div>
+                    <div class="setting-description">
+                        Opens Nova Network in a new about:blank window for enhanced privacy
+                    </div>
+                    <div class="button-container">
+                        <button class="setting-button" onclick="NovaTab.openInBlank()">Open in about:blank</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Iframe sections (hidden by default) -->
+        <div id="partners-section" class="content-section hidden">
+            <iframe class="content-iframe" src="about:blank" data-url="https://example.com/partners"></iframe>
+        </div>
+        <div id="devs-section" class="content-section hidden">
+            <iframe class="content-iframe" src="about:blank" data-url="https://example.com/devs"></iframe>
+        </div>
+        <div id="about-section" class="content-section hidden">
+            <iframe class="content-iframe" src="about:blank" data-url="https://example.com/about"></iframe>
+        </div>
+    </div>
+</div>
+
+<!-- Load the tab cloaker script -->
+<script src="tab.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    setupNavigation();
+    if (typeof NovaTab !== "undefined" && NovaTab.init) {
+        NovaTab.init();
+    }
+});
+
+function setupNavigation() {
+    const sidebarItems = document.querySelectorAll('.sidebar-item');
+    const contentSections = document.querySelectorAll('.content-section');
+
+    sidebarItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const section = item.getAttribute('data-section');
+
+            // Handle Discord as external link
+            if (section === 'discord') {
+                window.open('https://discord.gg/ZSEGUsFE', '_blank');
+                return;
+            }
+
+            // Remove active class from all items
+            sidebarItems.forEach(i => i.classList.remove('active'));
+            // Add active class to clicked item
+            item.classList.add('active');
+
+            // Hide all sections
+            contentSections.forEach(s => s.classList.add('hidden'));
+
+            // Show selected section
+            const targetSection = document.getElementById(`${section}-section`);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+
+                // Load iframe content if needed
+                const iframe = targetSection.querySelector('iframe');
+                if (iframe && iframe.src === 'about:blank' && iframe.dataset.url) {
+                    iframe.src = iframe.dataset.url;
+                }
+            }
+        });
+    });
+}
+</script>
+</body>
+</html>
