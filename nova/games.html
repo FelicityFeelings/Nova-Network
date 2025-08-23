@@ -2,249 +2,269 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="https://files.catbox.moe/3ahs4l.png" type="image/x-icon">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Games</title>
+	<script src="/tab/script.js"></script>
 	<style>
-		@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-		* {
+		body {
 			margin: 0;
 			padding: 0;
-			box-sizing: border-box;
-			font-family: 'Poppins', sans-serif;
-		}
-
-		body {
 			background-color: #151515;
-			color: #fff;
-		}
-
-		::-webkit-scrollbar {
-			display: none;
-		}
-
-		.games-grid {
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-			gap: 1.5rem;
-			padding: 2rem;
-			max-width: 1400px;
-			margin: 0 auto;
-		}
-
-		.card-wrapper {
+			overflow-y: scroll;
 			position: relative;
-			width: 100%;
-			padding-top: 100%; /* Maintains 1:1 ratio */
+			color: white;
+			font-family: 'Inter', sans-serif;
 		}
 
-		.card {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			overflow: hidden;
-			cursor: pointer;
-			border-radius: 12px;
-			transition: all 300ms ease-in-out;
-			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-			text-decoration: none;
+		/* search bar stuff */
+		#searchBar {
 			display: block;
+			margin: 30px auto 10px auto;
+			padding: 12px 20px;
+			width: 60%;
+			max-width: 500px;
+			font-size: 1rem;
+			border: 2px solid white;
+			border-radius: 25px;
+			background: linear-gradient(135deg, #ffffff, #cfcfcf);
+			color: #222;
+			box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+			outline: none;
+			position: relative;
+			z-index: 10;
+			-webkit-transition: all 0.3s ease;
+			transition: all 0.3s ease;
 		}
 
-		.card:hover {
-			transform: translateY(-8px) scale(1.02);
-			box-shadow: 0 15px 40px rgba(0, 150, 255, 0.4);
+		#searchBar:focus {
+			width: 75%;
+			max-width: 650px;
+			-webkit-transform: scale(1.05);
+			transform: scale(1.05);
+			box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+			border-color: #ffffff;
 		}
 
-		.card.no-hover:hover {
-			transform: none !important;
-			box-shadow: none !important;
+		.expanded {
+			width: 75%;
+			max-width: 650px;
+			-webkit-transform: scale(1.05);
+			transform: scale(1.05);
+			box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+			border-color: #ffffff;
 		}
 
-		.card img {
-			width: 100%;
-			height: 100%;
+		/* when typing animation */
+		.typing {
+			width: 80% !important;
+			max-width: 700px !important;
+			-webkit-transform: scale(1.08) !important;
+			transform: scale(1.08) !important;
+			box-shadow: 0 0 35px rgba(255, 255, 255, 0.6) !important;
+		}
+
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			margin: 20px 0;
+		}
+
+		.image-container {
+			display: grid;
+			grid-template-columns: repeat(8, 1fr);
+			gap: 10px;
+			justify-items: center;
+			margin: 10px 0;
+		}
+
+		/* mobile stuff - probably could be cleaner but works */
+		@media (max-width: 1400px) {
+			.image-container {
+				grid-template-columns: repeat(6, 1fr);
+			}
+		}
+
+		@media (max-width: 1024px) {
+			.image-container {
+				grid-template-columns: repeat(4, 1fr);
+			}
+		}
+
+		@media (max-width: 768px) {
+			.image-container {
+				grid-template-columns: repeat(3, 1fr);
+			}
+		}
+
+		@media (max-width: 480px) {
+			.image-container {
+				grid-template-columns: repeat(2, 1fr);
+			}
+		}
+
+		.rounded-image {
+			width: 150px;
+			height: 150px;
 			object-fit: cover;
-			transition: transform 300ms ease-in-out;
+			margin: 5px;
+			border-radius: 15px;
+			-webkit-transition: transform 0.3s ease-in-out;
+			transition: transform 0.3s ease-in-out;
+			position: relative;
+			outline: none;
 		}
 
-		.card:hover img {
+		.rounded-image:hover {
+			-webkit-transform: scale(1.1);
 			transform: scale(1.1);
 		}
 
-		.card.no-hover:hover img {
-			transform: none !important;
-		}
-
-		.card-overlay {
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			background: linear-gradient(transparent, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.95));
+		/* tooltip thing */
+		.tooltip {
+			position: fixed;
+			background-color: rgba(0, 0, 0, 0.7);
 			color: white;
-			padding: 20px;
-			transform: translateY(100%);
-			transition: transform 300ms ease-in-out;
-		}
-
-		.card:hover .card-overlay {
-			transform: translateY(0);
-		}
-
-		.card.no-hover:hover .card-overlay {
-			transform: none !important;
-		}
-
-		.card-title {
-			font-size: 1.2rem;
-			font-weight: 600;
-			line-height: 1.3;
-			margin-bottom: 0.5rem;
-		}
-
-		.games-container {
-			padding: 1rem;
-			text-align: center;
-		}
-
-		.games-container h1 {
-			font-size: 2.5rem;
-			margin-bottom: 1rem;
-			background: linear-gradient(45deg, #0096ff, #66b3ff);
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			background-clip: text;
-		}
-
-		.search {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			margin: 2rem 0;
-			padding: 2rem;
-		}
-
-		.search-container {
-			position: relative;
-			max-width: 500px;
-			width: 100%;
-		}
-
-		.search input {
-			width: 100%;
-			padding: 1rem 1.5rem;
-			font-size: 1.1rem;
-			background: rgba(255, 255, 255, 0.05);
-			border: 2px solid rgba(0, 150, 255, 0.3);
-			border-radius: 50px;
-			color: #fff;
-			outline: none;
-			transition: all 300ms ease-in-out;
-			backdrop-filter: blur(10px);
-		}
-
-		.search input::placeholder {
-			color: rgba(255, 255, 255, 0.5);
-		}
-
-		.search input:focus {
-			border-color: rgba(0, 150, 255, 0.8);
-			box-shadow: 0 0 20px rgba(0, 150, 255, 0.3);
-			transform: scale(1.02);
-		}
-
-		@media only screen and (max-width: 800px) {
-			.games-grid {
-				grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-				gap: 1rem;
-				padding: 1rem;
-			}
-
-			.search {
-				flex-direction: column;
-				padding: 1rem;
-			}
-
-			.search-container {
-				max-width: 100%;
-			}
+			border-radius: 5px;
+			padding: 5px 10px;
+			font-size: 1rem;
+			display: none;
+			pointer-events: none;
+			z-index: 9999;
 		}
 	</style>
 </head>
 
 <body>
-	<div class="container">
-		<div class="search">
-			<div class="search-container">
-				<input type="text" placeholder="Search for games...">
-			</div>
-		</div>
 
-		<div class="games-container">
-<h1>Games</h1>
-			<div class="games-grid main-grid"></div>
+	<input type="text" id="searchBar" placeholder="Search for a Game...">
+
+	<div id="tooltip" class="tooltip"></div>
+	<div class="container">
+		<div class="image-container">
+			<a href="https://docs.google.com/forms/d/e/1FAIpQLScsBOQJ3Tyq-COjSY5DaXD1YNHfO0IbmIZn1SMaDeqWlXlgMA/viewform?usp=header"
+				target="_self">
+				<img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/ea/1b/a5/ea1ba549-d74d-eeda-5be4-ff36d259f28a/AppIcon-0-0-1x_U007epad-0-1-0-0-sRGB-85-220.png/512x512bb.jpg" alt="Games Request" class="rounded-image">
+                </a>
+				<a href="https://example.com" target="_self">
+					<img src="https://storage.googleapis.com/replit/images/1686664225603_eb372f78c6436eadc3290ca2fba7353c.png " alt="10 Minutes Till Dawn" class="rounded-image">
+                </a>
+					<a href="https://example.com" target="_self">
+						<img src="https://games.lol/wp-content/uploads/2021/01/1v1-lol-free-full-version-2.jpg" alt="1v1 LOL" class="rounded-image">
+                </a>
+						<a href="https://example.com" target="_self">
+							<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/258.png" alt="A Bite at Freddys" class="rounded-image">
+                </a>
+<a href="https://example.com" target="_self">
+	<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/64.png" alt="Backrooms" class="rounded-image">
+																																										                </a>
+																									<a href="https://example.com" target="_self">
+																										<img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQBDyhxOpQvRwMhREUu6CYRcurH_hlyPAvcv8IEgIWVMeln33BVRNt2XN5dSwIcBe82GiV5EzFfEar6-jNGubKh_HAeCzqNHtE4BfiPzCQ" alt="Bacon may Die" class="rounded-image">
+																																																																			                </a>
+								<a href="https://example.com" target="_self">
+											<img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSbpbkNjvZBueAv4k3aOJDEVVFbV0ZnQj1RwHQx3SmYHUoSQDpVusONYtTnzyyrcuxo6Fkz" alt="Bendy the Inc Machine" class="rounded-image">
+										                </a>
+																	<a href="https://example.com" target="_self">
+																		<img src="https://games.lol/wp-content/uploads/2020/12/bowmasters-free-full-version-1.jpg" alt="Bowmasters" class="rounded-image">
+																											                </a>
+																									<a href="https://example.com" target="_self">
+																										<img src="https://buckshotroulette.com//data/image/game/buckshot-roulette-feature-image.jpg" alt="Buckshot Roulette" class="rounded-image">
+																																			                </a>
+																													<a href="https://example.com" target="_self">
+																														<img src="https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=314,height=314,fit=cover,f=auto/2bc8004fcbb4387908a636e2a9d9ab4a/crazy-cars.png" alt="Crazy Cars" class="rounded-image">
+																																							                </a>
+																															<a href="https://example.com" target="_self">
+																																<img src="https://img02.symbaloo.com/I4peZApwJoBAIFSgyzpzvF_7QLg=/0x7:245x252/fit-in/252x252/filters:no_upscale()/smarkImages%2Fv1%2Fd1%2Fd5%2F1cbad2544788a399975998b6a3afd8fbb336704132e64cd00edee0355012.png" alt="Crazy Cattle 3D" class="rounded-image">
+																																									                </a>
+																																<a href="https://example.com" target="_self">
+																																	<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/425.png" alt="Deltarune" class="rounded-image">
+																																										                </a>
+																									<a href="https://example.com" target="_self">
+																										<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/445.png" alt="Kindergarden" class="rounded-image">
+																																																																			                </a>
+																																					<a href="https://example.com" target="_self">
+																																						<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/195.png" alt="R.E.P.O" class="rounded-image">
+																																																																															                </a>
+																																											<a href="https://example.com" target="_self">
+																																												<img src="https://spacewaves.io/upload/imgs/options/space-waves.jpg" alt="Space Waves" class="rounded-image">
+																																																																																					                </a>
+																																														<a href="https://example.com" target="_self">
+																																															<img src="https://i1.sndcdn.com/avatars-B2yqhdTLpAFZJhZW-IQfSfA-t1080x1080.jpg" alt="Undertale" class="rounded-image">
+																																																																																								                </a>
+																								
 		</div>
 	</div>
-
 	<script>
-		const input = document.querySelector('.search input');
-		let currentSearch = '';
+		// tooltip stuff
+            var tooltip = document.getElementById('tooltip');
+            var images = document.querySelectorAll('.rounded-image');
+            
+            for (var i = 0; i < images.length; i++) {
+                images[i].addEventListener('mouseenter', function() {
+                    tooltip.textContent = this.alt;
+                    tooltip.style.display = 'block';
+                });
+                
+                images[i].addEventListener('mousemove', function(e) {
+                    tooltip.style.left = (e.clientX + 10) + 'px';
+                    tooltip.style.top = (e.clientY + 10) + 'px';
+                });
+                
+                images[i].addEventListener('mouseleave', function() {
+                    tooltip.style.display = 'none';
+                });
+            }
 
-		const gameData = [
-			{ id: 1, title: "example", image: "https://cdn.britannica.com/92/100692-050-5B69B59B/Mallard.jpg", link: "example" },
-			{ id: 2, title: "example", image: "https://cdn.britannica.com/92/100692-050-5B69B59B/Mallard.jpg", link: "example.com" },
-			{ id: 3, title: "example", image: "https://cdn.britannica.com/92/100692-050-5B69B59B/Mallard.jpg", link: "example.com" },
-			{ id: 4, title: "example", image: "https://cdn.britannica.com/92/100692-050-5B69B59B/Mallard.jpg", link: "example.com" },
-			{ id: 5, title: "example", image: "https://cdn.britannica.com/92/100692-050-5B69B59B/Mallard.jpg", link: "example.com" }
-		];
+            // search bar stuff
+            var searchBar = document.getElementById('searchBar');
+            
+            searchBar.addEventListener('focus', function() {
+                this.classList.add('expanded');
+            });
+            
+            searchBar.addEventListener('blur', function() {
+                if (this.value == '') {
+                    this.classList.remove('expanded');
+                    this.classList.remove('typing');
+                }
+            });
+            
+            // search filtering 
+            searchBar.addEventListener('input', function() {
+                var searchTerm = this.value.toLowerCase();
+                
+                if (searchTerm.length > 0) {
+                    this.classList.add('typing');
+                } else {
+                    this.classList.remove('typing');
+                }
+                
+                var imageContainers = document.querySelectorAll('.image-container');
 
-		function getAllGamesAlphabetical() {
-			return [...gameData].sort((a, b) => a.title.localeCompare(b.title));
-		}
+                for (var j = 0; j < imageContainers.length; j++) {
+                    var container = imageContainers[j];
+                    var imgs = container.querySelectorAll('.rounded-image');
+                    var anyVisible = false;
 
-		function getFilteredGames() {
-			const allGames = getAllGamesAlphabetical();
-			if (currentSearch) {
-				return allGames.filter(game =>
-					game.title.toLowerCase().includes(currentSearch.toLowerCase())
-				);
-			}
-			return allGames;
-		}
+                    for (var k = 0; k < imgs.length; k++) {
+                        var img = imgs[k];
+                        if (img.alt.toLowerCase().indexOf(searchTerm) !== -1) {
+                            img.parentElement.style.display = "inline-block";
+                            anyVisible = true;
+                        } else {
+                            img.parentElement.style.display = "none";
+                        }
+                    }
 
-		function renderGames() {
-			const filteredGames = getFilteredGames();
-			const mainGrid = document.querySelector('.main-grid');
-			if (filteredGames.length === 0) {
-				mainGrid.innerHTML = '<p style="color: #fff; text-align: center; grid-column: 1 / -1;">No games found. Try adjusting your search.</p>';
-			} else {
-				mainGrid.innerHTML = filteredGames.map((game) => {
-					const hoverFix = (filteredGames.length === 1) ? ' no-hover' : '';
-					return `
-						<div class="card-wrapper">
-							<a href="${game.link}" target="_self" class="card${hoverFix}" data-id="${game.id}">
-								<img src="${game.image}" alt="${game.title}">
-								<div class="card-overlay">
-									<div class="card-title">${game.title}</div>
-								</div>
-							</a>
-						</div>
-					`;
-				}).join('');
-			}
-		}
-
-		function searchGames() {
-			currentSearch = input.value.trim();
-			renderGames();
-		}
-
-		input.addEventListener('input', searchGames);
-		renderGames();
+                    if (anyVisible) {
+                        container.style.display = "grid";
+                    } else {
+                        container.style.display = "none";
+                    }
+                }
+            });
 	</script>
 </body>
 
