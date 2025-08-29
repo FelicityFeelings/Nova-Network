@@ -188,6 +188,22 @@ input:checked + .slider:before {
     transform: translateX(24px);
 }
 
+/* Disabled toggle styles */
+.toggle-switch.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.toggle-switch.disabled .slider {
+    background-color: #f44336;
+    cursor: not-allowed;
+}
+
+.toggle-switch.disabled input {
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 /* Input styles */
 .setting-input {
     width: 100%;
@@ -275,6 +291,18 @@ input:checked + .slider:before {
     color: #f44336;
 }
 
+/* Coming soon badge */
+.coming-soon {
+    display: inline-block;
+    background: #f44336;
+    color: #ffffff;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: 10px;
+}
+
 /* Animation styles */
 @keyframes fadeSlideIn {
     from {
@@ -325,17 +353,14 @@ input:checked + .slider:before {
                 <!-- Tab Cloaker -->
                 <div class="setting-item">
                     <div class="setting-header">
-                        <div class="setting-title">Tab Cloaker</div>
+                        <div class="setting-title">
+                            Tab Cloaker
+                            <span class="coming-soon">Coming Soon</span>
+                        </div>
                         <span id="cloaker-status" class="status-indicator status-inactive"></span>
                     </div>
                     <div class="setting-description">
-                        <p>Enter a URL to cloak this tab with that site's title and favicon. (Doesn't work on about:blank).</p>
-                        <p>VERY BUGGY</p>
-                    </div>
-                    <input type="url" class="setting-input" id="cloaker-url" placeholder="/nova/index">
-                    <div class="button-container">
-                        <button class="setting-button" onclick="NovaTab.applyCloaker()">Apply Cloak</button>
-                        <button class="setting-button secondary" onclick="NovaTab.removeCloaker()">Remove Cloak</button>
+                        Enter a URL to cloak this tab with that site's title and favicon. (Doesn't work on about:blank).
                     </div>
                     <div id="cloaker-message"></div>
                 </div>
@@ -343,9 +368,12 @@ input:checked + .slider:before {
                 <!-- Anti-Close -->
                 <div class="setting-item">
                     <div class="setting-header">
-                        <div class="setting-title">Anti-Close Protection</div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="anticlose-toggle" onchange="NovaTab.toggleAntiClose()">
+                        <div class="setting-title">
+                            Anti-Close Protection
+                            <span class="coming-soon">Coming Soon</span>
+                        </div>
+                        <label class="toggle-switch disabled">
+                            <input type="checkbox" id="anticlose-toggle" disabled>
                             <span class="slider"></span>
                         </label>
                     </div>
@@ -363,7 +391,7 @@ input:checked + .slider:before {
                         Opens Nova Network in a new about:blank window for enhanced privacy
                     </div>
                     <div class="button-container">
-                        <button class="setting-button" onclick="NovaTab.openInBlank()">Open in about:blank</button>
+                        <button class="setting-button" onclick="openIndexInBlank()">Open in about:blank</button>
                     </div>
                 </div>
             </div>
@@ -371,13 +399,13 @@ input:checked + .slider:before {
 
         <!-- Iframe sections (hidden by default) -->
         <div id="partners-section" class="content-section hidden">
-            <iframe class="content-iframe" src="about:blank" data-url="https://example.com/partners"></iframe>
+            <iframe class="content-iframe" src="" data-url="https://example.com/partners"></iframe>
         </div>
         <div id="devs-section" class="content-section hidden">
-            <iframe class="content-iframe" src="about:blank" data-url="https://example.com/devs"></iframe>
+            <iframe class="content-iframe" src="" data-url="https://example.com/devs"></iframe>
         </div>
         <div id="about-section" class="content-section hidden">
-            <iframe class="content-iframe" src="about:blank" data-url="https://example.com/about"></iframe>
+            <iframe class="content-iframe" src="" data-url="https://example.com/about"></iframe>
         </div>
     </div>
 </div>
@@ -422,12 +450,28 @@ function setupNavigation() {
 
                 // Load iframe content if needed
                 const iframe = targetSection.querySelector('iframe');
-                if (iframe && iframe.src === 'about:blank' && iframe.dataset.url) {
+                if (iframe && iframe.src === '' && iframe.dataset.url) {
                     iframe.src = iframe.dataset.url;
                 }
             }
         });
     });
+}
+
+// Function to open index.html in about:blank
+function openIndexInBlank() {
+    const win = window.open('about:blank', '_blank');
+    win.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Nova Network</title>
+        </head>
+        <body style="margin:0;padding:0;">
+            <iframe src="index.html" style="width:100%;height:100vh;border:none;"></iframe>
+        </body>
+        </html>
+    `);
 }
 </script>
 </body>
