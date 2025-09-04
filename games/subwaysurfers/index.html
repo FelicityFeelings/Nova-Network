@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Select a Location</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			background: #1a1a1a;
+			color: white;
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+			min-height: 100vh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			padding: 20px;
+		}
+
+		.container {
+			max-width: 600px;
+			width: 100%;
+		}
+
+		h1 {
+			font-size: 2.5rem;
+			font-weight: 700;
+			text-align: center;
+			margin-bottom: 2rem;
+			color: #ffffff;
+		}
+
+		.app-header {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			margin-bottom: 1.5rem;
+			padding: 0 4px;
+		}
+
+		.app-icon {
+			width: 32px;
+			height: 32px;
+			background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+			border-radius: 8px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-weight: bold;
+			font-size: 16px;
+		}
+
+		.app-name {
+			font-size: 1.25rem;
+			font-weight: 600;
+			color: #e0e0e0;
+		}
+
+		.version-list {
+			background: #2a2a2a;
+			border-radius: 16px;
+			padding: 24px;
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+		}
+
+		.version-item {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 16px 0;
+			border-bottom: 1px solid #3a3a3a;
+			transition: all 0.2s ease;
+		}
+
+		.version-item:last-child {
+			border-bottom: none;
+		}
+
+		.version-item:hover {
+			background: rgba(255, 255, 255, 0.02);
+			margin: 0 -12px;
+			padding: 16px 12px;
+			border-radius: 8px;
+		}
+
+		.version-info {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+		}
+
+		.version-number {
+			font-size: 1.1rem;
+			font-weight: 500;
+			color: #ffffff;
+		}
+
+		.version-description {
+			font-size: 0.9rem;
+			color: #a0a0a0;
+		}
+
+		.version-status {
+			font-size: 0.8rem;
+			padding: 2px 8px;
+			border-radius: 12px;
+			font-weight: 500;
+		}
+
+		.status-stable {
+			background: rgba(34, 197, 94, 0.2);
+			color: #22c55e;
+		}
+
+		.status-beta {
+			background: rgba(251, 191, 36, 0.2);
+			color: #fbbf24;
+		}
+
+		.status-alpha {
+			background: rgba(239, 68, 68, 0.2);
+			color: #ef4444;
+		}
+
+		.status-lts {
+			background: rgba(59, 130, 246, 0.2);
+			color: #3b82f6;
+		}
+
+		.launch-btn {
+			background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+			color: white;
+			border: none;
+			padding: 10px 20px;
+			border-radius: 8px;
+			font-weight: 600;
+			font-size: 0.9rem;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			text-decoration: none;
+			display: inline-block;
+		}
+
+		.launch-btn:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 16px rgba(255, 107, 53, 0.4);
+		}
+
+		.launch-btn:active {
+			transform: translateY(0);
+		}
+
+		.coming-soon {
+			background: #4a4a4a;
+			color: #a0a0a0;
+			cursor: not-allowed;
+		}
+
+		.coming-soon:hover {
+			transform: none;
+			box-shadow: none;
+		}
+
+		@media (max-width: 600px) {
+			h1 {
+				font-size: 2rem;
+			}
+
+			.version-list {
+				padding: 16px;
+			}
+
+			.version-item {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 12px;
+				padding: 20px 0;
+			}
+
+			.launch-btn {
+				width: 100%;
+				text-align: center;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<h1>Select a Location</h1>
+
+		<div class="version-list">
+			<div class="version-item">
+				<div class="version-info">
+					<div class="version-number">Subway Surfers: Barcelona</div>
+					<div class="version-description">Explore the vibrant streets of Barcelona with its stunning architecture and Mediterranean vibes.</div>
+				</div>
+				<a href="#" class="launch-btn">Launch</a>
+			</div>
+
+			<div class="version-item">
+				<div class="version-info">
+					<div class="version-number">Subway Surfers: Beijing</div>
+					<div class="version-description">Run through the bustling capital of China with traditional temples and modern skyscrapers.</div>
+				</div>
+				<a href="#" class="launch-btn">Launch</a>
+			</div>
+
+			<div class="version-item">
+				<div class="version-info">
+					<div class="version-number">Subway Surfers: Berlin</div>
+					<div class="version-description">Experience the historic German capital with its iconic landmarks and rich cultural heritage.</div>
+				</div>
+				<a href="#" class="launch-btn">Launch</a>
+			</div>
+
+			<div class="version-item">
+				<div class="version-info">
+					<div class="version-number">Subway Surfers: Buenos Aires</div>
+					<div class="version-description">Dance through Argentina's passionate capital city with its colorful neighborhoods and tango culture.</div>
+				</div>
+				<a href="#" class="launch-btn">Launch</a>
+			</div>
+
+			<div class="version-item">
+				<div class="version-info">
+					<div class="version-number">Subway Surfers: Havana</div>
+					<div class="version-description">Surf through Cuba's historic capital with its vintage cars and colonial architecture.</div>
+				</div>
+				<a href="#" class="launch-btn">Launch</a>
+			</div>
+
+			<div class="version-item">
+				<div class="version-info">
+					<div class="version-number">Subway Surfers: Houston</div>
+					<div class="version-description">Navigate through Texas's largest city with its space-age technology and southern charm.</div>
+				</div>
+				<a href="#" class="launch-btn">Launch</a>
+			</div>
+
+			<div class="version-item">
+				<div class="version-info">
+					<div class="version-number">Subway Surfers: Iceland</div>
+					<div class="version-description">Run through the land of fire and ice with stunning glaciers, geysers, and northern lights.</div>
+				</div>
+				<a href="#" class="launch-btn">Launch</a>
+			</div>
+
+			<div class="version-item">
+				<div class="version-info">
+					<div class="version-number">Subway Surfers: London</div>
+					<div class="version-description">Race through Britain's iconic capital with double-decker buses, Big Ben, and royal palaces.</div>
+				</div>
+				<a href="#" class="launch-btn">Launch</a>
+			</div>
+
+			<div class="version-item">
+				<div class="version-info">
+					<div class="version-number">Subway Surfers: Mexico</div>
+					<div class="version-description">Surf through Mexico's vibrant streets filled with colorful markets and ancient Aztec culture.</div>
+				</div>
+				<a href="#" class="launch-btn">Launch</a>
+			</div>
+
+			<div class="version-item">
+				<div class="version-info">
+					<div class="version-number">Subway Surfers: Miami</div>
+					<div class="version-description">Ride the waves through Florida's beach paradise with art deco buildings and sunny coastlines.</div>
+				</div>
+				<a href="#" class="launch-btn">Launch</a>
+			</div>
+
+			<div class="version-item">
+				<div class="version-info">
+					<div class="version-number">Subway Surfers: Monaco</div>
+					<div class="version-description">Experience luxury in this glamorous principality with casinos, yachts, and Formula 1 racing.</div>
+				</div>
+				<a href="#" class="launch-btn">Launch</a>
+			</div>
+
+			<div class="version-item">
+				<div class="version-info">
+					<div class="version-number">Subway Surfers: New Orleans</div>
+					<div class="version-description">Jazz your way through Louisiana's musical heart with French Quarter charm and Mardi Gras spirit.</div>
+				</div>
+				<a href="#" class="launch-btn">Launch</a>
+			</div>
+
+			<div class="version-item">
+				<div class="version-info">
+					<div class="version-number">Subway Surfers: San Francisco</div>
+					<div class="version-description">Surf the hills of California's tech capital with cable cars, Golden Gate Bridge, and foggy mornings.</div>
+				</div>
+				<a href="#" class="launch-btn">Launch</a>
+			</div>
+
+			<div class="version-item">
+				<div class="version-info">
+					<div class="version-number">Subway Surfers: St. Petersburg</div>
+					<div class="version-description">Run through Russia's imperial city with magnificent palaces, canals, and white nights.</div>
+				</div>
+				<a href="#" class="launch-btn">Launch</a>
+			</div>
+
+			<div class="version-item">
+				<div class="version-info">
+					<div class="version-number">Subway Surfers: Winter Holiday</div>
+					<div class="version-description">Celebrate the festive season with snow-covered tracks, holiday decorations, and winter magic.</div>
+				</div>
+				<a href="#" class="launch-btn">Launch</a>
+			</div>
+
+			<div class="version-item">
+				<div class="version-info">
+					<div class="version-number">Subway Surfers: Zurich</div>
+					<div class="version-description">Glide through Switzerland's financial hub with pristine lakes, Alpine views, and Swiss precision.</div>
+				</div>
+				<a href="#" class="launch-btn">Launch</a>
+			</div>
+
+		</div>
+	</div>
+</body>
+
+</html>
