@@ -2,271 +2,1033 @@
 <html lang="en">
 
 <head>
-	<link rel="icon" href="https://files.catbox.moe/3ahs4l.png" type="image/x-icon">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Games</title>
-	<script src="/tab/script.js"></script>
 	<style>
-		body {
+		* {
 			margin: 0;
 			padding: 0;
-			background-color: #151515;
-			overflow-y: scroll;
-			position: relative;
-			color: white;
-			font-family: 'Inter', sans-serif;
+			box-sizing: border-box;
 		}
 
-		/* search bar stuff */
-		#searchBar {
-			display: block;
-			margin: 30px auto 10px auto;
-			padding: 12px 20px;
-			width: 60%;
-			max-width: 500px;
-			font-size: 1rem;
-			border: 2px solid white;
-			border-radius: 25px;
-			background: linear-gradient(135deg, #ffffff, #cfcfcf);
-			color: #222;
-			box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-			outline: none;
-			position: relative;
-			z-index: 10;
-			-webkit-transition: all 0.3s ease;
-			transition: all 0.3s ease;
-		}
-
-		#searchBar:focus {
-			width: 75%;
-			max-width: 650px;
-			-webkit-transform: scale(1.05);
-			transform: scale(1.05);
-			box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
-			border-color: #ffffff;
-		}
-
-		.expanded {
-			width: 75%;
-			max-width: 650px;
-			-webkit-transform: scale(1.05);
-			transform: scale(1.05);
-			box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
-			border-color: #ffffff;
-		}
-
-		/* when typing animation */
-		.typing {
-			width: 80% !important;
-			max-width: 700px !important;
-			-webkit-transform: scale(1.08) !important;
-			transform: scale(1.08) !important;
-			box-shadow: 0 0 35px rgba(255, 255, 255, 0.6) !important;
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+			background: linear-gradient(135deg, #2b2b2b 0%, #000000 100%);
+			min-height: 100vh;
+			padding: 20px;
 		}
 
 		.container {
+			max-width: 1200px;
+			margin: 0 auto;
+		}
+
+		.header {
+			text-align: center;
+			margin-bottom: 40px;
+		}
+
+		.header h1 {
+			color: white;
+			font-size: 2.5rem;
+			font-weight: 700;
+			margin-bottom: 10px;
+			text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+		}
+
+		.header p {
+			color: rgba(255, 255, 255, 0.9);
+			font-size: 1.1rem;
+			margin-bottom: 30px;
+		}
+
+		.search-container {
+			display: flex;
+			justify-content: center;
+			margin-bottom: 20px;
+		}
+
+		.search-box {
+			position: relative;
+			width: 100%;
+			max-width: 350px;
+			transition: max-width 0.4s ease;
+		}
+
+		.search-box.expanded {
+			max-width: 600px;
+		}
+
+		.search-input {
+			width: 100%;
+			padding: 15px 50px 15px 20px;
+			border: none;
+			border-radius: 25px;
+			font-size: 1rem;
+			background: rgba(255, 255, 255, 0.95);
+			backdrop-filter: blur(10px);
+			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+			transition: all 0.4s ease;
+			outline: none;
+		}
+
+		.search-input:focus {
+			background: white;
+			box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+			transform: translateY(-2px);
+		}
+
+		.search-input::placeholder {
+			color: #666;
+			opacity: 0.7;
+		}
+
+		.search-icon {
+			position: absolute;
+			right: 20px;
+			top: 50%;
+			transform: translateY(-50%);
+			color: #666;
+			font-size: 1.2rem;
+			pointer-events: none;
+		}
+
+		.games-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+			gap: 20px;
+			grid-auto-rows: 200px;
+		}
+
+		.game-tile {
+			background-size: cover;
+			background-position: center;
+			border-radius: 15px;
+			overflow: hidden;
+			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+			transition: all 0.3s ease;
+			cursor: pointer;
+			position: relative;
 			display: flex;
 			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			margin: 20px 0;
+			justify-content: flex-end;
+			opacity: 1;
+			transform: scale(1);
 		}
 
-		.image-container {
-			display: grid;
-			grid-template-columns: repeat(8, 1fr);
-			gap: 10px;
-			justify-items: center;
-			margin: 10px 0;
+		.game-tile.hidden {
+			opacity: 0;
+			transform: scale(0.8);
+			pointer-events: none;
 		}
 
-		/* mobile stuff - probably could be cleaner but works */
-		@media (max-width: 1400px) {
-			.image-container {
-				grid-template-columns: repeat(6, 1fr);
+		.game-tile:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+		}
+
+		.game-tile::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: linear-gradient(45deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8));
+			opacity: 0;
+			transition: opacity 0.3s ease;
+		}
+
+		.game-tile:hover::before {
+			opacity: 1;
+		}
+
+		.game-info {
+			position: relative;
+			z-index: 2;
+			padding: 15px;
+			background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+			color: white;
+			text-align: left;
+			transform: translateY(10px);
+			transition: transform 0.3s ease;
+		}
+
+		.game-tile:hover .game-info {
+			transform: translateY(0);
+		}
+
+		.game-title {
+			font-size: 1.1rem;
+			font-weight: 600;
+			margin-bottom: 5px;
+		}
+
+		.game-category {
+			font-size: 0.85rem;
+			opacity: 0.9;
+		}
+
+		.featured-large {
+			grid-column: span 2;
+			grid-row: span 2;
+		}
+
+		.featured-wide {
+			grid-column: span 2;
+		}
+
+		.featured-tall {
+			grid-row: span 2;
+		}
+
+		.play-button {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background: rgba(255, 255, 255, 0.9);
+			border: none;
+			border-radius: 50%;
+			width: 60px;
+			height: 60px;
+			font-size: 20px;
+			cursor: pointer;
+			opacity: 0;
+			transition: all 0.3s ease;
+			z-index: 3;
+			backdrop-filter: blur(10px);
+		}
+
+		.game-tile:hover .play-button {
+			opacity: 1;
+			transform: translate(-50%, -50%) scale(1.1);
+		}
+
+		.play-button:hover {
+			background: white;
+			transform: translate(-50%, -50%) scale(1.2) !important;
+		}
+
+		@media (min-width: 1400px) {
+			.games-grid {
+				grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+				gap: 25px;
+				grid-auto-rows: 250px;
+			}
+
+			.header h1 {
+				font-size: 3rem;
+			}
+
+			.game-title {
+				font-size: 1.3rem;
 			}
 		}
 
-		@media (max-width: 1024px) {
-			.image-container {
-				grid-template-columns: repeat(4, 1fr);
+		@media (min-width: 1200px) and (max-width: 1399px) {
+			.games-grid {
+				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+				gap: 22px;
+				grid-auto-rows: 220px;
 			}
 		}
 
-		@media (max-width: 768px) {
-			.image-container {
-				grid-template-columns: repeat(3, 1fr);
+		@media (min-width: 992px) and (max-width: 1199px) {
+			.games-grid {
+				grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+				gap: 20px;
+				grid-auto-rows: 200px;
+			}
+		}
+
+		@media (min-width: 768px) and (max-width: 991px) {
+			.container {
+				padding: 0 15px;
+			}
+
+			.games-grid {
+				grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+				gap: 18px;
+				grid-auto-rows: 180px;
+			}
+
+			.header h1 {
+				font-size: 2.2rem;
+			}
+
+			.game-title {
+				font-size: 1rem;
+			}
+
+			.game-category {
+				font-size: 0.8rem;
+			}
+
+			.play-button {
+				width: 50px;
+				height: 50px;
+				font-size: 18px;
+			}
+		}
+
+		@media (max-width: 767px) {
+			body {
+				padding: 15px 10px;
+			}
+
+			.container {
+				padding: 0 5px;
+			}
+
+			.header {
+				margin-bottom: 30px;
+			}
+
+			.header h1 {
+				font-size: 2rem;
+			}
+
+			.header p {
+				font-size: 1rem;
+				margin-bottom: 25px;
+			}
+
+			.games-grid {
+				grid-template-columns: repeat(2, 1fr);
+				gap: 15px;
+				grid-auto-rows: 160px;
+			}
+
+			.game-info {
+				padding: 12px;
+			}
+
+			.game-title {
+				font-size: 0.95rem;
+				margin-bottom: 3px;
+			}
+
+			.game-category {
+				font-size: 0.75rem;
+			}
+
+			.play-button {
+				width: 45px;
+				height: 45px;
+				font-size: 16px;
+			}
+
+			.search-input {
+				padding: 12px 45px 12px 18px;
+				font-size: 0.95rem;
+			}
+
+			.search-icon {
+				right: 15px;
+				font-size: 1.1rem;
+			}
+
+			.featured-large {
+				grid-column: span 2;
+				grid-row: span 2;
+			}
+
+			.featured-wide {
+				grid-column: span 2;
+			}
+
+			.featured-tall {
+				grid-row: span 2;
 			}
 		}
 
 		@media (max-width: 480px) {
-			.image-container {
-				grid-template-columns: repeat(2, 1fr);
+			.header h1 {
+				font-size: 1.8rem;
+			}
+
+			.games-grid {
+				grid-auto-rows: 140px;
+				gap: 12px;
+			}
+
+			.game-info {
+				padding: 10px;
+			}
+
+			.game-title {
+				font-size: 0.9rem;
+			}
+
+			.game-category {
+				font-size: 0.7rem;
+			}
+
+			.play-button {
+				width: 40px;
+				height: 40px;
+				font-size: 14px;
+			}
+
+			.search-box {
+				max-width: 300px;
+			}
+
+			.search-box.expanded {
+				max-width: 100%;
 			}
 		}
 
-		.rounded-image {
-			width: 150px;
-			height: 150px;
-			object-fit: cover;
-			margin: 5px;
-			border-radius: 15px;
-			-webkit-transition: transform 0.3s ease-in-out;
-			transition: transform 0.3s ease-in-out;
-			position: relative;
-			outline: none;
-		}
+		@media (max-width: 360px) {
+			.header h1 {
+				font-size: 1.6rem;
+			}
 
-		.rounded-image:hover {
-			-webkit-transform: scale(1.1);
-			transform: scale(1.1);
-		}
+			.games-grid {
+				grid-auto-rows: 120px;
+				gap: 10px;
+			}
 
-		/* tooltip thing */
-		.tooltip {
-			position: fixed;
-			background-color: rgba(0, 0, 0, 0.7);
-			color: white;
-			border-radius: 5px;
-			padding: 5px 10px;
-			font-size: 1rem;
-			display: none;
-			pointer-events: none;
-			z-index: 9999;
+			.game-title {
+				font-size: 0.85rem;
+			}
+
+			.game-category {
+				font-size: 0.65rem;
+			}
+
+			.play-button {
+				width: 35px;
+				height: 35px;
+				font-size: 12px;
+			}
 		}
 	</style>
 </head>
 
 <body>
-
-	<input type="text" id="searchBar" placeholder="Search for a game...">
-
-	<div id="tooltip" class="tooltip"></div>
 	<div class="container">
-		<div class="image-container">
-			<!-- Game image entries (as already listed) -->
-						<a href="https://docs.google.com/forms/d/e/1FAIpQLScsBOQJ3Tyq-COjSY5DaXD1YNHfO0IbmIZn1SMaDeqWlXlgMA/viewform?usp=header"
-							target="_self">
-							<img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/ea/1b/a5/ea1ba549-d74d-eeda-5be4-ff36d259f28a/AppIcon-0-0-1x_U007epad-0-1-0-0-sRGB-85-220.png/512x512bb.jpg" alt="Games Request" class="rounded-image">
-						                </a>
-							<a href="/games/10mintuestilldawn.html" target="_self">
-								<img src="https://pbs.twimg.com/profile_images/1520043868661686272/BBeOD_Z4_200x200.jpg" alt="10 Minutes Till Dawn" class="rounded-image">
-						                </a>
-								<a href="/games/1v1lol.html" target="_self">
-									<img src="https://games.lol/wp-content/uploads/2021/01/1v1-lol-free-full-version-2.jpg" alt="1v1 LOL" class="rounded-image">
-						                </a>
-									<a href="/games/abiteatfreddys.html" target="_self">
-										<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/258.png" alt="A Bite at Freddys" class="rounded-image">
-						                </a>
-										<a href="/games/backrooms.html" target="_self">
-											<img src="https://i.redd.it/gpba9kowd6331.png" alt="Backrooms" class="rounded-image">
-																																																                </a>
-											<a href="/games/baconmaydie.html" target="_self">
-												<img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQBDyhxOpQvRwMhREUu6CYRcurH_hlyPAvcv8IEgIWVMeln33BVRNt2XN5dSwIcBe82GiV5EzFfEar6-jNGubKh_HAeCzqNHtE4BfiPzCQ" alt="Bacon may Die" class="rounded-image">
-																																																																									                </a>
-												<a href="/games/bendyandtheincmachine.html" target="_self">
-													<img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSbpbkNjvZBueAv4k3aOJDEVVFbV0ZnQj1RwHQx3SmYHUoSQDpVusONYtTnzyyrcuxo6Fkz" alt="Bendy the Inc Machine" class="rounded-image">
-																                </a>
-													<a href="/games/bowmasters.html" target="_self">
-														<img src="https://games.lol/wp-content/uploads/2020/12/bowmasters-free-full-version-1.jpg" alt="Bowmasters" class="rounded-image">
-																																	                </a>
-														<a href="/games/buckshotroulette.html" target="_self">
-															<img src="https://buckshotroulette.com//data/image/game/buckshot-roulette-feature-image.jpg" alt="Buckshot Roulette" class="rounded-image">
-																																									                </a>
-															<a href="/games/crazycars.html" target="_self">
-																<img src="https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=314,height=314,fit=cover,f=auto/2bc8004fcbb4387908a636e2a9d9ab4a/crazy-cars.png" alt="Crazy Cars" class="rounded-image">
-																																													                </a>
-																<a href="/games/crazycattle3d.html" target="_self">
-																	<img src="https://img02.symbaloo.com/I4peZApwJoBAIFSgyzpzvF_7QLg=/0x7:245x252/fit-in/252x252/filters:no_upscale()/smarkImages%2Fv1%2Fd1%2Fd5%2F1cbad2544788a399975998b6a3afd8fbb336704132e64cd00edee0355012.png" alt="Crazy Cattle 3D" class="rounded-image">
-																																															                </a>
-																	<a href="/games/deltarune.html" target="_self">
-																		<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/425.png" alt="Deltarune" class="rounded-image">
-																																																                </a>
-																		<a href="/games/kindergarten.html" target="_self">
-																			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/445.png" alt="Kindergarden" class="rounded-image">
-																																																																									                </a>
-																			<a href="/games/r.e.p.o.html" target="_self">
-																				<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/195.png" alt="R.E.P.O" class="rounded-image">
-																																																																																					                </a>
-																				<a href="/games/spacewaves.html" target="_self">
-																					<img src="https://spacewaves.io/upload/imgs/options/space-waves.jpg" alt="Space Waves" class="rounded-image">
-																																																																																											                </a>
-																					<a href="/games/undertale.html" target="_self">
-																						<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/184.png" alt="Undertale" class="rounded-image">
-																																																																																														                </a>
-						
-																						</div>
-																						</div>
-	<script>
-		// tooltip stuff
-            var tooltip = document.getElementById('tooltip');
-            var images = document.querySelectorAll('.rounded-image');
-            
-            for (var i = 0; i < images.length; i++) {
-                images[i].addEventListener('mouseenter', function() {
-                    tooltip.textContent = this.alt;
-                    tooltip.style.display = 'block';
-                });
-                
-                images[i].addEventListener('mousemove', function(e) {
-                    tooltip.style.left = (e.clientX + 10) + 'px';
-                    tooltip.style.top = (e.clientY + 10) + 'px';
-                });
-                
-                images[i].addEventListener('mouseleave', function() {
-                    tooltip.style.display = 'none';
-                });
-            }
+		<div class="header">
+			<h1>Games</h1>
+			<div class="search-container">
+				<div class="search-box">
+					<input type="text" class="search-input" placeholder="Search games..." id="searchInput">
+				</div>
+				</div>
+			</div>
 
-            // search bar stuff
-            var searchBar = document.getElementById('searchBar');
-            
-            searchBar.addEventListener('focus', function() {
-                this.classList.add('expanded');
-            });
-            
-            searchBar.addEventListener('blur', function() {
-                if (this.value == '') {
-                    this.classList.remove('expanded');
-                    this.classList.remove('typing');
-                }
-            });
-            
-            // search filtering 
-            searchBar.addEventListener('input', function() {
-                var searchTerm = this.value.toLowerCase();
-                
-                if (searchTerm.length > 0) {
-                    this.classList.add('typing');
-                } else {
-                    this.classList.remove('typing');
-                }
-                
-                var imageContainers = document.querySelectorAll('.image-container');
+			<div class="games-grid">
+				<div class="game-tile featured-large" data-url="/games/undertale.html"
+					style="background-image: url('https://cdn.jsdelivr.net/gh/gn-math/covers@main/184.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Undertale</div>
+						<div class="game-category">Indie • Adventure</div>
+					</div>
+				</div>
 
-                for (var j = 0; j < imageContainers.length; j++) {
-                    var container = imageContainers[j];
-                    var imgs = container.querySelectorAll('.rounded-image');
-                    var anyVisible = false;
+				<div class="game-tile" data-url="/games/hollowknight.html"
+					style="background-image: url('https://files.catbox.moe/llk0ps.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Hollow Knight</div>
+						<div class="game-category">Action • Adventure</div>
+					</div>
+				</div>
 
-                    for (var k = 0; k < imgs.length; k++) {
-                        var img = imgs[k];
-                        if (img.alt.toLowerCase().indexOf(searchTerm) !== -1) {
-                            img.parentElement.style.display = "inline-block";
-                            anyVisible = true;
-                        } else {
-                            img.parentElement.style.display = "none";
-                        }
-                    }
+				<div class="game-tile" data-url="/games/buckshotroulette.html"
+					style="background-image: url('https://buckshotroulette.com//data/image/game/buckshot-roulette-feature-image.jpg')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Buckshot Roulette</div>
+						<div class="game-category">Horror • Strategy</div>
+					</div>
+				</div>
 
-                    if (anyVisible) {
-                        container.style.display = "grid";
-                    } else {
-                        container.style.display = "none";
-                    }
-                }
-            });
-	</script>
+				<div class="game-tile featured-wide" data-url="/games/eaglercraft.html"
+					style="background-image: url('https://files.catbox.moe/9qa0gs.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Eaglercraft</div>
+						<div class="game-category">Survival • Sandbox</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/deltarune.html"
+					style="background-image: url('https://cdn.jsdelivr.net/gh/gn-math/covers@main/425.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Deltarune</div>
+						<div class="game-category">RPG • Indie</div>
+					</div>
+				</div>
+
+				<div class="game-tile featured-tall" data-url="/games/tetris.html"
+					style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Emacs_Tetris_vector_based_detail.svg/1200px-Emacs_Tetris_vector_based_detail.svg.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Tetris</div>
+						<div class="game-category">Puzzle • Classic</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/spacewaves.html"
+					style="background-image: url('https://spacewaves.io/upload/imgs/options/space-waves.jpg')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Space Waves</div>
+						<div class="game-category">Arcade • Space</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/baconmaydie.html"
+					style="background-image: url('https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQBDyhxOpQvRwMhREUu6CYRcurH_hlyPAvcv8IEgIWVMeln33BVRNt2XN5dSwIcBe82GiV5EzFfEar6-jNGubKh_HAeCzqNHtE4BfiPzCQ')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Bacon May Die</div>
+						<div class="game-category">Beat 'em Up • Action</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/crazycars.html"
+					style="background-image: url('https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=314,height=314,fit=cover,f=auto/2bc8004fcbb4387908a636e2a9d9ab4a/crazy-cars.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Crazy Cars</div>
+						<div class="game-category">Racing • Action</div>
+					</div>
+				</div>
+
+				<div class="game-tile featured-wide" data-url="/games/10minutestilldawn.html"
+					style="background-image: url('https://img.itch.zone/aW1nLzg3MTYwOTUucG5n/original/p8v6Lj.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">10 Minutes Till Dawn</div>
+						<div class="game-category">Action • Survival</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/kindergarten.html"
+					style="background-image: url('https://cdn.jsdelivr.net/gh/gn-math/covers@main/445.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Kindergarten</div>
+						<div class="game-category">Horror • Mystery</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/repo.html"
+					style="background-image: url('https://cdn.jsdelivr.net/gh/gn-math/covers@main/195.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">R.E.P.O</div>
+						<div class="game-category">Horror • Thriller</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/1v1lol.html"
+					style="background-image: url('https://games.lol/wp-content/uploads/2021/01/1v1-lol-free-full-version-2.jpg')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">1v1 LOL</div>
+						<div class="game-category">Battle Royale • Shooter</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/bendyandtheinkmachine.html"
+					style="background-image: url('https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSbpbkNjvZBueAv4k3aOJDEVVFbV0ZnQj1RwHQx3SmYHUoSQDpVusONYtTnzyyrcuxo6Fkz')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Bendy and the Ink Machine</div>
+						<div class="game-category">Horror • Adventure</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/bowmasters.html"
+					style="background-image: url('https://games.lol/wp-content/uploads/2020/12/bowmasters-free-full-version-1.jpg')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Bowmasters</div>
+						<div class="game-category">Archery • Action</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/crazycattle3d.html"
+					style="background-image: url('https://img02.symbaloo.com/I4peZApwJoBAIFSgyzpzvF_7QLg=/0x7:245x252/fit-in/252x252/filters:no_upscale()/smarkImages%2Fv1%2Fd1%2Fd5%2F1cbad2544788a399975998b6a3afd8fbb336704132e64cd00edee0355012.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Crazy Cattle 3D</div>
+						<div class="game-category">Simulation • Fun</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/slitherio.html"
+					style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShOZewPD5j4nEvmMfAQB64wqNzVAggCKVOYctm-MK3vTW4FKkLdHysLoOBSRLNY8tstJE8hQ')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Slither.io</div>
+						<div class="game-category">Multiplayer • IO</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/amongus.html"
+					style="background-image: url('https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRNvhZ998yrrgi4g9hczQZ1s36YCXR2ymVhv625GeyLdpdnYDhuH_YJxQZ8-Z5TEB6HrA4q')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Among Us</div>
+						<div class="game-category">Social Deduction • Multiplayer</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/geometrydash.html"
+					style="background-image: url('https://imgs.crazygames.com/games/geometry-dash-online/cover_1x1-1732744370684.png?format=auto&quality=70&metadata=none')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Geometry Dash</div>
+						<div class="game-category">Platformer • Music</div>
+					</div>
+				</div>
+
+				<div class="game-tile featured-wide" data-url="/games/obby99lose.html"
+					style="background-image: url('https://playgama.com/cdn-cgi/imagedelivery/LN2S-4p3-GgZvEx3IPaKUA/682b1c4f-c908-4292-f111-6e3552cadc00/enlarged')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Obby 99% Lose</div>
+						<div class="game-category">Obby</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/cookieclicker.html"
+					style="background-image: url('https://super142.wordpress.com/wp-content/uploads/2022/07/cookie-clicker.jpg?w=640')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Cookie Clicker</div>
+						<div class="game-category">Idle • Clicker</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/bitplanes.html"
+					style="background-image: url('https://rocketgames.imgix.net/uploads/games/b/bit-planes/bit-planes.16800f.jpg')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Bitplanes</div>
+						<div class="game-category">Shooter • Battle</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/2doom.html"
+					style="background-image: url('https://files.catbox.moe/wficgy.jpg')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">2Doom</div>
+						<div class="game-category">Platformer • Shooter</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/adarkroom.html"
+					style="background-image: url('https://play-lh.googleusercontent.com/b-CitCFqGzCKgrR-FFm5diz9f1DL65SiIAw0d-_UwrL8agFmFRhQdG32kCuFduDs-w')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">A Dark Room</div>
+						<div class="game-category">Escape • Horror</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/2048.html"
+					style="background-image: url('https://m.media-amazon.com/images/I/41RCIHMHFDL.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">2048</div>
+						<div class="game-category">Puzzle • Number</div>
+					</div>
+				</div>
+
+				<div class="game-tile featured-tall" data-url="/games/bitlife.html"
+					style="background-image: url('https://bitlifefree.online/wp-content/uploads/2025/03/BitLife-Candywriter.webp')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Bitlife</div>
+						<div class="game-category">Life • Sim</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/backrooms.html"
+					style="background-image: url('https://pizzaedition.one/images/games/backrooms-min.jpg')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Backrooms</div>
+						<div class="game-category">Escape • Horror</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/backrooms2d.html"
+					style="background-image: url('https://play-lh.googleusercontent.com/qsajZ3WxItUCjA08_AaZyxbmRpPT87uHiYOyDU-e5444ALBZe23nPZYi7pTU5nFCOPk')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Backrooms 2D</div>
+						<div class="game-category">Racing • Drift</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/drift-hunters.html"
+					style="background-image: url('https://cdn.now.gg/apps-content/com.nowgg.h5.pub501.app51334/icon/drift-hunters.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Drift Hunters</div>
+						<div class="game-category">Racing • Drift</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/slope.html"
+					style="background-image: url('https://slope-play.com/data/image/game/slope-logo-1.jpg')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Slope</div>
+						<div class="game-category">Endless • 3D</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/slope3.html"
+					style="background-image: url('https://files.catbox.moe/ea327u.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Slope 3</div>
+						<div class="game-category">Endless • 3D</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/happywheels.html"
+					style="background-image: url('https://files.catbox.moe/2rqpv6.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Happy Wheels</div>
+						<div class="game-category">Physics • Racing</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/subwaysurfers.html"
+					style="background-image: url('https://files.catbox.moe/ocuwom.jpg')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Subway Surfers</div>
+						<div class="game-category">Endless Runner • Adventure</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/templerun2.html"
+					style="background-image: url('https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=314,height=314,fit=cover,f=auto/b5c8b617f65be7cc4d56dd3657590ae7/temple-run-2.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Temple Run 2</div>
+						<div class="game-category">Endless Runner • Adventure</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/halflife.html"
+					style="background-image: url('https://cdn.jsdelivr.net/gh/gn-math/covers@main/262.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Half Life</div>
+						<div class="game-category">Action</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/cuttherope.html"
+					style="background-image: url('https://cdn.jsdelivr.net/gh/gn-math/covers@main/85.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Cut the Rope</div>
+						<div class="game-category">Physics • Puzzle</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/plantsvszombies.html"
+					style="background-image: url('https://cdn.jsdelivr.net/gh/gn-math/covers@main/232.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Plants vs Zombies</div>
+						<div class="game-category">Tower Defense • Strategy</div>
+					</div>
+				</div>
+
+				<div class="game-tile featured-wide" data-url="/games/badparenting.html"
+					style="background-image: url('https://m.media-amazon.com/images/M/MV5BMzUyMjM4NmUtMWU5MS00MjJhLTlkZmUtYmM0OGIyMWQ5MTRlXkEyXkFqcGc@._V1_QL75_UY281_CR0,0,500,281_.jpg')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Bad Parenting</div>
+						<div class="game-category">Horror</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/rocketleague.html"
+					style="background-image: url('https://play-lh.googleusercontent.com/ZSLQpJsfi6GrsPoTpKh-IDkR_YcBdIG96pUi6KToYrHssFKkuV1lQQ5sLf08f5He3bE=w600-h300-pc0xffffff-pd')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Rocket League</div>
+						<div class="game-category">Sports • Racing</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/bbp.html"
+					style="background-image: url('https://cdn.jsdelivr.net/gh/gn-math/covers@main/467.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Baldi's Basics Plus</div>
+						<div class="game-category">Horror • Puzzle</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/cuphead.html"
+					style="background-image: url('https://cdn.jsdelivr.net/gh/gn-math/covers@main/465.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Cuphead</div>
+						<div class="game-category">Platformer • Indie</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/fnf.html"
+					style="background-image: url('https://img.utdstc.com/icon/807/216/8072161110b1f6a2990a4baeb55eaaeab761fc199d9c001c7b6623f4cf8c6eb7:200')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Friday Night Funkin'</div>
+						<div class="game-category">Rhythm • Music</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/bloonstd.html"
+					style="background-image: url('https://files.catbox.moe/3t1g0u.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Bloons TD</div>
+						<div class="game-category">Tower Defense • Strategy</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/omori.html"
+					style="background-image: url('https://cdn.jsdelivr.net/gh/gn-math/covers@main/427.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">OMORI</div>
+						<div class="game-category">Indie • Adventure</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/re:run.html"
+					style="background-image: url('https://cdn.jsdelivr.net/gh/gn-math/covers@main/260.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">RE:RUN</div>
+						<div class="game-category">Action • Platformer</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/tnmn.html"
+					style="background-image: url('https://cdn.jsdelivr.net/gh/gn-math/covers@main/216.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">That's not my Neighboor</div>
+						<div class="game-category">Horror</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/fnaf.html"
+					style="background-image: url('https://cdn.jsdelivr.net/gh/gn-math/covers@main/38.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">FNAF</div>
+						<div class="game-category">Horror • Thriller</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/ultrakill.html"
+					style="background-image: url('https://cdn.jsdelivr.net/gh/gn-math/covers@main/196.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">ULTRAKILL</div>
+						<div class="game-category">Shooter</div>
+					</div>
+				</div>
+
+				<div class="game-tile featured-tall" data-url="/games/aquapark.html"
+					style="background-image: url('https://images.igdb.com/igdb/image/upload/t_cover_big_2x/co7ukb.jpg')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Aquapark.io</div>
+						<div class="game-category">IO</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/chess.html"
+					style="background-image: url('https://chessfox.com/wp-content/uploads/2020/03/Queens-Indian-Defense.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Chess</div>
+						<div class="game-category">Board • Strategy</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/checkers.html"
+					style="background-image: url('https://cdn.britannica.com/06/50606-050-81C1729E/Checkerboard-draughtboard-play.jpg')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Checkers</div>
+						<div class="game-category">Board • Strategy</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/amaze.html"
+					style="background-image: url('https://cdn.jsdelivr.net/gh/gn-math/covers@main/26.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Amaze</div>
+						<div class="game-category">Puzzle</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/blockblast.html"
+					style="background-image: url('https://cdn.jsdelivr.net/gh/gn-math/covers@main/6.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Block Blast</div>
+						<div class="game-category">Card • Classic</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/blockpost.html"
+					style="background-image: url('https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=1200,height=1200,fit=cover,f=png/70c2a0deacc4cf2cb86add488199c56e/blockpost.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">BlockPost</div>
+						<div class="game-category">Shotter</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/crossyroad.html"
+					style="background-image: url('https://images.squarespace-cdn.com/content/v1/5cedd5e7c6e7df0001bbb67c/219831ac-33a0-4701-b7bd-4f993a2e33d2/CRCastleConsole_Icon.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Crossy Road</div>
+						<div class="game-category">Arcade • Endless</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/fruitninja.html"
+					style="background-image: url('https://play-lh.googleusercontent.com/eJ9OJnbRer1jjg5ZeNAnTXKcGd2B_NEqxCp2UsefcCABeFBaj_pNl_WKYBjup2GVGGc')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Fruit Ninja</div>
+						<div class="game-category">Arcade • Action</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/jetpackjoyride.html"
+					style="background-image: url('https://upload.wikimedia.org/wikipedia/en/9/90/Jetpack_Joyride_iOS.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Jetpack Joyride</div>
+						<div class="game-category">Endless Runner • Action</div>
+					</div>
+				</div>
+
+				<div class="game-tile" data-url="/games/driftboss.html"
+					style="background-image: url('https://cdn.jsdelivr.net/gh/gn-math/covers@main/276.png')">
+					<button class="play-button">▶</button>
+					<div class="game-info">
+						<div class="game-title">Drift Boss</div>
+						<div class="game-category">Racing</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+
+		<script>
+			document.querySelectorAll('.game-tile').forEach(tile => {
+			tile.addEventListener('click', function(e) {
+				e.preventDefault();
+				const url = this.dataset.url;
+				if (url) {
+					window.open(url, '_self');
+				}
+			});
+		});
+
+		const searchInput = document.getElementById('searchInput');
+		const searchBox = searchInput.parentElement;
+		const gameTiles = document.querySelectorAll('.game-tile');
+		const gamesGrid = document.querySelector('.games-grid');
+
+		const originalOrder = Array.from(gameTiles).map((tile, index) => ({
+			element: tile,
+			originalIndex: index,
+			classes: tile.className
+		}));
+
+		searchInput.addEventListener('focus', function() {
+			searchBox.classList.add('expanded');
+		});
+
+		searchInput.addEventListener('blur', function() {
+			if (this.value === '') {
+				searchBox.classList.remove('expanded');
+			}
+		});
+
+		searchInput.addEventListener('input', function() {
+			const searchTerm = this.value.toLowerCase();
+			
+			if (searchTerm === '') {
+				originalOrder.forEach(item => {
+					item.element.className = item.classes;
+					item.element.classList.remove('hidden');
+					gamesGrid.appendChild(item.element);
+				});
+			} else {
+				const matchingTiles = [];
+				const nonMatchingTiles = [];
+				
+				originalOrder.forEach(item => {
+					const title = item.element.querySelector('.game-title').textContent.toLowerCase();
+					const category = item.element.querySelector('.game-category').textContent.toLowerCase();
+					
+					if (title.includes(searchTerm) || category.includes(searchTerm)) {
+						matchingTiles.push(item);
+					} else {
+						nonMatchingTiles.push(item);
+					}
+				});
+				
+				matchingTiles.forEach(item => {
+					item.element.className = item.classes;
+					item.element.classList.remove('hidden');
+					gamesGrid.appendChild(item.element);
+				});
+				
+				nonMatchingTiles.forEach(item => {
+					item.element.className = item.classes + ' hidden';
+					gamesGrid.appendChild(item.element);
+				});
+			}
+
+			if (searchTerm !== '') {
+				searchBox.classList.add('expanded');
+			}
+		});
+
+		document.querySelectorAll('.game-tile').forEach(tile => {
+			tile.addEventListener('mouseenter', function() {
+				this.style.transform = 'translateY(-5px) scale(1.02)';
+			});
+			
+			tile.addEventListener('mouseleave', function() {
+				this.style.transform = 'translateY(0) scale(1)';
+			});
+		});
+		</script>
 </body>
 
 </html>
