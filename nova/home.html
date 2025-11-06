@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -141,67 +142,6 @@
 			font-weight: 400;
 		}
 
-		.shortcuts-section {
-			background: rgba(0, 0, 0, 0.2);
-			border-radius: 16px;
-			padding: 24px;
-			border: 1px solid rgba(255, 255, 255, 0.1);
-			transition: all 0.3s ease;
-		}
-
-		.shortcuts-section:hover {
-			background: rgba(0, 0, 0, 0.3);
-			transform: translateY(-2px);
-		}
-
-		.shortcuts-title {
-			color: #ffffff;
-			font-size: 1.3rem;
-			font-weight: 600;
-			margin-bottom: 16px;
-			text-align: center;
-		}
-
-		.shortcuts-grid {
-			display: grid;
-			grid-template-columns: repeat(4, 1fr);
-			gap: 16px;
-		}
-
-		.shortcut-item {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			text-decoration: none;
-			color: inherit;
-			background: rgba(0, 0, 0, 0.2);
-			border-radius: 12px;
-			padding: 16px 12px;
-			border: 1px solid rgba(255, 255, 255, 0.1);
-			transition: all 0.3s ease;
-			cursor: pointer;
-		}
-
-		.shortcut-item:hover {
-			background: rgba(255, 255, 255, 0.1);
-			transform: translateY(-2px);
-			box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
-		}
-
-		.shortcut-icon {
-			font-size: 24px;
-			color: white;
-			margin-bottom: 8px;
-		}
-
-		.shortcut-label {
-			color: #ffffff;
-			font-size: 0.8rem;
-			font-weight: 500;
-			text-align: center;
-			line-height: 1.2;
-		}
-
 		.battery-charging {
 			animation: pulse 2s infinite;
 		}
@@ -219,9 +159,12 @@
 		}
 
 		@keyframes pulse {
-			0%, 100% {
+
+			0%,
+			100% {
 				opacity: 1;
 			}
+
 			50% {
 				opacity: 0.7;
 			}
@@ -231,13 +174,12 @@
 			.dashboard {
 				padding: 24px;
 			}
+
 			.status-grid {
 				grid-template-columns: 1fr;
 				gap: 16px;
 			}
-			.shortcuts-grid {
-				grid-template-columns: repeat(2, 1fr);
-			}
+
 			.message-title {
 				font-size: 1.3rem;
 			}
@@ -246,6 +188,7 @@
 	<link rel="stylesheet" href="https://vapor.my/_a/fa/css/all.min.css" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
+
 <body>
 	<canvas id="canvas"></canvas>
 
@@ -285,39 +228,6 @@
 				</div>
 				<div class="status-label">Battery</div>
 				<div class="status-value" id="batteryStatus">Loading Battery</div>
-			</div>
-		</div>
-
-		<div class="shortcuts-section">
-			<div class="shortcuts-title">You'll Like</div>
-			<div class="shortcuts-grid">
-				<a href="https://spotify.com" class="shortcut-item" target="_self">
-					<div class="shortcut-icon">
-						<i class="fa-solid fa-music"></i>
-					</div>
-					<div class="shortcut-label">Music</div>
-				</a>
-
-				<a href="/nova/chat.html" class="shortcut-item" target="_self">
-					<div class="shortcut-icon">
-						<i class="fa-solid fa-comments"></i>
-					</div>
-					<div class="shortcut-label">Chat</div>
-				</a>
-
-				<a href="https://codepen.io" class="shortcut-item" target="_self">
-					<div class="shortcut-icon">
-						<i class="fa-solid fa-code"></i>
-					</div>
-					<div class="shortcut-label">HTML Editor</div>
-				</a>
-
-				<a href="https://archive.org" class="shortcut-item" target="_self">
-					<div class="shortcut-icon">
-						<i class="fa-solid fa-gamepad"></i>
-					</div>
-					<div class="shortcut-label">Emulator</div>
-				</a>
 			</div>
 		</div>
 	</div>
@@ -585,4 +495,5 @@
 		setInterval(updateTimeAndDate, 1000);
 	</script>
 </body>
+
 </html>
