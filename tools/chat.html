@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova Chat</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.scaledrone.com/scaledrone.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+--primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+--secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+--accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+--dark-bg: #0a0a0a;
+--card-bg: rgba(255, 255, 255, 0.05);
+--glass-bg: rgba(255, 255, 255, 0.1);
+--border-color: rgba(255, 255, 255, 0.1);
+--text-primary: #ffffff;
+--text-secondary: rgba(255, 255, 255, 0.7);
+--text-muted: rgba(255, 255, 255, 0.5);
+--shadow-glow: 0 20px 40px rgba(0, 0, 0, 0.3);
+--shadow-intense: 0 25px 50px rgba(0, 0, 0, 0.4);
+}
+
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+background: var(--dark-bg);
+color: var(--text-primary);
+overflow: hidden;
+height: 100vh;
+position: relative;
+}
+
+.background {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: -1;
+background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+animation: backgroundShift 20s ease-in-out infinite;
+}
+
+@keyframes backgroundShift {
+
+0%,
+100% {
+transform: scale(1) rotate(0deg);
+}
+
+50% {
+transform: scale(1.1) rotate(1deg);
+}
+}
+
+.glass-container {
+backdrop-filter: blur(20px);
+background: var(--glass-bg);
+border: 1px solid var(--border-color);
+border-radius: 20px;
+box-shadow: var(--shadow-glow);
+}
+
+.modal {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+background: rgba(0, 0, 0, 0.8);
+backdrop-filter: blur(10px);
+z-index: 1000;
+animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+background: var(--card-bg);
+backdrop-filter: blur(30px);
+border: 1px solid var(--border-color);
+border-radius: 24px;
+padding: 40px;
+width: 90%;
+max-width: 420px;
+box-shadow: var(--shadow-intense);
+text-align: center;
+animation: slideUp 0.4s ease;
+}
+
+.modal-content h2 {
+background: var(--primary-gradient);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+font-size: 2rem;
+font-weight: 700;
+margin-bottom: 30px;
+letter-spacing: -0.02em;
+}
+
+.input-group {
+margin-bottom: 20px;
+position: relative;
+}
+
+.input-group input {
+width: 100%;
+padding: 16px 20px;
+background: rgba(255, 255, 255, 0.05);
+border: 1px solid var(--border-color);
+border-radius: 16px;
+color: var(--text-primary);
+font-size: 16px;
+transition: all 0.3s ease;
+backdrop-filter: blur(10px);
+}
+
+.input-group input:focus {
+outline: none;
+border-color: rgba(102, 126, 234, 0.5);
+box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+background: rgba(255, 255, 255, 0.08);
+}
+
+.input-group input::placeholder {
+color: var(--text-muted);
+}
+
+.profile-upload {
+display: flex;
+align-items: center;
+gap: 16px;
+margin: 24px 0;
+padding: 16px;
+background: rgba(255, 255, 255, 0.03);
+border-radius: 16px;
+border: 1px solid var(--border-color);
+}
+
+.profile-preview {
+width: 48px;
+height: 48px;
+border-radius: 50%;
+overflow: hidden;
+border: 2px solid var(--border-color);
+position: relative;
+}
+
+.profile-preview img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+
+.default-avatar {
+width: 100%;
+height: 100%;
+background: var(--primary-gradient);
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 600;
+font-size: 18px;
+color: white;
+}
+
+.upload-btn {
+flex: 1;
+padding: 12px 16px;
+background: rgba(255, 255, 255, 0.05);
+border: 1px solid var(--border-color);
+border-radius: 12px;
+color: var(--text-secondary);
+cursor: pointer;
+transition: all 0.3s ease;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.upload-btn:hover {
+background: rgba(255, 255, 255, 0.08);
+border-color: rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary {
+width: 100%;
+padding: 16px;
+background: var(--primary-gradient);
+border: none;
+border-radius: 16px;
+color: white;
+font-size: 16px;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.3s ease;
+margin-top: 20px;
+}
+
+.btn-primary:hover {
+transform: translateY(-2px);
+box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.btn-secondary {
+width: 100%;
+padding: 12px;
+background: transparent;
+border: 1px solid var(--border-color);
+border-radius: 12px;
+color: var(--text-secondary);
+font-size: 14px;
+cursor: pointer;
+transition: all 0.3s ease;
+margin-top: 12px;
+}
+
+.btn-secondary:hover {
+background: rgba(255, 255, 255, 0.05);
+border-color: rgba(102, 126, 234, 0.3);
+}
+
+.chat-container {
+display: none;
+height: 100vh;
+flex-direction: column;
+padding: 20px;
+gap: 20px;
+}
+
+.chat-header {
+background: var(--card-bg);
+backdrop-filter: blur(20px);
+border: 1px solid var(--border-color);
+border-radius: 20px;
+padding: 20px 30px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.chat-header h1 {
+font-size: 1.5rem;
+font-weight: 700;
+background: var(--primary-gradient);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+}
+.user-info {
+display: flex;
+align-items: center;
+gap: 12px;
+color: var(--text-secondary);
+}
+
+.status-indicator {
+width: 8px;
+height: 8px;
+background: #00ff88;
+border-radius: 50%;
+box-shadow: 0 0 10px #00ff88;
+animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+0%,
+100% {
+opacity: 1;
+}
+
+50% {
+opacity: 0.5;
+}
+}
+
+.messages-container {
+flex: 1;
+background: var(--card-bg);
+backdrop-filter: blur(20px);
+border: 1px solid var(--border-color);
+border-radius: 20px;
+padding: 20px;
+overflow-y: auto;
+display: flex;
+flex-direction: column;
+gap: 16px;
+}
+
+.message {
+display: flex;
+align-items: flex-start;
+gap: 12px;
+padding: 16px;
+border-radius: 16px;
+background: rgba(255, 255, 255, 0.03);
+backdrop-filter: blur(10px);
+border: 1px solid rgba(255, 255, 255, 0.05);
+transition: all 0.3s ease;
+animation: messageSlide 0.4s ease;
+}
+
+.message:hover {
+background: rgba(255, 255, 255, 0.05);
+transform: translateY(-1px);
+}
+
+.message.self {
+background: var(--primary-gradient);
+margin-left: auto;
+max-width: 80%;
+color: white;
+}
+
+.message.self .message-text {
+color: white;
+}
+
+.message-avatar {
+width: 40px;
+height: 40px;
+border-radius: 50%;
+overflow: hidden;
+border: 2px solid var(--border-color);
+flex-shrink: 0;
+}
+
+.message-avatar img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+
+.message-content {
+flex: 1;
+}
+
+.message-header {
+display: flex;
+align-items: center;
+gap: 8px;
+margin-bottom: 4px;
+}
+
+.message-sender {
+font-weight: 600;
+color: var(--text-primary);
+font-size: 14px;
+}
+
+.message-time {
+color: var(--text-muted);
+font-size: 12px;
+}
+
+.message-text {
+color: var(--text-secondary);
+line-height: 1.5;
+word-wrap: break-word;
+}
+
+.input-area {
+background: var(--card-bg);
+backdrop-filter: blur(20px);
+border: 1px solid var(--border-color);
+border-radius: 20px;
+padding: 20px;
+display: flex;
+gap: 12px;
+align-items: center;
+}
+
+.message-input {
+flex: 1;
+padding: 12px 16px;
+background: rgba(255, 255, 255, 0.05);
+border: 1px solid var(--border-color);
+border-radius: 12px;
+color: var(--text-primary);
+font-size: 16px;
+transition: all 0.3s ease;
+}
+
+.message-input:focus {
+outline: none;
+border-color: rgba(102, 126, 234, 0.5);
+box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+background: rgba(255, 255, 255, 0.08);
+}
+
+.message-input::placeholder {
+color: var(--text-muted);
+}
+
+.input-actions {
+display: flex;
+gap: 8px;
+}
+
+.action-btn {
+width: 44px;
+height: 44px;
+border: none;
+border-radius: 12px;
+background: rgba(255, 255, 255, 0.05);
+color: var(--text-secondary);
+cursor: pointer;
+transition: all 0.3s ease;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.action-btn:hover {
+background: rgba(255, 255, 255, 0.1);
+transform: translateY(-1px);
+}
+
+.action-btn.recording {
+background: var(--secondary-gradient);
+color: white;
+animation: recordingPulse 1s infinite;
+}
+
+.send-btn {
+background: var(--primary-gradient);
+color: white;
+}
+
+.send-btn:hover {
+box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+}
+
+.notification {
+position: fixed;
+top: 20px;
+right: 20px;
+background: var(--card-bg);
+backdrop-filter: blur(20px);
+border: 1px solid var(--border-color);
+border-radius: 12px;
+padding: 16px 20px;
+color: var(--text-primary);
+box-shadow: var(--shadow-glow);
+z-index: 1000;
+animation: slideInRight 0.4s ease;
+display: none;
+}
+
+::-webkit-scrollbar {
+width: 6px;
+}
+
+::-webkit-scrollbar-track {
+background: rgba(255, 255, 255, 0.05);
+border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+background: var(--primary-gradient);
+border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+background: var(--secondary-gradient);
+}
+
+@keyframes fadeIn {
+from {
+opacity: 0;
+}
+
+to {
+opacity: 1;
+}
+}
+
+@keyframes slideUp {
+from {
+transform: translateY(20px);
+opacity: 0;
+}
+
+to {
+transform: translateY(0);
+opacity: 1;
+}
+}
+
+@keyframes messageSlide {
+from {
+transform: translateX(-10px);
+opacity: 0;
+}
+
+to {
+transform: translateX(0);
+opacity: 1;
+}
+}
+
+@keyframes slideInRight {
+from {
+transform: translateX(100%);
+opacity: 0;
+}
+
+to {
+transform: translateX(0);
+opacity: 1;
+}
+}
+
+@keyframes recordingPulse {
+
+0%,
+100% {
+transform: scale(1);
+}
+
+50% {
+transform: scale(1.05);
+}
+}
+
+@media (max-width: 768px) {
+.modal-content {
+padding: 30px 20px;
+margin: 20px;
+}
+
+.chat-container {
+padding: 16px;
+gap: 16px;
+}
+
+.message.self {
+max-width: 90%;
+}
+}
+
+.file-input {
+display: none;
+}
+</style>
+</head>
+
+<body>
+<div class="background"></div>
+
+<div class="modal" id="joinModal">
+<div class="modal-content">
+<h2>Nova Chat</h2>
+<div class="input-group">
+<input type="text" id="roomCodeInput" placeholder="Enter room code" required>
+            </div>
+
+<div class="input-group">
+<input type="text" id="usernameInput" placeholder="Your display name" required>
+            </div>
+
+<div class="profile-upload">
+<div class="profile-preview">
+<div class="default-avatar" id="defaultAvatar">?</div>
+<img id="profilePreview" style="display: none;">
+                </div>
+<label for="profileInput" class="upload-btn">
+                    <i class="fas fa-camera"></i>
+                    Upload Avatar
+                </label>
+<input type="file" id="profileInput" class="file-input" accept="image/*">
+            </div>
+
+<button class="btn-primary" onclick="joinRoom()">
+                <i class="fas fa-sign-in-alt"></i> Join Room
+            </button>
+</div>
+</div>
+
+<div class="chat-container" id="chatContainer">
+<div class="chat-header">
+<div>
+<h1 id="roomName">Nova Chat</h1>
+<div class="user-info">
+<div class="status-indicator"></div>
+<span id="userDisplay">Connected as User</span>
+</div>
+</div>
+</div>
+
+<div class="messages-container" id="messagesContainer">
+</div>
+
+<div class="input-area">
+<input type="text" class="message-input" id="messageInput" placeholder="Type your message...">
+<div class="input-actions">
+<button class="action-btn" id="micBtn" title="Voice input">
+                    <i class="fas fa-microphone"></i>
+                </button>
+<button class="action-btn send-btn" id="sendBtn" title="Send message">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+</div>
+</div>
+</div>
+
+<div class="notification" id="notification"></div>
+
+<script>
+        const PRIMARY_CLIENT_ID = 'OHUFaacVGP0geNkq';
+        const SECONDARY_CLIENT_ID = 'jDPttXGNJn5tW30S3K7U30egGULppuAe';
+       
+        let drone = new ScaleDrone(PRIMARY_CLIENT_ID);
+       
+        let room;
+        let userName = '';
+        let roomCode = '';
+        let userProfilePic = '';
+        let isRecording = false;
+        let recognition;
+        const userProfiles = {};
+        let connectionAttempts = 0;
+        const maxConnectionAttempts = 2;
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            setupSpeechRecognition();
+            initializeDrone();
+        });
+
+        function initializeDrone() {
+            drone.on('error', (error) => {
+                console.error('Drone connection error:', error);
+                if (connectionAttempts < maxConnectionAttempts) {
+                    connectionAttempts++;
+                    console.log(`Attempting to reconnect with secondary client ID (Attempt ${connectionAttempts})`);
+                    drone = new ScaleDrone(SECONDARY_CLIENT_ID);
+                    initializeDrone();
+                } else {
+                    showNotification('Connection failed. Please refresh the page and try again.');
+                }
+            });
+
+            drone.on('open', () => {
+                console.log('Successfully connected to Scaledrone');
+                connectionAttempts = 0; // Reset attempts on successful connection
+            });
+
+            drone.on('close', () => {
+                console.log('Connection closed');
+                showNotification('Connection lost. Please refresh the page.');
+            });
+        }
+
+        function setupEventListeners() {
+            document.getElementById('profileInput').addEventListener('change', handleProfileUpload);
+           
+            document.getElementById('usernameInput').addEventListener('input', updateDefaultAvatar);
+           
+            document.getElementById('messageInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+           
+            // Send button
+            document.getElementById('sendBtn').addEventListener('click', sendMessage);
+           
+            // Mic button
+            document.getElementById('micBtn').addEventListener('click', toggleRecording);
+        }
+
+        function handleProfileUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    userProfilePic = event.target.result;
+                    const preview = document.getElementById('profilePreview');
+                    const defaultAvatar = document.getElementById('defaultAvatar');
+                   
+                    preview.src = userProfilePic;
+                    preview.style.display = 'block';
+                    defaultAvatar.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updateDefaultAvatar(e) {
+            const firstLetter = e.target.value.trim().charAt(0).toUpperCase();
+            document.getElementById('defaultAvatar').textContent = firstLetter || '?';
+        }
+
+        function joinRoom() {
+            userName = document.getElementById('usernameInput').value.trim();
+            roomCode = document.getElementById('roomCodeInput').value.trim();
+
+            if (!userName || !roomCode) {
+                showNotification('Please enter both username and room code');
+                return;
+            }
+
+            if (!/^[a-zA-Z0-9 ]+$/.test(userName)) {
+                showNotification('Username can only contain letters, numbers, and spaces');
+                return;
+            }
+
+            // Hide modal and show chat
+            document.getElementById('joinModal').style.display = 'none';
+            document.getElementById('chatContainer').style.display = 'flex';
+            document.getElementById('userDisplay').textContent = `Connected as ${userName}`;
+            document.getElementById('roomName').textContent = `Room: ${roomCode}`;
+
+            connectToRoom();
+        }
+
+        function connectToRoom() {
+            try {
+                if (room) {
+                    room.unsubscribe();
+                }
+
+                userProfiles[userName] = userProfilePic;
+                room = drone.subscribe(`observable-${roomCode}`);
+
+                room.on('error', error => {
+                    console.error('Room connection error:', error);
+                    showNotification('Failed to connect to room. Please check your room code and try again.');
+                });
+
+                room.on('open', error => {
+                    if (error) {
+                        console.error('Room open error:', error);
+                        showNotification('Unable to join room. Please try again.');
+                        return;
+                    }
+                   
+                    console.log('Successfully joined room:', roomCode);
+                    showNotification(`Successfully joined room: ${roomCode}`);
+                   
+                    // Announce join with a slight delay to ensure connection is stable
+                    setTimeout(() => {
+                        drone.publish({
+                            room: `observable-${roomCode}`,
+                            message: {
+                                type: 'join',
+                                name: userName,
+                                profilePic: userProfilePic,
+                                timestamp: new Date().toISOString()
+                            }
+                        });
+                    }, 1000);
+                });
+
+                room.on('data', (data, member) => {
+                    if (!data) return;
+                   
+                    console.log('Received message:', data);
+                   
+                    if (data.type === 'join') {
+                        if (data.name !== userName) { // Don't show notification for self
+                            userProfiles[data.name] = data.profilePic;
+                            showNotification(`${data.name} joined the room`);
+                        }
+                    } else if (data.text) {
+                        if (data.profilePic) {
+                            userProfiles[data.name] = data.profilePic;
+                        }
+                        addMessage(data.text, data.name, member.id === drone.clientId, data.timestamp);
+                    }
+                });
+
+                room.on('members', members => {
+                    console.log('Room members:', members.length);
+                });
+
+            } catch (error) {
+                console.error('Connection error:', error);
+                showNotification('Unable to connect. Please refresh and try again.');
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+           
+            if (!text) return;
+
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            input.value = '';
+
+            try {
+                drone.publish({
+                    room: `observable-${roomCode}`,
+                    message: {
+                        text: text,
+                        name: userName,
+                        timestamp: timestamp,
+                        profilePic: userProfiles[userName]
+                    }
+                });
+            } catch (error) {
+                console.error('Send error:', error);
+                showNotification('Failed to send message. Please try again.');
+            }
+        }
+
+        function addMessage(text, name, isSelf, timestamp) {
+            const container = document.getElementById('messagesContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isSelf ? 'self' : ''}`;
+           
+            const time = timestamp || new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const profilePic = userProfiles[name] || '';
+           
+            const avatarHtml = profilePic
+                ? `<img src="${profilePic}" alt="${name}'s avatar">`
+                : `<div class="default-avatar">${name.charAt(0).toUpperCase()}</div>`;
+
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${avatarHtml}</div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="message-sender">${name}</span>
+                        <span class="message-time">${time}</span>
+                    </div>
+                    <div class="message-text">${formatText(text)}</div>
+                </div>
+            `;
+
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function formatText(text) {
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            return text.replace(urlRegex, '<a href="$1" target="_blank" style="color: #4facfe; text-decoration: underline;">$1</a>');
+        }
+
+        function setupSpeechRecognition() {
+            if (!('webkitSpeechRecognition' in window)) return;
+           
+            recognition = new webkitSpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+           
+            recognition.onstart = () => {
+                isRecording = true;
+                const btn = document.getElementById('micBtn');
+                btn.classList.add('recording');
+                btn.innerHTML = '<i class="fas fa-stop"></i>';
+            };
+           
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('messageInput').value = transcript;
+                sendMessage();
+            };
+           
+            recognition.onend = () => {
+                isRecording = false;
+                const btn = document.getElementById('micBtn');
+                btn.classList.remove('recording');
+                btn.innerHTML = '<i class="fas fa-microphone"></i>';
+            };
+           
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                showNotification('Voice recognition failed');
+                isRecording = false;
+                const btn = document.getElementById('micBtn');
+                btn.classList.remove('recording');
+                btn.innerHTML = '<i class="fas fa-microphone"></i>';
+            };
+        }
+
+        function toggleRecording() {
+            if (!recognition) {
+                showNotification('Voice recognition not supported in this browser');
+                return;
+            }
+           
+            if (isRecording) {
+                recognition.stop();
+            } else {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(() => {
+                        recognition.start();
+                    })
+                    .catch(() => {
+                        showNotification('Microphone access denied. Please allow microphone access to use voice input.');
+                    });
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+           
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                console.log('Page hidden, maintaining connection');
+            } else {
+                console.log('Page visible, ensuring connection is active');
+            }
+        });
+</script>
+</body>
