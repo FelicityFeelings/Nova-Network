@@ -2,10 +2,9 @@
 <html lang="en">
 
 <head>
-	<link rel="icon" href="https://files.catbox.moe/3ahs4l.png" type="image/x-icon">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Tools</title>
-	<script src="/tab/script.js"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Games</title>
 	<style>
 		body {
 			margin: 0;
@@ -33,14 +32,12 @@
 			outline: none;
 			position: relative;
 			z-index: 10;
-			-webkit-transition: all 0.3s ease;
 			transition: all 0.3s ease;
 		}
 
 		#searchBar:focus {
 			width: 75%;
 			max-width: 650px;
-			-webkit-transform: scale(1.05);
 			transform: scale(1.05);
 			box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
 			border-color: #ffffff;
@@ -49,7 +46,6 @@
 		.expanded {
 			width: 75%;
 			max-width: 650px;
-			-webkit-transform: scale(1.05);
 			transform: scale(1.05);
 			box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
 			border-color: #ffffff;
@@ -59,7 +55,6 @@
 		.typing {
 			width: 80% !important;
 			max-width: 700px !important;
-			-webkit-transform: scale(1.08) !important;
 			transform: scale(1.08) !important;
 			box-shadow: 0 0 35px rgba(255, 255, 255, 0.6) !important;
 		}
@@ -80,7 +75,7 @@
 			margin: 10px 0;
 		}
 
-		/* mobile stuff - probably could be cleaner but works */
+		/* mobile stuff */
 		@media (max-width: 1400px) {
 			.image-container {
 				grid-template-columns: repeat(6, 1fr);
@@ -111,15 +106,17 @@
 			object-fit: cover;
 			margin: 5px;
 			border-radius: 15px;
-			-webkit-transition: transform 0.3s ease-in-out;
-			transition: transform 0.3s ease-in-out;
+			border: 3px solid transparent;
+			transition: all 0.3s ease-in-out;
 			position: relative;
 			outline: none;
+			cursor: pointer;
 		}
 
 		.rounded-image:hover {
-			-webkit-transform: scale(1.1);
 			transform: scale(1.1);
+			border: 3px solid #ffffff;
+			box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
 		}
 
 		/* tooltip thing */
@@ -140,134 +137,132 @@
 <body>
 
 	<input type="text" id="searchBar" placeholder="Search for a tool...">
-
+	
 	<div id="tooltip" class="tooltip"></div>
 	<div class="container">
 		<div class="image-container">
 			<a href="/tools/calculator.html" target="_self">
 				<img src="https://files.catbox.moe/62c5a6.png" alt="Calculator" class="rounded-image">
-			</a>
+				</a>
 				<a href="/tools/chat.html" target="_self">
 					<img src="https://imgs.search.brave.com/exHFH84UG02XfMFZkdBeIb7KS2SwlaBhKnSxfjbjrVw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/aWNvbnM4LmNvbS9z/Zi1ibGFjay1maWxs/ZWQvMTIwMC9jaGF0/LmpwZw" alt="Chat" class="rounded-image">
-			</a>
+				</a>
 					<a href="/tools/dylm.html" target="_self">
 						<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/352.png" alt="Dont You Lecture Me" class="rounded-image">
-			</a>
+				</a>
 						<a href="/tools/draw.html" target="_self">
 							<img src="https://files.catbox.moe/y0eon6.png" alt="Drawing Pad" class="rounded-image">
-			</a>
+				</a>
 							<a href="/tools/emulator.html" target="_self">
 								<img src="https://files.catbox.moe/6cnpz3.png" alt="Emulator" class="rounded-image">
-			</a>
+				</a>
 								<a href="/tools/ext.html" target="_self">
 									<img src="https://raw.githubusercontent.com/Blobby-Boi/ExtHang3r/refs/heads/main/favicon.png" alt="ExtHang3r" class="rounded-image">
-			</a>
+				</a>
 									<a href="/tools/extp.html" target="_self">
 										<img src="https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/icon.png" alt="ExtPrint3r" class="rounded-image">
-			</a>
+				</a>
 										<a href="/tools/music.html" target="_self">
 											<img src="https://files.catbox.moe/vaxf5t.png" alt="Music" class="rounded-image">
-													</a>
-		
-    								<a href="/tools/html.html" target="_self">
-											<img src="https://imgs.search.brave.com/G_UWyzLjS1t3fyG24SPTwgcWvz7ZDuj7cyh1jlW9wFk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG40/Lmljb25maW5kZXIu/Y29tL2RhdGEvaWNv/bnMvbG9nb3MtYW5k/LWJyYW5kcy81MTIv/MTY3X0h0bWw1X2xv/Z29fbG9nb3MtNTEy/LnBuZw" alt="HTML Editor" class="rounded-image">
-			</a>
-											<a href="/tools/ruffle.html" target="_self">
-												<img src="https://truffled.lol/png/tools/ruf.png" alt="Ruffle Emulator" class="rounded-image">
-			</a>
-												<a href="/tools/shimmer.html" target="_self">
-													<img src="https://truffled.lol/tools/sh1mmer/assets/icon.png" alt="SH1MMER" class="rounded-image">
-			</a>
-													<a href="/tools/soundboard.html" target="_self">
-														<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/179.png" alt="Soundboard" class="rounded-image">
-			</a>
-														<a href="/tools/weavesilk.html" target="_self">
-															<img src="https://imgs.search.brave.com/_TAO0YnMTR57IguUZPMEurxgD0z6hq4p2ACftyf9kis/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c2VvbXJhcmFuZ2Eu/Y29tL3dwLWNvbnRl/bnQvdXBsb2Fkcy8y/MDIzLzA5L3dlYXZl/c2lsazAyYi0yODF4/MzAwLnBuZw" alt="Weavesilk" class="rounded-image">
-																	</a>
-
-															<a href="/tools/spade.html" target="_self">
-																<img src="https://files.catbox.moe/r5y3hx.png" alt="Spade" class="rounded-image">
-			</a>
-																<a href="/tools/fluidsim.html" target="_self">
-																	<img src="https://pizzaedition.win/images/games/webglfluid.png" alt="WebGL Fluids" class="rounded-image">
-			</a>
-																	<a href="/tools/yt.html" target="_self">
-																		<img src="https://imgs.search.brave.com/MkH54pMOvJW5e9WQPLn9wZOVRzTCo5F0CwFq86vT-IE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzA1LzQ4LzUxLzU0/LzM2MF9GXzU0ODUx/NTQ3N19YemZjd3A1/ZmwxZmZoYmM1c08z/a0hrd3JMSFFRVW1N/OS5qcGc" alt="Youtube" class="rounded-image">
-			</a>
+														</a>
+	
+											<a href="/tools/html.html" target="_self">
+												<img src="https://imgs.search.brave.com/G_UWyzLjS1t3fyG24SPTwgcWvz7ZDuj7cyh1jlW9wFk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG40/Lmljb25maW5kZXIu/Y29tL2RhdGEvaWNv/bnMvbG9nb3MtYW5k/LWJyYW5kcy81MTIv/MTY3X0h0bWw1X2xv/Z29fbG9nb3MtNTEy/LnBuZw" alt="HTML Editor" class="rounded-image">
+				</a>
+												<a href="/tools/ruffle.html" target="_self">
+													<img src="https://truffled.lol/png/tools/ruf.png" alt="Ruffle Emulator" class="rounded-image">
+				</a>
+													<a href="/tools/shimmer.html" target="_self">
+														<img src="https://truffled.lol/tools/sh1mmer/assets/icon.png" alt="SH1MMER" class="rounded-image">
+				</a>
+														<a href="/tools/soundboard.html" target="_self">
+															<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/179.png" alt="Soundboard" class="rounded-image">
+				</a>
+															<a href="/tools/weavesilk.html" target="_self">
+																<img src="https://imgs.search.brave.com/_TAO0YnMTR57IguUZPMEurxgD0z6hq4p2ACftyf9kis/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c2VvbXJhcmFuZ2Eu/Y29tL3dwLWNvbnRl/bnQvdXBsb2Fkcy8y/MDIzLzA5L3dlYXZl/c2lsazAyYi0yODF4/MzAwLnBuZw" alt="Weavesilk" class="rounded-image">
+																		</a>
+	
+																<a href="/tools/spade.html" target="_self">
+																	<img src="https://files.catbox.moe/r5y3hx.png" alt="Spade" class="rounded-image">
+				</a>
+																	<a href="/tools/fluidsim.html" target="_self">
+																		<img src="https://pizzaedition.win/images/games/webglfluid.png" alt="WebGL Fluids" class="rounded-image">
+				</a>
+																		<a href="/tools/yt.html" target="_self">
+																			<img src="https://imgs.search.brave.com/MkH54pMOvJW5e9WQPLn9wZOVRzTCo5F0CwFq86vT-IE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzA1LzQ4LzUxLzU0/LzM2MF9GXzU0ODUx/NTQ3N19YemZjd3A1/ZmwxZmZoYmM1c08z/a0hrd3JMSFFRVW1N/OS5qcGc" alt="Youtube" class="rounded-image">
+				</a>
 		</div>
 	</div>
 	<script>
 		// tooltip stuff
-            var tooltip = document.getElementById('tooltip');
-            var images = document.querySelectorAll('.rounded-image');
-            
-            for (var i = 0; i < images.length; i++) {
-                images[i].addEventListener('mouseenter', function() {
-                    tooltip.textContent = this.alt;
-                    tooltip.style.display = 'block';
-                });
-                
-                images[i].addEventListener('mousemove', function(e) {
-                    tooltip.style.left = (e.clientX + 10) + 'px';
-                    tooltip.style.top = (e.clientY + 10) + 'px';
-                });
-                
-                images[i].addEventListener('mouseleave', function() {
-                    tooltip.style.display = 'none';
-                });
-            }
+		var tooltip = document.getElementById('tooltip');
+		var images = document.querySelectorAll('.rounded-image');
 
-            // search bar stuff
-            var searchBar = document.getElementById('searchBar');
-            
-            searchBar.addEventListener('focus', function() {
-                this.classList.add('expanded');
-            });
-            
-            searchBar.addEventListener('blur', function() {
-                if (this.value == '') {
-                    this.classList.remove('expanded');
-                    this.classList.remove('typing');
-                }
-            });
-            
-            // search filtering 
-            searchBar.addEventListener('input', function() {
-                var searchTerm = this.value.toLowerCase();
-                
-                if (searchTerm.length > 0) {
-                    this.classList.add('typing');
-                } else {
-                    this.classList.remove('typing');
-                }
-                
-                var imageContainers = document.querySelectorAll('.image-container');
+		for (var i = 0; i < images.length; i++) {
+			images[i].addEventListener('mouseenter', function () {
+				tooltip.textContent = this.alt;
+				tooltip.style.display = 'block';
+			});
 
-                for (var j = 0; j < imageContainers.length; j++) {
-                    var container = imageContainers[j];
-                    var imgs = container.querySelectorAll('.rounded-image');
-                    var anyVisible = false;
+			images[i].addEventListener('mousemove', function (e) {
+				tooltip.style.left = (e.clientX + 10) + 'px';
+				tooltip.style.top = (e.clientY + 10) + 'px';
+			});
 
-                    for (var k = 0; k < imgs.length; k++) {
-                        var img = imgs[k];
-                        if (img.alt.toLowerCase().indexOf(searchTerm) !== -1) {
-                            img.parentElement.style.display = "inline-block";
-                            anyVisible = true;
-                        } else {
-                            img.parentElement.style.display = "none";
-                        }
-                    }
+			images[i].addEventListener('mouseleave', function () {
+				tooltip.style.display = 'none';
+			});
+		}
 
-                    if (anyVisible) {
-                        container.style.display = "grid";
-                    } else {
-                        container.style.display = "none";
-                    }
-                }
-            });
+		// search bar stuff
+		var searchBar = document.getElementById('searchBar');
+
+		searchBar.addEventListener('focus', function () {
+			this.classList.add('expanded');
+		});
+
+		searchBar.addEventListener('blur', function () {
+			if (this.value == '') {
+				this.classList.remove('expanded');
+				this.classList.remove('typing');
+			}
+		});
+
+		// search filtering 
+		searchBar.addEventListener('input', function () {
+			var searchTerm = this.value.toLowerCase();
+
+			if (searchTerm.length > 0) {
+				this.classList.add('typing');
+			} else {
+				this.classList.remove('typing');
+			}
+
+			var imageContainers = document.querySelectorAll('.image-container');
+
+			for (var j = 0; j < imageContainers.length; j++) {
+				var container = imageContainers[j];
+				var imgs = container.querySelectorAll('.rounded-image');
+				var anyVisible = false;
+
+				for (var k = 0; k < imgs.length; k++) {
+					var img = imgs[k];
+					if (img.alt.toLowerCase().indexOf(searchTerm) !== -1) {
+						img.parentElement.style.display = "inline-block";
+						anyVisible = true;
+					} else {
+						img.parentElement.style.display = "none";
+					}
+				}
+
+				if (anyVisible) {
+					container.style.display = "grid";
+				} else {
+					container.style.display = "none";
+				}
+			}
+		});
 	</script>
 </body>
-
-</html>
 
 </html>
