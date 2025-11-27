@@ -59,6 +59,48 @@
 			box-shadow: 0 0 35px rgba(255, 255, 255, 0.6) !important;
 		}
 
+		/* suggestions dropdown */
+		#suggestions {
+			position: absolute;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 60%;
+			max-width: 500px;
+			background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+			border: 2px solid rgba(255, 255, 255, 0.3);
+			border-radius: 15px;
+			margin-top: 5px;
+			max-height: 300px;
+			overflow-y: auto;
+			display: none;
+			z-index: 100;
+			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+		}
+
+		#suggestions.show {
+			display: block;
+		}
+
+		.suggestion-item {
+			padding: 12px 20px;
+			cursor: pointer;
+			color: white;
+			transition: background-color 0.2s ease;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+		}
+
+		.suggestion-item:last-child {
+			border-bottom: none;
+		}
+
+		.suggestion-item:hover {
+			background-color: rgba(255, 255, 255, 0.1);
+		}
+
+		.suggestion-item.active {
+			background-color: rgba(255, 255, 255, 0.15);
+		}
+
 		.container {
 			display: flex;
 			flex-direction: column;
@@ -136,7 +178,8 @@
 
 <body>
 
-	<input type="text" id="searchBar" placeholder="Search for a game...">
+	<input type="text" id="searchBar" placeholder="Search for a game..." autocomplete="off">
+	<div id="suggestions"></div>
 
 	<div id="tooltip" class="tooltip"></div>
 	<div class="container">
@@ -354,9 +397,20 @@
 	</div>
 
 	<script>
+		// collect all game names
+		var gameNames = [];
+		var gameLinks = {};
+		var images = document.querySelectorAll('.rounded-image');
+		
+		for (var i = 0; i < images.length; i++) {
+			var gameName = images[i].alt;
+			var gameLink = images[i].parentElement.href;
+			gameNames.push(gameName);
+			gameLinks[gameName] = gameLink;
+		}
+
 		// tooltip stuff
 		var tooltip = document.getElementById('tooltip');
-		var images = document.querySelectorAll('.rounded-image');
 
 		for (var i = 0; i < images.length; i++) {
 			images[i].addEventListener('mouseenter', function () {
@@ -376,28 +430,59 @@
 
 		// search bar stuff
 		var searchBar = document.getElementById('searchBar');
+		var suggestionsBox = document.getElementById('suggestions');
+		var selectedIndex = -1;
 
 		searchBar.addEventListener('focus', function () {
 			this.classList.add('expanded');
 		});
 
 		searchBar.addEventListener('blur', function () {
-			if (this.value == '') {
-				this.classList.remove('expanded');
-				this.classList.remove('typing');
-			}
+			// delay to allow clicking on suggestions
+			setTimeout(function() {
+				if (searchBar.value == '') {
+					searchBar.classList.remove('expanded');
+					searchBar.classList.remove('typing');
+				}
+				suggestionsBox.classList.remove('show');
+			}, 200);
 		});
 
-		// search filtering 
+		// search filtering and suggestions
 		searchBar.addEventListener('input', function () {
 			var searchTerm = this.value.toLowerCase();
 
 			if (searchTerm.length > 0) {
 				this.classList.add('typing');
+				
+				// filter suggestions
+				var matches = gameNames.filter(function(name) {
+					return name.toLowerCase().indexOf(searchTerm) !== -1;
+				});
+
+				// show suggestions
+				if (matches.length > 0) {
+					suggestionsBox.innerHTML = '';
+					matches.slice(0, 8).forEach(function(match) {
+						var item = document.createElement('div');
+						item.className = 'suggestion-item';
+						item.textContent = match;
+						item.addEventListener('click', function() {
+							window.location.href = gameLinks[match];
+						});
+						suggestionsBox.appendChild(item);
+					});
+					suggestionsBox.classList.add('show');
+					selectedIndex = -1;
+				} else {
+					suggestionsBox.classList.remove('show');
+				}
 			} else {
 				this.classList.remove('typing');
+				suggestionsBox.classList.remove('show');
 			}
 
+			// filter images
 			var imageContainers = document.querySelectorAll('.image-container');
 
 			for (var j = 0; j < imageContainers.length; j++) {
@@ -422,6 +507,35 @@
 				}
 			}
 		});
+
+		// keyboard navigation for suggestions
+		searchBar.addEventListener('keydown', function(e) {
+			var suggestionItems = suggestionsBox.querySelectorAll('.suggestion-item');
+			
+			if (suggestionItems.length === 0) return;
+
+			if (e.key === 'ArrowDown') {
+				e.preventDefault();
+				selectedIndex = (selectedIndex + 1) % suggestionItems.length;
+				updateSelectedSuggestion(suggestionItems);
+			} else if (e.key === 'ArrowUp') {
+				e.preventDefault();
+				selectedIndex = selectedIndex <= 0 ? suggestionItems.length - 1 : selectedIndex - 1;
+				updateSelectedSuggestion(suggestionItems);
+			} else if (e.key === 'Enter' && selectedIndex >= 0) {
+				e.preventDefault();
+				window.location.href = gameLinks[suggestionItems[selectedIndex].textContent];
+			}
+		});
+
+		function updateSelectedSuggestion(items) {
+			for (var i = 0; i < items.length; i++) {
+				items[i].classList.remove('active');
+			}
+			if (selectedIndex >= 0 && selectedIndex < items.length) {
+				items[selectedIndex].classList.add('active');
+			}
+		}
 	</script>
 </body>
 
