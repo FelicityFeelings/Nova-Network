@@ -70,7 +70,7 @@
 			border: 2px solid rgba(255, 255, 255, 0.3);
 			border-radius: 15px;
 			margin-top: 5px;
-			max-height: 300px;
+			max-height: 400px;
 			overflow-y: auto;
 			display: none;
 			z-index: 100;
@@ -82,11 +82,14 @@
 		}
 
 		.suggestion-item {
-			padding: 12px 20px;
+			display: flex;
+			align-items: center;
+			padding: 10px 15px;
 			cursor: pointer;
 			color: white;
 			transition: background-color 0.2s ease;
 			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+			gap: 15px;
 		}
 
 		.suggestion-item:last-child {
@@ -99,6 +102,19 @@
 
 		.suggestion-item.active {
 			background-color: rgba(255, 255, 255, 0.15);
+		}
+
+		.suggestion-image {
+			width: 50px;
+			height: 50px;
+			border-radius: 8px;
+			object-fit: cover;
+			border: 2px solid rgba(255, 255, 255, 0.2);
+		}
+
+		.suggestion-name {
+			font-size: 1rem;
+			font-weight: 500;
 		}
 
 		.container {
@@ -181,72 +197,72 @@
 	<input type="text" id="searchBar" placeholder="Search for a game..." autocomplete="off">
 	<div id="suggestions"></div>
 
-	<div id="tooltip" class="tooltip"></div>
-	<div class="container">
-		<div class="image-container">
-			<a href="/tools/calculator.html" target="_self">
-				<img src="https://files.catbox.moe/62c5a6.png" alt="Calculator" class="rounded-image">
+<div id="tooltip" class="tooltip"></div>
+<div class="container">
+	<div class="image-container">
+		<a href="/tools/calculator.html" target="_self">
+			<img src="https://files.catbox.moe/62c5a6.png" alt="Calculator" class="rounded-image">
 					</a>
-				<a href="/tools/chat.html" target="_self">
-					<img src="https://imgs.search.brave.com/exHFH84UG02XfMFZkdBeIb7KS2SwlaBhKnSxfjbjrVw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/aWNvbnM4LmNvbS9z/Zi1ibGFjay1maWxs/ZWQvMTIwMC9jaGF0/LmpwZw" alt="Chat" class="rounded-image">
+			<a href="/tools/chat.html" target="_self">
+				<img src="https://imgs.search.brave.com/exHFH84UG02XfMFZkdBeIb7KS2SwlaBhKnSxfjbjrVw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/aWNvbnM4LmNvbS9z/Zi1ibGFjay1maWxs/ZWQvMTIwMC9jaGF0/LmpwZw" alt="Chat" class="rounded-image">
 					</a>
-					<a href="/tools/dylm.html" target="_self">
-						<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/352.png" alt="Dont You Lecture Me" class="rounded-image">
+				<a href="/tools/dylm.html" target="_self">
+					<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/352.png" alt="Dont You Lecture Me" class="rounded-image">
 					</a>
-						<a href="/tools/draw.html" target="_self">
-							<img src="https://files.catbox.moe/y0eon6.png" alt="Drawing Pad" class="rounded-image">
+					<a href="/tools/draw.html" target="_self">
+						<img src="https://files.catbox.moe/y0eon6.png" alt="Drawing Pad" class="rounded-image">
 					</a>
-							<a href="/tools/emulator.html" target="_self">
-								<img src="https://files.catbox.moe/6cnpz3.png" alt="Emulator" class="rounded-image">
+						<a href="/tools/emulator.html" target="_self">
+							<img src="https://files.catbox.moe/6cnpz3.png" alt="Emulator" class="rounded-image">
 					</a>
-								<a href="/tools/ext.html" target="_self">
-									<img src="https://raw.githubusercontent.com/Blobby-Boi/ExtHang3r/refs/heads/main/favicon.png" alt="ExtHang3r" class="rounded-image">
+							<a href="/tools/ext.html" target="_self">
+								<img src="https://raw.githubusercontent.com/Blobby-Boi/ExtHang3r/refs/heads/main/favicon.png" alt="ExtHang3r" class="rounded-image">
 					</a>
-									<a href="/tools/extp.html" target="_self">
-										<img src="https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/icon.png" alt="ExtPrint3r" class="rounded-image">
+								<a href="/tools/extp.html" target="_self">
+									<img src="https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/icon.png" alt="ExtPrint3r" class="rounded-image">
 					</a>
-	
-										<a href="/tools/html.html" target="_self">
-											<img src="https://imgs.search.brave.com/G_UWyzLjS1t3fyG24SPTwgcWvz7ZDuj7cyh1jlW9wFk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG40/Lmljb25maW5kZXIu/Y29tL2RhdGEvaWNv/bnMvbG9nb3MtYW5k/LWJyYW5kcy81MTIv/MTY3X0h0bWw1X2xv/Z29fbG9nb3MtNTEy/LnBuZw" alt="HTML Editor" class="rounded-image">
-											<a href="/tools/orionlauncher.html" target="_self">
-												<img src="https://files.catbox.moe/dr9thz.png" alt="Orion v1 (Music)" class="rounded-image">
+
+									<a href="/tools/html.html" target="_self">
+										<img src="https://imgs.search.brave.com/G_UWyzLjS1t3fyG24SPTwgcWvz7ZDuj7cyh1jlW9wFk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG40/Lmljb25maW5kZXIu/Y29tL2RhdGEvaWNv/bnMvbG9nb3MtYW5k/LWJyYW5kcy81MTIv/MTY3X0h0bWw1X2xv/Z29fbG9nb3MtNTEy/LnBuZw" alt="HTML Editor" class="rounded-image">
+										<a href="/tools/orionlauncher.html" target="_self">
+											<img src="https://files.catbox.moe/dr9thz.png" alt="Orion v1 (Music)" class="rounded-image">
 												</a>
-												<a href="/tools/ruffle.html" target="_self">
-													<img src="https://truffled.lol/png/tools/ruf.png" alt="Ruffle Emulator" class="rounded-image">
+											<a href="/tools/ruffle.html" target="_self">
+												<img src="https://truffled.lol/png/tools/ruf.png" alt="Ruffle Emulator" class="rounded-image">
 					</a>
-													<a href="/tools/shimmer.html" target="_self">
-														<img src="https://truffled.lol/tools/sh1mmer/assets/icon.png" alt="SH1MMER" class="rounded-image">
+												<a href="/tools/shimmer.html" target="_self">
+													<img src="https://truffled.lol/tools/sh1mmer/assets/icon.png" alt="SH1MMER" class="rounded-image">
 					</a>
-														<a href="/tools/soundboard.html" target="_self">
-															<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/179.png" alt="Soundboard" class="rounded-image">
+													<a href="/tools/soundboard.html" target="_self">
+														<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/179.png" alt="Soundboard" class="rounded-image">
 					</a>
-															<a href="/tools/weavesilk.html" target="_self">
-																<img src="https://imgs.search.brave.com/_TAO0YnMTR57IguUZPMEurxgD0z6hq4p2ACftyf9kis/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c2VvbXJhcmFuZ2Eu/Y29tL3dwLWNvbnRl/bnQvdXBsb2Fkcy8y/MDIzLzA5L3dlYXZl/c2lsazAyYi0yODF4/MzAwLnBuZw" alt="Weavesilk" class="rounded-image">
+														<a href="/tools/weavesilk.html" target="_self">
+															<img src="https://imgs.search.brave.com/_TAO0YnMTR57IguUZPMEurxgD0z6hq4p2ACftyf9kis/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c2VvbXJhcmFuZ2Eu/Y29tL3dwLWNvbnRl/bnQvdXBsb2Fkcy8y/MDIzLzA5L3dlYXZl/c2lsazAyYi0yODF4/MzAwLnBuZw" alt="Weavesilk" class="rounded-image">
 																			</a>
-	
-																<a href="/tools/spade.html" target="_self">
-																	<img src="https://files.catbox.moe/r5y3hx.png" alt="Spade" class="rounded-image">
+
+															<a href="/tools/spade.html" target="_self">
+																<img src="https://files.catbox.moe/r5y3hx.png" alt="Spade" class="rounded-image">
 					</a>
-																	<a href="/tools/fluidsim.html" target="_self">
-																		<img src="https://pizzaedition.win/images/games/webglfluid.png" alt="WebGL Fluids" class="rounded-image">
+																<a href="/tools/fluidsim.html" target="_self">
+																	<img src="https://pizzaedition.win/images/games/webglfluid.png" alt="WebGL Fluids" class="rounded-image">
 					</a>
-																		<a href="/tools/yt.html" target="_self">
-																			<img src="https://imgs.search.brave.com/MkH54pMOvJW5e9WQPLn9wZOVRzTCo5F0CwFq86vT-IE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzA1LzQ4LzUxLzU0/LzM2MF9GXzU0ODUx/NTQ3N19YemZjd3A1/ZmwxZmZoYmM1c08z/a0hrd3JMSFFRVW1N/OS5qcGc" alt="Youtube" class="rounded-image">
+																	<a href="/tools/yt.html" target="_self">
+																		<img src="https://imgs.search.brave.com/MkH54pMOvJW5e9WQPLn9wZOVRzTCo5F0CwFq86vT-IE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzA1LzQ4LzUxLzU0/LzM2MF9GXzU0ODUx/NTQ3N19YemZjd3A1/ZmwxZmZoYmM1c08z/a0hrd3JMSFFRVW1N/OS5qcGc" alt="Youtube" class="rounded-image">
 					</a>
 		</div>
 	</div>
 
 	<script>
-		// collect all game names
-		var gameNames = [];
-		var gameLinks = {};
+		// collect all game names with images
+		var gameData = [];
 		var images = document.querySelectorAll('.rounded-image');
 		
 		for (var i = 0; i < images.length; i++) {
-			var gameName = images[i].alt;
-			var gameLink = images[i].parentElement.href;
-			gameNames.push(gameName);
-			gameLinks[gameName] = gameLink;
+			gameData.push({
+				name: images[i].alt,
+				link: images[i].parentElement.href,
+				image: images[i].src
+			});
 		}
 
 		// tooltip stuff
@@ -296,20 +312,33 @@
 				this.classList.add('typing');
 				
 				// filter suggestions
-				var matches = gameNames.filter(function(name) {
-					return name.toLowerCase().indexOf(searchTerm) !== -1;
+				var matches = gameData.filter(function(game) {
+					return game.name.toLowerCase().indexOf(searchTerm) !== -1;
 				});
 
-				// show suggestions
+				// show suggestions with images
 				if (matches.length > 0) {
 					suggestionsBox.innerHTML = '';
-					matches.slice(0, 8).forEach(function(match) {
+					matches.slice(0, 4).forEach(function(game) {
 						var item = document.createElement('div');
 						item.className = 'suggestion-item';
-						item.textContent = match;
+						
+						var img = document.createElement('img');
+						img.src = game.image;
+						img.className = 'suggestion-image';
+						img.alt = game.name;
+						
+						var name = document.createElement('span');
+						name.className = 'suggestion-name';
+						name.textContent = game.name;
+						
+						item.appendChild(img);
+						item.appendChild(name);
+						
 						item.addEventListener('click', function() {
-							window.location.href = gameLinks[match];
+							window.location.href = game.link;
 						});
+						
 						suggestionsBox.appendChild(item);
 					});
 					suggestionsBox.classList.add('show');
@@ -364,7 +393,7 @@
 				updateSelectedSuggestion(suggestionItems);
 			} else if (e.key === 'Enter' && selectedIndex >= 0) {
 				e.preventDefault();
-				window.location.href = gameLinks[suggestionItems[selectedIndex].textContent];
+				suggestionItems[selectedIndex].click();
 			}
 		});
 
