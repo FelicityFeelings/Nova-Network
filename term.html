@@ -28,11 +28,6 @@
 			display: flex;
 			flex-direction: column;
 			z-index: 1000;
-			transition: height 0.3s;
-		}
-
-		.terminal-container.collapsed {
-			height: 60px;
 		}
 
 		.terminal-header {
@@ -41,28 +36,12 @@
 			border-bottom: 1px solid #00ff00;
 			display: flex;
 			align-items: center;
-			justify-content: space-between;
 			padding: 0 20px;
 		}
 
 		.terminal-title {
 			color: #00ff00;
 			font-size: 14px;
-		}
-
-		.terminal-toggle {
-			background: none;
-			border: 1px solid #00ff00;
-			color: #00ff00;
-			padding: 5px 15px;
-			cursor: pointer;
-			transition: all 0.2s;
-			font-family: 'Courier New', monospace;
-		}
-
-		.terminal-toggle:hover {
-			background: #00ff00;
-			color: #000;
 		}
 
 		.terminal-output {
@@ -137,11 +116,6 @@
 			left: 0;
 			right: 0;
 			bottom: 30px;
-			transition: top 0.3s;
-		}
-
-		.terminal-container.collapsed + .content {
-			top: 60px;
 		}
 
 		iframe {
@@ -317,7 +291,6 @@
 	<div class="terminal-container" id="terminal">
 		<div class="terminal-header">
 			<div class="terminal-title">NOVA_TERMINAL v1.0.0 // <span class="blink">█</span></div>
-			<button class="terminal-toggle" id="toggleBtn">MINIMIZE</button>
 		</div>
 		<div class="terminal-output" id="output">
 			<div class="output-line">Welcome to Nova Terminal v1.0.0</div>
@@ -471,9 +444,10 @@
 					addOutput('Previous track', 'output-success');
 				}
 			} else if (trimmed === '/fullscreen') {
+				const iframeContainer = frame;
 				if (!document.fullscreenElement) {
-					document.documentElement.requestFullscreen();
-					addOutput('Entering fullscreen...', 'output-success');
+					iframeContainer.requestFullscreen();
+					addOutput('Entering iframe fullscreen...', 'output-success');
 				} else {
 					document.exitFullscreen();
 					addOutput('Exiting fullscreen...', 'output-success');
@@ -511,11 +485,6 @@
 					terminalInput.value = '';
 				}
 			}
-		});
-
-		document.getElementById('toggleBtn').addEventListener('click', function() {
-			terminal.classList.toggle('collapsed');
-			this.textContent = terminal.classList.contains('collapsed') ? 'MAXIMIZE' : 'MINIMIZE';
 		});
 
 		// Music functions
@@ -601,8 +570,9 @@
 		});
 
 		document.getElementById('fullscreenBtn').addEventListener('click', function() {
+			const iframeContainer = frame;
 			if (!document.fullscreenElement) {
-				document.documentElement.requestFullscreen();
+				iframeContainer.requestFullscreen();
 			} else {
 				document.exitFullscreen();
 			}
