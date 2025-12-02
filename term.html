@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Nova Terminal</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<style>
+		* { margin: 0; padding: 0; box-sizing: border-box; }
+		
+		body {
+			background: #000;
+			color: #00ff00;
+			font-family: 'Courier New', monospace;
+			overflow: hidden;
+			height: 100vh;
+		}
+
+		.terminal-container {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 250px;
+			background: rgba(0,0,0,0.98);
+			border-bottom: 2px solid #00ff00;
+			display: flex;
+			flex-direction: column;
+			z-index: 1000;
+			transition: height 0.3s;
+		}
+
+		.terminal-container.collapsed {
+			height: 60px;
+		}
+
+		.terminal-header {
+			height: 40px;
+			background: #0a0a0a;
+			border-bottom: 1px solid #00ff00;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 20px;
+		}
+
+		.terminal-title {
+			color: #00ff00;
+			font-size: 14px;
+		}
+
+		.terminal-toggle {
+			background: none;
+			border: 1px solid #00ff00;
+			color: #00ff00;
+			padding: 5px 15px;
+			cursor: pointer;
+			transition: all 0.2s;
+			font-family: 'Courier New', monospace;
+		}
+
+		.terminal-toggle:hover {
+			background: #00ff00;
+			color: #000;
+		}
+
+		.terminal-output {
+			flex: 1;
+			overflow-y: auto;
+			padding: 15px 20px;
+			font-size: 14px;
+			line-height: 1.6;
+		}
+
+		.terminal-output::-webkit-scrollbar {
+			width: 8px;
+		}
+
+		.terminal-output::-webkit-scrollbar-thumb {
+			background: #00ff00;
+		}
+
+		.output-line {
+			margin-bottom: 5px;
+		}
+
+		.output-error {
+			color: #ff0000;
+		}
+
+		.output-success {
+			color: #00ffff;
+		}
+
+		.output-info {
+			color: #ffff00;
+		}
+
+		.terminal-input-container {
+			height: 50px;
+			background: #0a0a0a;
+			border-top: 1px solid #00ff00;
+			display: flex;
+			align-items: center;
+			padding: 0 20px;
+			gap: 10px;
+		}
+
+		.terminal-prompt {
+			color: #00ff00;
+			font-size: 14px;
+		}
+
+		.terminal-input {
+			flex: 1;
+			background: transparent;
+			border: none;
+			color: #00ff00;
+			font-family: 'Courier New', monospace;
+			font-size: 14px;
+			outline: none;
+		}
+
+		.blink {
+			animation: blink 1s infinite;
+		}
+
+		@keyframes blink {
+			0%, 50%, 100% { opacity: 1; }
+			25%, 75% { opacity: 0; }
+		}
+
+		.content {
+			position: absolute;
+			top: 250px;
+			left: 0;
+			right: 0;
+			bottom: 30px;
+			transition: top 0.3s;
+		}
+
+		.terminal-container.collapsed + .content {
+			top: 60px;
+		}
+
+		iframe {
+			width: 100%;
+			height: 100%;
+			border: 0;
+			background: #0a0a0a;
+		}
+
+		.status-bar {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			height: 30px;
+			background: #0a0a0a;
+			border-top: 1px solid #00ff00;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 20px;
+			z-index: 999;
+			font-size: 12px;
+		}
+
+		.status-left {
+			display: flex;
+			gap: 20px;
+		}
+
+		.status-item {
+			cursor: pointer;
+			transition: color 0.2s;
+		}
+
+		.status-item:hover {
+			color: #00ffff;
+		}
+
+		.music-panel {
+			position: fixed;
+			bottom: 40px;
+			right: 20px;
+			width: 350px;
+			background: rgba(0,0,0,0.98);
+			border: 2px solid #00ff00;
+			padding: 15px;
+			z-index: 998;
+			opacity: 0;
+			pointer-events: none;
+			transition: all 0.3s;
+			max-height: 400px;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.music-panel.active {
+			opacity: 1;
+			pointer-events: all;
+		}
+
+		.music-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 15px;
+			padding-bottom: 10px;
+			border-bottom: 1px solid #00ff00;
+		}
+
+		.music-title {
+			font-weight: bold;
+		}
+
+		.music-info {
+			margin-bottom: 15px;
+		}
+
+		.music-track {
+			font-size: 14px;
+			margin-bottom: 5px;
+		}
+
+		.music-artist {
+			font-size: 12px;
+			opacity: 0.6;
+		}
+
+		.music-controls {
+			display: flex;
+			gap: 10px;
+			margin-bottom: 15px;
+		}
+
+		.music-btn {
+			flex: 1;
+			background: transparent;
+			border: 1px solid #00ff00;
+			color: #00ff00;
+			padding: 8px;
+			cursor: pointer;
+			transition: all 0.2s;
+			font-family: 'Courier New', monospace;
+		}
+
+		.music-btn:hover {
+			background: #00ff00;
+			color: #000;
+		}
+
+		.progress-container {
+			margin-bottom: 15px;
+		}
+
+		.progress-bar-container {
+			width: 100%;
+			height: 4px;
+			background: #1a1a1a;
+			cursor: pointer;
+			margin-bottom: 5px;
+		}
+
+		.progress-bar-fill {
+			height: 100%;
+			background: #00ff00;
+			width: 0%;
+			transition: width 0.1s;
+		}
+
+		.progress-time {
+			display: flex;
+			justify-content: space-between;
+			font-size: 11px;
+			opacity: 0.6;
+		}
+
+		.playlist-container {
+			flex: 1;
+			overflow-y: auto;
+			border-top: 1px solid #00ff00;
+			padding-top: 10px;
+		}
+
+		.playlist-item {
+			padding: 8px;
+			cursor: pointer;
+			transition: all 0.2s;
+			border: 1px solid transparent;
+			margin-bottom: 5px;
+			font-size: 12px;
+		}
+
+		.playlist-item:hover {
+			border-color: #00ff00;
+			background: rgba(0,255,0,0.05);
+		}
+
+		.playlist-item.active {
+			border-color: #00ffff;
+			background: rgba(0,255,255,0.1);
+		}
+
+		.playlist-container::-webkit-scrollbar {
+			width: 4px;
+		}
+
+		.playlist-container::-webkit-scrollbar-thumb {
+			background: #00ff00;
+		}
+	</style>
+</head>
+<body>
+	<div class="terminal-container" id="terminal">
+		<div class="terminal-header">
+			<div class="terminal-title">NOVA_TERMINAL v1.0.0 // <span class="blink">█</span></div>
+			<button class="terminal-toggle" id="toggleBtn">MINIMIZE</button>
+		</div>
+		<div class="terminal-output" id="output">
+			<div class="output-line">Welcome to Nova Terminal v1.0.0</div>
+			<div class="output-line">Type /help for available commands</div>
+			<div class="output-line">═══════════════════════════════════════════════════</div>
+		</div>
+		<div class="terminal-input-container">
+			<span class="terminal-prompt">root@nova:~$</span>
+			<input type="text" class="terminal-input" id="terminalInput" autocomplete="off" spellcheck="false">
+		</div>
+	</div>
+
+	<div class="content">
+		<iframe id="frame" src="/nova/home.html"></iframe>
+	</div>
+
+	<div class="status-bar">
+		<div class="status-left">
+			<span id="currentPage">HOME</span>
+			<span>|</span>
+			<span class="status-item" id="musicStatus">MUSIC: OFF</span>
+			<span>|</span>
+			<span class="status-item" id="fullscreenBtn">FULLSCREEN</span>
+		</div>
+		<div id="timeDisplay"></div>
+	</div>
+
+	<div class="music-panel" id="musicPanel">
+		<div class="music-header">
+			<span class="music-title">MUSIC PLAYER</span>
+			<span style="cursor: pointer;" id="closeMusic">✕</span>
+		</div>
+		<div class="music-info">
+			<div class="music-track" id="trackName">NO TRACK</div>
+			<div class="music-artist" id="trackArtist">---</div>
+		</div>
+		<div class="music-controls">
+			<button class="music-btn" id="prevBtn">◄◄</button>
+			<button class="music-btn" id="playBtn">▶</button>
+			<button class="music-btn" id="nextBtn">►►</button>
+		</div>
+		<div class="progress-container">
+			<div class="progress-bar-container" id="progressContainer">
+				<div class="progress-bar-fill" id="progressFill"></div>
+			</div>
+			<div class="progress-time">
+				<span id="currentTime">0:00</span>
+				<span id="totalTime">0:00</span>
+			</div>
+		</div>
+		<div class="playlist-container" id="playlistContainer"></div>
+	</div>
+
+	<audio id="audio"></audio>
+
+	<script>
+		const terminal = document.getElementById('terminal');
+		const output = document.getElementById('output');
+		const terminalInput = document.getElementById('terminalInput');
+		const frame = document.getElementById('frame');
+		const currentPageText = document.getElementById('currentPage');
+		const audio = document.getElementById('audio');
+		const musicPanel = document.getElementById('musicPanel');
+		const musicStatus = document.getElementById('musicStatus');
+
+		let commandHistory = [];
+		let historyIndex = -1;
+		let currentTrack = 0;
+		let musicActive = false;
+
+		const tracks = [
+			{ title: 'RAINY_DAY.mp3', artist: 'NOVA_NETWORK', url: '/music/rainyday.mp3' },
+			{ title: 'NIGHT_WALK.mp3', artist: 'NOVA_NETWORK', url: '/music/walk.mp3' },
+			{ title: 'SHOOTING_STARS.mp3', artist: 'NOVA_NETWORK', url: '/music/stars.mp3' },
+			{ title: 'GOOD_NIGHT.mp3', artist: 'FASS_SOUNDS', url: '/music/night.mp3' },
+			{ title: 'LOFI_STUDY.mp3', artist: 'FASS_SOUNDS', url: '/music/study.mp3' }
+		];
+
+		const commands = {
+			'/home': { url: '/nova/home.html', desc: 'Navigate to home page' },
+			'/search': { url: '/nova/search.html', desc: 'Navigate to search page' },
+			'/games': { url: '/nova/games.html', desc: 'Navigate to games page' },
+			'/tools': { url: '/nova/tools.html', desc: 'Navigate to tools page' },
+			'/media': { url: '/nova/media/index.html', desc: 'Navigate to media page' },
+			'/extras': { url: '/nova/extras.html', desc: 'Navigate to extras page' }
+		};
+
+		function addOutput(text, type = '') {
+			const line = document.createElement('div');
+			line.className = 'output-line ' + type;
+			line.textContent = text;
+			output.appendChild(line);
+			output.scrollTop = output.scrollHeight;
+		}
+
+		function processCommand(cmd) {
+			const trimmed = cmd.trim().toLowerCase();
+			addOutput('root@nova:~$ ' + cmd);
+
+			if (!trimmed) return;
+
+			if (trimmed === '/help') {
+				addOutput('═══════════════════════════════════════════════════', 'output-info');
+				addOutput('AVAILABLE COMMANDS:', 'output-success');
+				addOutput('═══════════════════════════════════════════════════', 'output-info');
+				Object.keys(commands).forEach(key => {
+					addOutput(`  ${key.padEnd(15)} - ${commands[key].desc}`);
+				});
+				addOutput('  /music         - Toggle music player');
+				addOutput('  /play          - Play/pause music');
+				addOutput('  /next          - Next track');
+				addOutput('  /prev          - Previous track');
+				addOutput('  /fullscreen    - Toggle fullscreen mode');
+				addOutput('  /clear         - Clear terminal output');
+				addOutput('  /help          - Show this help message');
+				addOutput('═══════════════════════════════════════════════════', 'output-info');
+			} else if (commands[trimmed]) {
+				frame.src = commands[trimmed].url;
+				currentPageText.textContent = trimmed.substring(1).toUpperCase();
+				addOutput(`Loading ${trimmed}...`, 'output-success');
+			} else if (trimmed === '/music') {
+				musicActive = !musicActive;
+				musicPanel.classList.toggle('active', musicActive);
+				musicStatus.textContent = musicActive ? 'MUSIC: ON' : 'MUSIC: OFF';
+				addOutput(`Music player ${musicActive ? 'enabled' : 'disabled'}`, 'output-success');
+				if (!musicActive && !audio.paused) audio.pause();
+			} else if (trimmed === '/play') {
+				if (!musicActive) {
+					addOutput('Music player is disabled. Use /music to enable', 'output-error');
+				} else {
+					if (audio.paused) {
+						audio.play();
+						addOutput('Playing', 'output-success');
+					} else {
+						audio.pause();
+						addOutput('Paused', 'output-success');
+					}
+				}
+			} else if (trimmed === '/next') {
+				if (!musicActive) {
+					addOutput('Music player is disabled. Use /music to enable', 'output-error');
+				} else {
+					loadTrack((currentTrack + 1) % tracks.length, !audio.paused);
+					addOutput('Next track', 'output-success');
+				}
+			} else if (trimmed === '/prev') {
+				if (!musicActive) {
+					addOutput('Music player is disabled. Use /music to enable', 'output-error');
+				} else {
+					loadTrack((currentTrack - 1 + tracks.length) % tracks.length, !audio.paused);
+					addOutput('Previous track', 'output-success');
+				}
+			} else if (trimmed === '/fullscreen') {
+				if (!document.fullscreenElement) {
+					document.documentElement.requestFullscreen();
+					addOutput('Entering fullscreen...', 'output-success');
+				} else {
+					document.exitFullscreen();
+					addOutput('Exiting fullscreen...', 'output-success');
+				}
+			} else if (trimmed === '/clear') {
+				output.innerHTML = '';
+			} else {
+				addOutput(`Command not found: ${trimmed}`, 'output-error');
+				addOutput('Type /help for available commands', 'output-info');
+			}
+		}
+
+		terminalInput.addEventListener('keydown', function(e) {
+			if (e.key === 'Enter') {
+				const cmd = terminalInput.value;
+				if (cmd.trim()) {
+					commandHistory.push(cmd);
+					historyIndex = commandHistory.length;
+					processCommand(cmd);
+				}
+				terminalInput.value = '';
+			} else if (e.key === 'ArrowUp') {
+				e.preventDefault();
+				if (historyIndex > 0) {
+					historyIndex--;
+					terminalInput.value = commandHistory[historyIndex];
+				}
+			} else if (e.key === 'ArrowDown') {
+				e.preventDefault();
+				if (historyIndex < commandHistory.length - 1) {
+					historyIndex++;
+					terminalInput.value = commandHistory[historyIndex];
+				} else {
+					historyIndex = commandHistory.length;
+					terminalInput.value = '';
+				}
+			}
+		});
+
+		document.getElementById('toggleBtn').addEventListener('click', function() {
+			terminal.classList.toggle('collapsed');
+			this.textContent = terminal.classList.contains('collapsed') ? 'MAXIMIZE' : 'MINIMIZE';
+		});
+
+		// Music functions
+		function loadTrack(index, autoplay) {
+			currentTrack = index;
+			audio.src = tracks[index].url;
+			document.getElementById('trackName').textContent = tracks[index].title;
+			document.getElementById('trackArtist').textContent = tracks[index].artist;
+			updatePlaylist();
+			if (autoplay) audio.play();
+		}
+
+		document.getElementById('playBtn').addEventListener('click', function() {
+			if (audio.paused) audio.play();
+			else audio.pause();
+		});
+
+		document.getElementById('prevBtn').addEventListener('click', function() {
+			loadTrack((currentTrack - 1 + tracks.length) % tracks.length, !audio.paused);
+		});
+
+		document.getElementById('nextBtn').addEventListener('click', function() {
+			loadTrack((currentTrack + 1) % tracks.length, !audio.paused);
+		});
+
+		document.getElementById('progressContainer').addEventListener('click', function(e) {
+			const rect = this.getBoundingClientRect();
+			audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+		});
+
+		audio.addEventListener('timeupdate', function() {
+			if (audio.duration) {
+				document.getElementById('progressFill').style.width = 
+					(audio.currentTime / audio.duration * 100) + '%';
+				document.getElementById('currentTime').textContent = formatTime(audio.currentTime);
+				document.getElementById('totalTime').textContent = formatTime(audio.duration);
+			}
+		});
+
+		audio.addEventListener('play', function() {
+			document.getElementById('playBtn').textContent = '❚❚';
+		});
+		
+		audio.addEventListener('pause', function() {
+			document.getElementById('playBtn').textContent = '▶';
+		});
+		
+		audio.addEventListener('ended', function() {
+			loadTrack((currentTrack + 1) % tracks.length, true);
+		});
+
+		function updatePlaylist() {
+			const container = document.getElementById('playlistContainer');
+			container.innerHTML = '';
+			tracks.forEach(function(t, i) {
+				const div = document.createElement('div');
+				div.className = 'playlist-item' + (i === currentTrack ? ' active' : '');
+				div.textContent = (i === currentTrack ? '► ' : '  ') + t.title;
+				div.addEventListener('click', function() {
+					loadTrack(i, !audio.paused);
+				});
+				container.appendChild(div);
+			});
+		}
+
+		function formatTime(sec) {
+			const m = Math.floor(sec / 60);
+			const s = Math.floor(sec % 60);
+			return m + ':' + (s < 10 ? '0' : '') + s;
+		}
+
+		document.getElementById('closeMusic').addEventListener('click', function() {
+			musicActive = false;
+			musicPanel.classList.remove('active');
+			musicStatus.textContent = 'MUSIC: OFF';
+		});
+
+		musicStatus.addEventListener('click', function() {
+			musicActive = !musicActive;
+			musicPanel.classList.toggle('active', musicActive);
+			musicStatus.textContent = musicActive ? 'MUSIC: ON' : 'MUSIC: OFF';
+			if (!musicActive && !audio.paused) audio.pause();
+		});
+
+		document.getElementById('fullscreenBtn').addEventListener('click', function() {
+			if (!document.fullscreenElement) {
+				document.documentElement.requestFullscreen();
+			} else {
+				document.exitFullscreen();
+			}
+		});
+
+		// Time display
+		function updateTime() {
+			const now = new Date();
+			const hours = now.getHours().toString().padStart(2, '0');
+			const minutes = now.getMinutes().toString().padStart(2, '0');
+			const seconds = now.getSeconds().toString().padStart(2, '0');
+			document.getElementById('timeDisplay').textContent = hours + ':' + minutes + ':' + seconds;
+		}
+		setInterval(updateTime, 1000);
+		updateTime();
+
+		loadTrack(0, false);
+		audio.volume = 0.7;
+		terminalInput.focus();
+	</script>
+</body>
+</html>
