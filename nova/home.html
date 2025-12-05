@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Home - Nova Terminal</title>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<title>Home</title>
 	<style>
 		* {
 			margin: 0;
@@ -13,9 +13,9 @@
 		}
 
 		body {
-			background: #000;
-			color: #00ff00;
-			font-family: 'Courier New', monospace;
+			margin: 0;
+			background: black;
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 			display: flex;
 			justify-content: center;
 			align-items: center;
@@ -23,6 +23,7 @@
 			padding: 20px;
 			overflow: hidden;
 			position: relative;
+			z-index: 0;
 		}
 
 		canvas {
@@ -35,91 +36,110 @@
 			pointer-events: none;
 		}
 
-		.terminal-dash {
+		.dashboard {
 			position: relative;
-			background: rgba(0, 0, 0, 0.95);
-			border: 2px solid #00ff00;
-			padding: 30px;
-			max-width: 700px;
+			background: rgba(0, 0, 0, 0.15);
+			backdrop-filter: blur(10px);
+			border-radius: 24px;
+			padding: 40px;
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			max-width: 600px;
 			width: 100%;
 			z-index: 1;
 		}
 
-		.header-bar {
-			border-bottom: 1px solid #00ff00;
-			padding-bottom: 15px;
-			margin-bottom: 20px;
+		.network-header {
 			text-align: center;
+			margin-bottom: 24px;
+			padding-bottom: 20px;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 		}
 
-		.title {
-			font-size: 24px;
-			font-weight: bold;
-			letter-spacing: 2px;
-			text-shadow: 0 0 10px #00ff00;
-		}
-
-		.message-box {
-			background: rgba(0, 255, 0, 0.05);
-			border: 1px solid #00ff00;
-			padding: 20px;
-			margin-bottom: 25px;
-			text-align: center;
-		}
-
-		.message-icon {
-			font-size: 32px;
-			margin-bottom: 10px;
-		}
-
-		.message-title {
-			font-size: 20px;
-			font-weight: bold;
-			margin-bottom: 8px;
-			text-transform: uppercase;
-		}
-
-		.message-text {
-			font-size: 14px;
-			opacity: 0.8;
-			line-height: 1.5;
-		}
-
-		.info-grid {
-			display: grid;
-			grid-template-columns: repeat(3, 1fr);
-			gap: 15px;
-		}
-
-		.info-box {
-			background: rgba(0, 255, 0, 0.03);
-			border: 1px solid #00ff00;
-			padding: 20px 15px;
-			text-align: center;
-			transition: all 0.2s;
-		}
-
-		.info-box:hover {
-			background: rgba(0, 255, 0, 0.08);
-			box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
-		}
-
-		.info-icon {
-			font-size: 24px;
-			margin-bottom: 10px;
-		}
-
-		.info-label {
-			font-size: 12px;
-			font-weight: bold;
-			margin-bottom: 8px;
-			text-transform: uppercase;
+		.network-title {
+			color: #ffffff;
+			font-size: 1.8rem;
+			font-weight: 700;
+			text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 			letter-spacing: 1px;
 		}
 
-		.info-value {
-			font-size: 13px;
-			opacity: 0.9;
+		.message-section {
+			background: rgba(0, 0, 0, 0.2);
+			border-radius: 16px;
+			padding: 24px;
+			margin-bottom: 32px;
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			text-align: center;
+			transition: all 0.3s ease;
+		}
+
+		.message-section:hover {
+			background: rgba(0, 0, 0, 0.3);
+			transform: translateY(-2px);
+		}
+
+		.message-icon i {
+			font-size: 32px;
+			color: white;
+			margin-bottom: 8px;
+		}
+
+		.message-title {
+			color: #ffffff;
+			font-size: 1.5rem;
+			font-weight: 600;
+			margin-bottom: 8px;
+		}
+
+		.message-text {
+			color: #cccccc;
+			font-size: 1rem;
+			line-height: 1.4;
+		}
+
+		.status-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 20px;
+			margin-bottom: 20px;
+		}
+
+		.status-item {
+			text-align: center;
+			background: rgba(0, 0, 0, 0.15);
+			border-radius: 12px;
+			padding: 20px 16px;
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			transition: all 0.3s ease;
+		}
+
+		.status-item:hover {
+			background: rgba(0, 0, 0, 0.25);
+			transform: translateY(-2px);
+		}
+
+		.status-icon i {
+			font-size: 24px;
+			color: white;
+			margin-bottom: 8px;
+		}
+
+		.battery-icon i {
+			color: white;
+		}
+
+		.status-label {
+			color: #ffffff;
+			font-size: 0.9rem;
+			font-weight: 500;
+			margin-bottom: 4px;
+		}
+
+		.status-value {
+			color: #cccccc;
+			font-size: 0.85rem;
+			font-weight: 400;
 		}
 
 		.battery-charging {
@@ -127,84 +147,93 @@
 		}
 
 		.battery-low {
-			color: #ff0000 !important;
+			color: #ff6b6b !important;
 		}
 
 		.battery-medium {
-			color: #ffff00 !important;
+			color: #ffd93d !important;
 		}
 
 		.battery-high {
-			color: #00ff00 !important;
+			color: #6bcf7f !important;
 		}
 
 		@keyframes pulse {
-			0%, 100% { opacity: 1; }
-			50% { opacity: 0.5; }
-		}
 
-		.blink {
-			animation: blink 1s infinite;
-		}
-
-		@keyframes blink {
-			0%, 50%, 100% { opacity: 1; }
-			25%, 75% { opacity: 0; }
-		}
-
-		@media (max-width: 600px) {
-			.terminal-dash {
-				padding: 20px;
+			0%,
+			100% {
+				opacity: 1;
 			}
 
-			.info-grid {
+			50% {
+				opacity: 0.7;
+			}
+		}
+
+		@media (max-width: 480px) {
+			.dashboard {
+				padding: 24px;
+			}
+
+			.status-grid {
 				grid-template-columns: 1fr;
-				gap: 12px;
+				gap: 16px;
 			}
 
-			.title {
-				font-size: 20px;
+			.message-title {
+				font-size: 1.3rem;
 			}
 		}
 	</style>
+	<link rel="stylesheet" href="https://vapor.my/_a/fa/css/all.min.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
+
 <body>
 	<canvas id="canvas"></canvas>
 
-	<div class="terminal-dash">
-		<div class="header-bar">
-			<div class="title">NOVA_NETWORK // HOME <span class="blink">█</span></div>
+	<div class="dashboard">
+		<div class="network-header">
+			<div class="network-title">Welcome to Nova Network</div>
 		</div>
 
-		<div class="message-box">
-			<div class="message-icon" id="messageIcon"><i class="fas fa-moon"></i></div>
-			<div class="message-title" id="messageTitle">SYSTEM_STATUS</div>
-			<div class="message-text" id="messageText">Initializing...</div>
+		<div class="message-section">
+			<div class="message-icon">
+				<i id="messageIcon" class="fas fa-moon"></i>
+			</div>
+			<div class="message-title" id="messageTitle">Good Day</div>
+			<div class="message-text" id="messageText">Loading Message</div>
 		</div>
 
-		<div class="info-grid">
-			<div class="info-box">
-				<div class="info-icon"><i class="fas fa-clock"></i></div>
-				<div class="info-label">TIME</div>
-				<div class="info-value" id="currentTime">--:--</div>
+		<div class="status-grid">
+			<div class="status-item">
+				<div class="status-icon">
+					<i class="fas fa-clock"></i>
+				</div>
+				<div class="status-label">Time</div>
+				<div class="status-value" id="currentTime">Loading Time</div>
 			</div>
 
-			<div class="info-box">
-				<div class="info-icon"><i class="fas fa-calendar-alt"></i></div>
-				<div class="info-label">DATE</div>
-				<div class="info-value" id="currentDate">Loading...</div>
+			<div class="status-item">
+				<div class="status-icon">
+					<i class="fas fa-calendar-alt"></i>
+				</div>
+				<div class="status-label">Date</div>
+				<div class="status-value" id="currentDate">Loading Date</div>
 			</div>
 
-			<div class="info-box" id="batteryBox">
-				<div class="info-icon" id="batteryIcon"><i class="fas fa-battery-full"></i></div>
-				<div class="info-label">BATTERY</div>
-				<div class="info-value" id="batteryStatus">---%</div>
+			<div class="status-item">
+				<div class="status-icon battery-icon" id="batteryIconContainer">
+					<i id="batteryIcon" class="fas fa-battery-full"></i>
+				</div>
+				<div class="status-label">Battery</div>
+				<div class="status-value" id="batteryStatus">Loading Battery</div>
 			</div>
 		</div>
 	</div>
 
 	<script>
-		// Canvas stars
+		// stars stuff
 		const canvas = document.getElementById('canvas');
 		const ctx = canvas.getContext('2d');
 		let stars = [];
@@ -240,8 +269,8 @@
 				}
 				
 				let gradient = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, star.size * 2.5);
-				gradient.addColorStop(0, 'rgba(0,255,0,' + (star.brightness * 0.3) + ')');
-				gradient.addColorStop(1, 'rgba(0,255,0,0)');
+				gradient.addColorStop(0, `rgba(255,255,255,${star.brightness})`);
+				gradient.addColorStop(1, "rgba(255,255,255,0)");
 				
 				ctx.fillStyle = gradient;
 				ctx.beginPath();
@@ -309,9 +338,9 @@
 				let w = m.length * m.size;
 				let h = 1;
 				let grad = ctx.createLinearGradient(0, 0, w, 0);
-				grad.addColorStop(0, 'rgba(0, 255, 0, 0)');
-				grad.addColorStop(0.7, 'rgba(0, 255, 0, 0.6)');
-				grad.addColorStop(1, 'rgba(0, 255, 0, 1)');
+				grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+				grad.addColorStop(0.7, 'rgba(255, 255, 255, 0.8)');
+				grad.addColorStop(1, 'rgba(255, 255, 255, 1)');
 				
 				ctx.fillStyle = grad;
 				ctx.fillRect(0, -h / 2, w, h);
@@ -342,25 +371,28 @@
 		doAnimation();
 		spawnMeteors();
 
-		// Time and date
+		// time and stuff
 		function updateTimeAndDate() {
 			let now = new Date();
 			let timeEl = document.getElementById('currentTime');
 			let dateEl = document.getElementById('currentDate');
 			
-			let hours = now.getHours();
-			let mins = now.getMinutes();
-			let secs = now.getSeconds();
-			timeEl.textContent = (hours < 10 ? '0' : '') + hours + ':' + 
-								 (mins < 10 ? '0' : '') + mins + ':' + 
-								 (secs < 10 ? '0' : '') + secs;
+			let timeStr = now.toLocaleTimeString('en-US', {
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: true
+			});
+			timeEl.textContent = timeStr;
 
-			let days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-			let months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-			dateEl.textContent = days[now.getDay()] + ' ' + months[now.getMonth()] + ' ' + 
-								 now.getDate() + ' ' + now.getFullYear();
+			let dateStr = now.toLocaleDateString('en-US', {
+				weekday: 'long',
+				year: 'numeric',
+				month: 'long',
+				day: 'numeric'
+			});
+			dateEl.textContent = dateStr;
 
-			updateGreeting(hours);
+			updateGreeting(now.getHours());
 		}
 
 		function updateGreeting(hour) {
@@ -369,32 +401,32 @@
 			let icon = document.getElementById('messageIcon');
 
 			if (hour >= 5 && hour < 12) {
-				icon.innerHTML = '<i class="fas fa-sun"></i>';
-				title.textContent = 'GOOD_MORNING';
-				text.textContent = '> A new day begins. Time to make it count.';
+				icon.className = "fas fa-sun";
+				title.textContent = 'Good morning';
+				text.textContent = 'A new day begins. Time to make it count.';
 			} else if (hour >= 12 && hour < 17) {
-				icon.innerHTML = '<i class="fas fa-cloud-sun"></i>';
-				title.textContent = 'GOOD_AFTERNOON';
-				text.textContent = '> Keep up the great work. You are doing amazing.';
+				icon.className = "fas fa-cloud-sun";
+				title.textContent = 'Good afternoon';
+				text.textContent = 'Keep up the great work. You\'re doing amazing.';
 			} else if (hour >= 17 && hour < 21) {
-				icon.innerHTML = '<i class="fas fa-cloud-moon"></i>';
-				title.textContent = 'GOOD_EVENING';
-				text.textContent = '> Time to wind down and reflect on the day.';
+				icon.className = "fas fa-cloud-moon";
+				title.textContent = 'Good evening';
+				text.textContent = 'Time to wind down and reflect on the day.';
 			} else {
-				icon.innerHTML = '<i class="fas fa-moon"></i>';
-				title.textContent = 'GOOD_NIGHT';
-				text.textContent = '> Sweet dreams and let peaceful rest await you.';
+				icon.className = "fas fa-moon";
+				title.textContent = 'Good night';
+				text.textContent = 'Sweet dreams and let peaceful rest await you.';
 			}
 		}
 
-		// Battery
+		// battery stuff - this was a pain to figure out
 		function getBatteryInfo() {
 			let icon = document.getElementById('batteryIcon');
 			let status = document.getElementById('batteryStatus');
-			let box = document.getElementById('batteryBox');
+			let container = document.getElementById('batteryIconContainer');
 
 			if (!navigator.getBattery) {
-				status.textContent = 'N/A';
+				status.textContent = 'Not supported';
 				return;
 			}
 
@@ -405,39 +437,56 @@
 					
 					let statusText = level + '%';
 					if (charging) {
-						statusText += ' CHG';
+						statusText += ' (Charging';
+						if (battery.chargingTime !== Infinity && battery.chargingTime > 0) {
+							let hours = Math.floor(battery.chargingTime / 3600);
+							let mins = Math.floor((battery.chargingTime % 3600) / 60);
+							if (hours > 0) statusText += ' - ' + hours + 'h ' + mins + 'm';
+							else if (mins > 0) statusText += ' - ' + mins + 'm';
+						}
+						statusText += ')';
+					} else if (battery.dischargingTime !== Infinity && battery.dischargingTime > 0) {
+						let hours = Math.floor(battery.dischargingTime / 3600);
+						let mins = Math.floor((battery.dischargingTime % 3600) / 60);
+						if (hours > 0) statusText += ' - ' + hours + 'h ' + mins + 'm left';
+						else if (mins > 0) statusText += ' - ' + mins + 'm left';
 					}
+
 					status.textContent = statusText;
 
 					if (charging) {
-						box.classList.add('battery-charging');
+						container.classList.add('battery-charging');
 					} else {
-						box.classList.remove('battery-charging');
+						container.classList.remove('battery-charging');
 					}
 
-					// Battery icon based on level
-					if (level > 87) icon.innerHTML = '<i class="fas fa-battery-full"></i>';
-					else if (level > 62) icon.innerHTML = '<i class="fas fa-battery-three-quarters"></i>';
-					else if (level > 37) icon.innerHTML = '<i class="fas fa-battery-half"></i>';
-					else if (level > 12) icon.innerHTML = '<i class="fas fa-battery-quarter"></i>';
-					else icon.innerHTML = '<i class="fas fa-battery-empty"></i>';
+					// icon based on level
+					if (level > 87) icon.className = "fas fa-battery-full";
+					else if (level > 62) icon.className = "fas fa-battery-three-quarters";
+					else if (level > 37) icon.className = "fas fa-battery-half";
+					else if (level > 12) icon.className = "fas fa-battery-quarter";
+					else icon.className = "fas fa-battery-empty";
 
-					box.classList.remove('battery-low', 'battery-medium', 'battery-high');
+					// colors
+					container.classList.remove('battery-low', 'battery-medium', 'battery-high');
 					if (level <= 20) {
-						box.classList.add('battery-low');
+						container.classList.add('battery-low');
 					} else if (level <= 50) {
-						box.classList.add('battery-medium');
+						container.classList.add('battery-medium');
 					} else {
-						box.classList.add('battery-high');
+						container.classList.add('battery-high');
 					}
 				}
 
 				updateBattery();
 				battery.addEventListener('chargingchange', updateBattery);
 				battery.addEventListener('levelchange', updateBattery);
+				battery.addEventListener('chargingtimechange', updateBattery);
+				battery.addEventListener('dischargingtimechange', updateBattery);
 				setInterval(updateBattery, 30000);
-			}).catch(function() {
-				status.textContent = 'ERR';
+			}).catch(function(err) {
+				console.log('battery error:', err);
+				status.textContent = 'Error';
 			});
 		}
 
@@ -446,4 +495,7 @@
 		setInterval(updateTimeAndDate, 1000);
 	</script>
 </body>
+
+</html>
+
 </html>
