@@ -5,21 +5,25 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Tools</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 	<style>
-		body {
+		* {
 			margin: 0;
 			padding: 0;
-			background-color: #151515;
-			overflow-y: scroll;
-			position: relative;
-			color: white;
-			font-family: 'Inter', sans-serif;
+			box-sizing: border-box;
 		}
 
-		/* search bar stuff */
+		body {
+			background-color: #151515;
+			color: white;
+			font-family: 'Inter', sans-serif;
+			overflow-y: scroll;
+		}
+
+		/* Search Bar */
 		#searchBar {
 			display: block;
-			margin: 30px auto 10px auto;
+			margin: 30px auto 10px;
 			padding: 12px 20px;
 			width: 60%;
 			max-width: 500px;
@@ -30,8 +34,6 @@
 			color: #222;
 			box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 			outline: none;
-			position: relative;
-			z-index: 10;
 			transition: all 0.15s ease;
 		}
 
@@ -40,26 +42,9 @@
 			max-width: 650px;
 			transform: scale(1.05);
 			box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
-			border-color: #ffffff;
 		}
 
-		.expanded {
-			width: 75%;
-			max-width: 650px;
-			transform: scale(1.05);
-			box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
-			border-color: #ffffff;
-		}
-
-		/* when typing animation */
-		.typing {
-			width: 80% !important;
-			max-width: 700px !important;
-			transform: scale(1.08) !important;
-			box-shadow: 0 0 35px rgba(255, 255, 255, 0.6) !important;
-		}
-
-		/* suggestions dropdown */
+		/* Suggestions */
 		#suggestions {
 			position: absolute;
 			left: 50%;
@@ -86,20 +71,12 @@
 			align-items: center;
 			padding: 10px 15px;
 			cursor: pointer;
-			color: white;
 			transition: background-color 0.1s ease;
 			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 			gap: 15px;
 		}
 
-		.suggestion-item:last-child {
-			border-bottom: none;
-		}
-
-		.suggestion-item:hover {
-			background-color: rgba(255, 255, 255, 0.1);
-		}
-
+		.suggestion-item:hover,
 		.suggestion-item.active {
 			background-color: rgba(255, 255, 255, 0.15);
 		}
@@ -112,11 +89,7 @@
 			border: 2px solid rgba(255, 255, 255, 0.2);
 		}
 
-		.suggestion-name {
-			font-size: 1rem;
-			font-weight: 500;
-		}
-
+		/* Tool Grid */
 		.container {
 			display: flex;
 			flex-direction: column;
@@ -133,7 +106,100 @@
 			margin: 10px 0;
 		}
 
-		/* mobile stuff */
+		.rounded-image {
+			width: 150px;
+			height: 150px;
+			object-fit: cover;
+			margin: 5px;
+			border-radius: 15px;
+			border: 3px solid transparent;
+			transition: all 0.15s ease-in-out;
+			position: relative;
+			outline: none;
+			cursor: pointer;
+		}
+
+		.rounded-image:hover {
+			transform: scale(1.1);
+			border: 3px solid #ffffff;
+			box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+		}
+
+		/* Tooltip */
+		.tooltip {
+			position: fixed;
+			background-color: rgba(0, 0, 0, 0.7);
+			color: white;
+			border-radius: 5px;
+			padding: 5px 10px;
+			font-size: 1rem;
+			display: none;
+			pointer-events: none;
+			z-index: 9999;
+		}
+
+		/* iFrame Viewer */
+		#iframeViewer {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: #151515;
+			z-index: 1000;
+			flex-direction: column;
+		}
+
+		#iframeViewer.active {
+			display: flex;
+		}
+
+		.iframe-controls {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			display: flex;
+			gap: 12px;
+			z-index: 1001;
+		}
+
+		.iframe-controls button {
+			background: rgba(255, 255, 255, 0.95);
+			backdrop-filter: blur(10px);
+			border: 2px solid rgba(255, 255, 255, 0.2);
+			padding: 0;
+			width: 44px;
+			height: 44px;
+			border-radius: 12px;
+			cursor: pointer;
+			font-size: 1.1rem;
+			color: #151515;
+			transition: all 0.15s ease-in-out;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		}
+
+		.iframe-controls button:hover {
+			transform: scale(1.1);
+			border-color: #ffffff;
+			box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+			background: rgba(255, 255, 255, 1);
+		}
+
+		.iframe-controls button:active {
+			transform: scale(1.05);
+		}
+
+		#gameFrame {
+			flex: 1;
+			width: 100%;
+			border: none;
+		}
+
+		/* Responsive */
 		@media (max-width: 1400px) {
 			.image-container {
 				grid-template-columns: repeat(6, 1fr);
@@ -157,255 +223,156 @@
 				grid-template-columns: repeat(2, 1fr);
 			}
 		}
-
-		.rounded-image {
-			width: 150px;
-			height: 150px;
-			object-fit: cover;
-			margin: 5px;
-			border-radius: 15px;
-			border: 3px solid transparent;
-			transition: all 0.15s ease-in-out;
-			position: relative;
-			outline: none;
-			cursor: pointer;
-		}
-
-		.rounded-image:hover {
-			transform: scale(1.1);
-			border: 3px solid #ffffff;
-			box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-		}
-
-		/* tooltip thing */
-		.tooltip {
-			position: fixed;
-			background-color: rgba(0, 0, 0, 0.7);
-			color: white;
-			border-radius: 5px;
-			padding: 5px 10px;
-			font-size: 1rem;
-			display: none;
-			pointer-events: none;
-			z-index: 9999;
-		}
 	</style>
 </head>
 
 <body>
-
 	<input type="text" id="searchBar" placeholder="Search for a tool..." autocomplete="off">
 	<div id="suggestions"></div>
 
 	<div id="tooltip" class="tooltip"></div>
 	<div class="container">
 		<div class="image-container">
-			<a href="/tools/calculator.html" target="_self">
-				<img src="https://files.catbox.moe/62c5a6.png" alt="Calculator" class="rounded-image">
-					</a>
-				<a href="/tools/chat.html" target="_self">
-					<img src="https://imgs.search.brave.com/exHFH84UG02XfMFZkdBeIb7KS2SwlaBhKnSxfjbjrVw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/aWNvbnM4LmNvbS9z/Zi1ibGFjay1maWxs/ZWQvMTIwMC9jaGF0/LmpwZw" alt="Chat" class="rounded-image">
-					</a>
-					<a href="/tools/dylm.html" target="_self">
-						<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/352.png" alt="Dont You Lecture Me" class="rounded-image">
-					</a>
-						<a href="/tools/draw.html" target="_self">
-							<img src="https://files.catbox.moe/y0eon6.png" alt="Drawing Pad" class="rounded-image">
-					</a>
-							<a href="/tools/emulator.html" target="_self">
-								<img src="https://files.catbox.moe/6cnpz3.png" alt="Emulator" class="rounded-image">
-					</a>
-								<a href="/tools/ext.html" target="_self">
-									<img src="https://raw.githubusercontent.com/Blobby-Boi/ExtHang3r/refs/heads/main/favicon.png" alt="ExtHang3r" class="rounded-image">
-					</a>
-									<a href="/tools/extp.html" target="_self">
-										<img src="https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/icon.png" alt="ExtPrint3r" class="rounded-image">
-					</a>
-
-										<a href="/tools/html.html" target="_self">
-											<img src="https://imgs.search.brave.com/G_UWyzLjS1t3fyG24SPTwgcWvz7ZDuj7cyh1jlW9wFk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG40/Lmljb25maW5kZXIu/Y29tL2RhdGEvaWNv/bnMvbG9nb3MtYW5k/LWJyYW5kcy81MTIv/MTY3X0h0bWw1X2xv/Z29fbG9nb3MtNTEy/LnBuZw" alt="HTML Editor" class="rounded-image">
-											<a href="/tools/orionlauncher.html" target="_self">
-												<img src="https://files.catbox.moe/dr9thz.png" alt="Orion v1 (Music)" class="rounded-image">
-												</a>
-												<a href="/tools/ruffle.html" target="_self">
-													<img src="https://truffled.lol/png/tools/ruf.png" alt="Ruffle Emulator" class="rounded-image">
-					</a>
-													<a href="/tools/shimmer.html" target="_self">
-														<img src="https://truffled.lol/tools/sh1mmer/assets/icon.png" alt="SH1MMER" class="rounded-image">
-					</a>
-														<a href="/tools/soundboard.html" target="_self">
-															<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/179.png" alt="Soundboard" class="rounded-image">
-					</a>
-															<a href="/tools/weavesilk.html" target="_self">
-																<img src="https://imgs.search.brave.com/_TAO0YnMTR57IguUZPMEurxgD0z6hq4p2ACftyf9kis/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c2VvbXJhcmFuZ2Eu/Y29tL3dwLWNvbnRl/bnQvdXBsb2Fkcy8y/MDIzLzA5L3dlYXZl/c2lsazAyYi0yODF4/MzAwLnBuZw" alt="Weavesilk" class="rounded-image">
-																			</a>
-
-																<a href="/tools/spade.html" target="_self">
-																	<img src="https://files.catbox.moe/r5y3hx.png" alt="Spade" class="rounded-image">
-					</a>
-																	<a href="/tools/fluidsim.html" target="_self">
-																		<img src="https://pizzaedition.win/images/games/webglfluid.png" alt="WebGL Fluids" class="rounded-image">
-					</a>
-																		<a href="/tools/yt.html" target="_self">
-																			<img src="https://imgs.search.brave.com/MkH54pMOvJW5e9WQPLn9wZOVRzTCo5F0CwFq86vT-IE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzA1LzQ4LzUxLzU0/LzM2MF9GXzU0ODUx/NTQ3N19YemZjd3A1/ZmwxZmZoYmM1c08z/a0hrd3JMSFFRVW1N/OS5qcGc" alt="Youtube" class="rounded-image">
-					</a>
+			<img src="https://files.catbox.moe/62c5a6.png" alt="Calculator" class="rounded-image" data-link="/tools/calculator.html">
+			<img src="https://imgs.search.brave.com/exHFH84UG02XfMFZkdBeIb7KS2SwlaBhKnSxfjbjrVw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/aWNvbnM4LmNvbS9z/Zi1ibGFjay1maWxs/ZWQvMTIwMC9jaGF0/LmpwZw" alt="Chat" class="rounded-image" data-link="/tools/chat.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/352.png" alt="Dont You Lecture Me" class="rounded-image" data-link="/tools/dylm.html">
+			<img src="https://files.catbox.moe/y0eon6.png" alt="Drawing Pad" class="rounded-image" data-link="/tools/draw.html">
+			<img src="https://files.catbox.moe/6cnpz3.png" alt="Emulator" class="rounded-image" data-link="/tools/emulator.html">
+			<img src="https://raw.githubusercontent.com/Blobby-Boi/ExtHang3r/refs/heads/main/favicon.png" alt="ExtHang3r" class="rounded-image" data-link="/tools/ext.html">
+			<img src="https://raw.githubusercontent.com/Blobby-Boi/ExtPrint3r/refs/heads/main/icon.png" alt="ExtPrint3r" class="rounded-image" data-link="/tools/extp.html">
+			<img src="https://imgs.search.brave.com/G_UWyzLjS1t3fyG24SPTwgcWvz7ZDuj7cyh1jlW9wFk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG40/Lmljb25maW5kZXIu/Y29tL2RhdGEvaWNv/bnMvbG9nb3MtYW5k/LWJyYW5kcy81MTIv/MTY3X0h0bWw1X2xv/Z29fbG9nb3MtNTEy/LnBuZw" alt="HTML Editor" class="rounded-image" data-link="/tools/html.html">
+			<img src="https://files.catbox.moe/dr9thz.png" alt="Orion v1 (Music)" class="rounded-image" data-link="/tools/orionlauncher.html">
+			<img src="https://truffled.lol/png/tools/ruf.png" alt="Ruffle Emulator" class="rounded-image" data-link="/tools/ruffle.html">
+			<img src="https://truffled.lol/tools/sh1mmer/assets/icon.png" alt="SH1MMER" class="rounded-image" data-link="/tools/shimmer.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/179.png" alt="Soundboard" class="rounded-image" data-link="/tools/soundboard.html">
+			<img src="https://imgs.search.brave.com/_TAO0YnMTR57IguUZPMEurxgD0z6hq4p2ACftyf9kis/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c2VvbXJhcmFuZ2Eu/Y29tL3dwLWNvbnRl/bnQvdXBsb2Fkcy8y/MDIzLzA5L3dlYXZl/c2lsazAyYi0yODF4/MzAwLnBuZw" alt="Weavesilk" class="rounded-image" data-link="/tools/weavesilk.html">
+			<img src="https://files.catbox.moe/r5y3hx.png" alt="Spade" class="rounded-image" data-link="/tools/spade.html">
+			<img src="https://pizzaedition.win/images/games/webglfluid.png" alt="WebGL Fluids" class="rounded-image" data-link="/tools/fluidsim.html">
+			<img src="https://imgs.search.brave.com/MkH54pMOvJW5e9WQPLn9wZOVRzTCo5F0CwFq86vT-IE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzA1LzQ4LzUxLzU0/LzM2MF9GXzU0ODUx/NTQ3N19YemZjd3A1/ZmwxZmZoYmM1c08z/a0hrd3JMSFFRVW1N/OS5qcGc" alt="Youtube" class="rounded-image" data-link="/tools/yt.html">
 		</div>
-	</div>
+		</div>
 
-	<script>
-		// collect all game names with images
-		var gameData = [];
-		var images = document.querySelectorAll('.rounded-image');
+		<div id="iframeViewer">
+			<div class="iframe-controls">
+				<button id="backBtn" title="Back"><i class="fas fa-arrow-left"></i></button>
+				<button id="refreshBtn" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+				<button id="fullscreenBtn" title="Fullscreen"><i class="fas fa-expand"></i></button>
+				<button id="aboutBlankBtn" title="Open in about:blank"><i class="fas fa-external-link-alt"></i></button>
+			</div>
+			<iframe id="gameFrame"></iframe>
+		</div>
+
+		<script>
+			const searchBar = document.getElementById('searchBar');
+		const suggestionsBox = document.getElementById('suggestions');
+		const images = document.querySelectorAll('.rounded-image');
+		const iframeViewer = document.getElementById('iframeViewer');
+		const gameFrame = document.getElementById('gameFrame');
+		const backBtn = document.getElementById('backBtn');
+		const refreshBtn = document.getElementById('refreshBtn');
+		const fullscreenBtn = document.getElementById('fullscreenBtn');
+		const aboutBlankBtn = document.getElementById('aboutBlankBtn');
+		const tooltip = document.getElementById('tooltip');
 		
-		for (var i = 0; i < images.length; i++) {
-			gameData.push({
-				name: images[i].alt,
-				link: images[i].parentElement.href,
-				image: images[i].src
-			});
-		}
+		let toolData = Array.from(images).map(img => ({
+			name: img.alt,
+			link: img.dataset.link,
+			image: img.src
+		}));
+		
+		let currentToolLink = '';
 
-		// tooltip stuff
-		var tooltip = document.getElementById('tooltip');
-
-		for (var i = 0; i < images.length; i++) {
-			images[i].addEventListener('mouseenter', function () {
+		// Tooltip functionality
+		images.forEach(img => {
+			img.addEventListener('mouseenter', function() {
 				tooltip.textContent = this.alt;
 				tooltip.style.display = 'block';
 			});
 
-			images[i].addEventListener('mousemove', function (e) {
+			img.addEventListener('mousemove', function(e) {
 				tooltip.style.left = (e.clientX + 10) + 'px';
 				tooltip.style.top = (e.clientY + 10) + 'px';
 			});
 
-			images[i].addEventListener('mouseleave', function () {
+			img.addEventListener('mouseleave', function() {
 				tooltip.style.display = 'none';
 			});
-		}
-
-		// search bar stuff
-		var searchBar = document.getElementById('searchBar');
-		var suggestionsBox = document.getElementById('suggestions');
-		var selectedIndex = -1;
-
-		searchBar.addEventListener('focus', function () {
-			this.classList.add('expanded');
 		});
 
-		searchBar.addEventListener('blur', function () {
-			// delay to allow clicking on suggestions
-			setTimeout(function() {
-				if (searchBar.value == '') {
-					searchBar.classList.remove('expanded');
-					searchBar.classList.remove('typing');
-				}
-				suggestionsBox.classList.remove('show');
-			}, 200);
+		// Click tool to open iframe viewer
+		images.forEach(img => {
+			img.addEventListener('click', () => {
+				currentToolLink = img.dataset.link;
+				gameFrame.src = currentToolLink;
+				iframeViewer.classList.add('active');
+			});
 		});
 
-		// search filtering and suggestions
-		searchBar.addEventListener('input', function () {
-			var searchTerm = this.value.toLowerCase();
+		backBtn.addEventListener('click', () => {
+			iframeViewer.classList.remove('active');
+			gameFrame.src = '';
+		});
 
-			if (searchTerm.length > 0) {
-				this.classList.add('typing');
+		refreshBtn.addEventListener('click', () => {
+			gameFrame.src = gameFrame.src;
+		});
+
+		fullscreenBtn.addEventListener('click', () => {
+			if (gameFrame.requestFullscreen) {
+				gameFrame.requestFullscreen();
+			} else if (gameFrame.webkitRequestFullscreen) {
+				gameFrame.webkitRequestFullscreen();
+			} else if (gameFrame.msRequestFullscreen) {
+				gameFrame.msRequestFullscreen();
+			}
+		});
+
+		aboutBlankBtn.addEventListener('click', () => {
+			const win = window.open('about:blank', '_blank');
+			win.document.write(`<iframe src="${currentToolLink}" style="position:fixed;top:0;left:0;width:100%;height:100%;border:none;"></iframe>`);
+		});
+
+		// Search functionality
+		searchBar.addEventListener('input', function() {
+			const term = this.value.toLowerCase();
+			
+			if (term.length > 0) {
+				const matches = toolData.filter(t => t.name.toLowerCase().includes(term));
 				
-				// filter suggestions
-				var matches = gameData.filter(function(game) {
-					return game.name.toLowerCase().indexOf(searchTerm) !== -1;
-				});
-
-				// show suggestions with images
 				if (matches.length > 0) {
-					suggestionsBox.innerHTML = '';
-					matches.slice(0, 4).forEach(function(game) {
-						var item = document.createElement('div');
-						item.className = 'suggestion-item';
-						
-						var img = document.createElement('img');
-						img.src = game.image;
-						img.className = 'suggestion-image';
-						img.alt = game.name;
-						
-						var name = document.createElement('span');
-						name.className = 'suggestion-name';
-						name.textContent = game.name;
-						
-						item.appendChild(img);
-						item.appendChild(name);
-						
-						item.addEventListener('click', function() {
-							window.location.href = game.link;
+					suggestionsBox.innerHTML = matches.slice(0, 4).map(t => `
+						<div class="suggestion-item" data-link="${t.link}">
+							<img src="${t.image}" class="suggestion-image" alt="${t.name}">
+							<span>${t.name}</span>
+						</div>
+					`).join('');
+					
+					suggestionsBox.querySelectorAll('.suggestion-item').forEach(item => {
+						item.addEventListener('click', () => {
+							currentToolLink = item.dataset.link;
+							gameFrame.src = currentToolLink;
+							iframeViewer.classList.add('active');
 						});
-						
-						suggestionsBox.appendChild(item);
 					});
+					
 					suggestionsBox.classList.add('show');
-					selectedIndex = -1;
 				} else {
 					suggestionsBox.classList.remove('show');
 				}
+				
+				images.forEach(img => {
+					img.parentElement.style.display = img.alt.toLowerCase().includes(term) ? 'block' : 'none';
+				});
 			} else {
-				this.classList.remove('typing');
 				suggestionsBox.classList.remove('show');
-			}
-
-			// filter images
-			var imageContainers = document.querySelectorAll('.image-container');
-
-			for (var j = 0; j < imageContainers.length; j++) {
-				var container = imageContainers[j];
-				var imgs = container.querySelectorAll('.rounded-image');
-				var anyVisible = false;
-
-				for (var k = 0; k < imgs.length; k++) {
-					var img = imgs[k];
-					if (img.alt.toLowerCase().indexOf(searchTerm) !== -1) {
-						img.parentElement.style.display = "inline-block";
-						anyVisible = true;
-					} else {
-						img.parentElement.style.display = "none";
-					}
-				}
-
-				if (anyVisible) {
-					container.style.display = "grid";
-				} else {
-					container.style.display = "none";
-				}
+				images.forEach(img => img.style.display = 'block');
 			}
 		});
 
-		// keyboard navigation for suggestions
-		searchBar.addEventListener('keydown', function(e) {
-			var suggestionItems = suggestionsBox.querySelectorAll('.suggestion-item');
-			
-			if (suggestionItems.length === 0) return;
-
-			if (e.key === 'ArrowDown') {
-				e.preventDefault();
-				selectedIndex = (selectedIndex + 1) % suggestionItems.length;
-				updateSelectedSuggestion(suggestionItems);
-			} else if (e.key === 'ArrowUp') {
-				e.preventDefault();
-				selectedIndex = selectedIndex <= 0 ? suggestionItems.length - 1 : selectedIndex - 1;
-				updateSelectedSuggestion(suggestionItems);
-			} else if (e.key === 'Enter' && selectedIndex >= 0) {
-				e.preventDefault();
-				suggestionItems[selectedIndex].click();
-			}
+		searchBar.addEventListener('blur', () => {
+			setTimeout(() => suggestionsBox.classList.remove('show'), 200);
 		});
-
-		function updateSelectedSuggestion(items) {
-			for (var i = 0; i < items.length; i++) {
-				items[i].classList.remove('active');
-			}
-			if (selectedIndex >= 0 && selectedIndex < items.length) {
-				items[selectedIndex].classList.add('active');
-			}
-		}
-	</script>
+		</script>
 </body>
 
 </html>
