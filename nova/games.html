@@ -5,21 +5,25 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Games</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 	<style>
-		body {
+		* {
 			margin: 0;
 			padding: 0;
-			background-color: #151515;
-			overflow-y: scroll;
-			position: relative;
-			color: white;
-			font-family: 'Inter', sans-serif;
+			box-sizing: border-box;
 		}
 
-		/* search bar stuff */
+		body {
+			background-color: #151515;
+			color: white;
+			font-family: 'Inter', sans-serif;
+			overflow-y: scroll;
+		}
+
+		/* Search Bar */
 		#searchBar {
 			display: block;
-			margin: 30px auto 10px auto;
+			margin: 30px auto 10px;
 			padding: 12px 20px;
 			width: 60%;
 			max-width: 500px;
@@ -30,8 +34,6 @@
 			color: #222;
 			box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 			outline: none;
-			position: relative;
-			z-index: 10;
 			transition: all 0.15s ease;
 		}
 
@@ -40,26 +42,9 @@
 			max-width: 650px;
 			transform: scale(1.05);
 			box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
-			border-color: #ffffff;
 		}
 
-		.expanded {
-			width: 75%;
-			max-width: 650px;
-			transform: scale(1.05);
-			box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
-			border-color: #ffffff;
-		}
-
-		/* when typing animation */
-		.typing {
-			width: 80% !important;
-			max-width: 700px !important;
-			transform: scale(1.08) !important;
-			box-shadow: 0 0 35px rgba(255, 255, 255, 0.6) !important;
-		}
-
-		/* suggestions dropdown */
+		/* Suggestions */
 		#suggestions {
 			position: absolute;
 			left: 50%;
@@ -86,20 +71,12 @@
 			align-items: center;
 			padding: 10px 15px;
 			cursor: pointer;
-			color: white;
 			transition: background-color 0.1s ease;
 			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 			gap: 15px;
 		}
 
-		.suggestion-item:last-child {
-			border-bottom: none;
-		}
-
-		.suggestion-item:hover {
-			background-color: rgba(255, 255, 255, 0.1);
-		}
-
+		.suggestion-item:hover,
 		.suggestion-item.active {
 			background-color: rgba(255, 255, 255, 0.15);
 		}
@@ -112,11 +89,7 @@
 			border: 2px solid rgba(255, 255, 255, 0.2);
 		}
 
-		.suggestion-name {
-			font-size: 1rem;
-			font-weight: 500;
-		}
-
+		/* Game Grid */
 		.container {
 			display: flex;
 			flex-direction: column;
@@ -133,7 +106,92 @@
 			margin: 10px 0;
 		}
 
-		/* mobile stuff */
+		.rounded-image {
+			width: 150px;
+			height: 150px;
+			object-fit: cover;
+			margin: 5px;
+			border-radius: 15px;
+			border: 3px solid transparent;
+			transition: all 0.15s ease-in-out;
+			position: relative;
+			outline: none;
+			cursor: pointer;
+		}
+
+		.rounded-image:hover {
+			transform: scale(1.1);
+			border: 3px solid #ffffff;
+			box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+		}
+
+		/* Tooltip */
+		.tooltip {
+			position: fixed;
+			background-color: rgba(0, 0, 0, 0.7);
+			color: white;
+			border-radius: 5px;
+			padding: 5px 10px;
+			font-size: 1rem;
+			display: none;
+			pointer-events: none;
+			z-index: 9999;
+		}
+
+		/* iFrame Viewer */
+		#iframeViewer {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: #151515;
+			z-index: 1000;
+			flex-direction: column;
+		}
+
+		#iframeViewer.active {
+			display: flex;
+		}
+
+		.iframe-controls {
+			position: absolute;
+			top: 15px;
+			right: 15px;
+			display: flex;
+			gap: 10px;
+			z-index: 1001;
+		}
+
+		.iframe-controls button {
+			background: linear-gradient(135deg, #ffffff, #cfcfcf);
+			border: none;
+			padding: 12px;
+			width: 45px;
+			height: 45px;
+			border-radius: 10px;
+			cursor: pointer;
+			font-size: 1.1rem;
+			color: #222;
+			transition: all 0.2s ease;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.iframe-controls button:hover {
+			transform: scale(1.1);
+			box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+		}
+
+		#gameFrame {
+			flex: 1;
+			width: 100%;
+			border: none;
+		}
+
+		/* Responsive */
 		@media (max-width: 1400px) {
 			.image-container {
 				grid-template-columns: repeat(6, 1fr);
@@ -157,413 +215,196 @@
 				grid-template-columns: repeat(2, 1fr);
 			}
 		}
-
-		.rounded-image {
-			width: 150px;
-			height: 150px;
-			object-fit: cover;
-			margin: 5px;
-			border-radius: 15px;
-			border: 3px solid transparent;
-			transition: all 0.15s ease-in-out;
-			position: relative;
-			outline: none;
-			cursor: pointer;
-		}
-
-		.rounded-image:hover {
-			transform: scale(1.1);
-			border: 3px solid #ffffff;
-			box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-		}
-
-		/* tooltip thing */
-		.tooltip {
-			position: fixed;
-			background-color: rgba(0, 0, 0, 0.7);
-			color: white;
-			border-radius: 5px;
-			padding: 5px 10px;
-			font-size: 1rem;
-			display: none;
-			pointer-events: none;
-			z-index: 9999;
-		}
 	</style>
 </head>
 
 <body>
-
 	<input type="text" id="searchBar" placeholder="Search for a game..." autocomplete="off">
 	<div id="suggestions"></div>
-	
+
 	<div id="tooltip" class="tooltip"></div>
 	<div class="container">
 		<div class="image-container">
-			<a href="/games/10minutestilldawn.html" target="_self">
-				<img src="https://pizzaedition.win/images/games/10minstildawn-min.png" alt="10 Minutes Till Dawn" class="rounded-image">
-					</a>
-				<a href="/games/1v1lol.html" target="_self">
-					<img src="https://games.lol/wp-content/uploads/2021/01/1v1-lol-free-full-version-2.jpg" alt="1v1 LOL" class="rounded-image">
-					</a>
-					<a href="/games/2048.html" target="_self">
-						<img src="https://m.media-amazon.com/images/I/41RCIHMHFDL.png" alt="2048" class="rounded-image">
-					</a>
-						<a href="/games/2doom.html" target="_self">
-							<img src="https://files.catbox.moe/wficgy.jpg" alt="2Doom" class="rounded-image">
-					</a>
-							<a href="/games/adarkroom.html" target="_self">
-								<img src="https://play-lh.googleusercontent.com/b-CitCFqGzCKgrR-FFm5diz9f1DL65SiIAw0d-_UwrL8agFmFRhQdG32kCuFduDs-w" alt="A Dark Room" class="rounded-image">
-					</a>
-								<a href="/games/amaze.html" target="_self">
-									<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/26.png" alt="Amaze" class="rounded-image">
-					</a>
-									<a href="/games/amongus.html" target="_self">
-										<img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRNvhZ998yrrgi4g9hczQZ1s36YCXR2ymVhv625GeyLdpdnYDhuH_YJxQZ8-Z5TEB6HrA4q" alt="Among Us" class="rounded-image">
-					</a>
-										<a href="/games/aquapark.html" target="_self">
-											<img src="https://images.igdb.com/igdb/image/upload/t_cover_big_2x/co7ukb.jpg" alt="Aquapark.io" class="rounded-image">
-					</a>
-											<a href="/games/backrooms.html" target="_self">
-												<img src="https://pizzaedition.one/images/games/backrooms-min.jpg" alt="Backrooms" class="rounded-image">
-					</a>
-												<a href="/games/backrooms2d.html" target="_self">
-													<img src="https://play-lh.googleusercontent.com/qsajZ3WxItUCjA08_AaZyxbmRpPT87uHiYOyDU-e5444ALBZe23nPZYi7pTU5nFCOPk" alt="Backrooms 2D" class="rounded-image">
-					</a>
-													<a href="/games/baconmaydie.html" target="_self">
-														<img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQBDyhxOpQvRwMhREUu6CYRcurH_hlyPAvcv8IEgIWVMeln33BVRNt2XN5dSwIcBe82GiV5EzFfEar6-jNGubKh_HAeCzqNHtE4BfiPzCQ" alt="Bacon May Die" class="rounded-image">
-					</a>
-														<a href="/games/badparenting.html" target="_self">
-															<img src="https://m.media-amazon.com/images/M/MV5BMzUyMjM4NmUtMWU5MS00MjJhLTlkZmUtYmM0OGIyMWQ5MTRlXkEyXkFqcGc@._V1_QL75_UY281_CR0,0,500,281_.jpg" alt="Bad Parenting" class="rounded-image">
-					</a>
-															<a href="/games/bbp.html" target="_self">
-																<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/467.png" alt="Baldi's Basics Plus" class="rounded-image">
-					</a>
-																<a href="/games/bendyandtheinkmachine.html" target="_self">
-																	<img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSbpbkNjvZBueAv4k3aOJDEVVFbV0ZnQj1RwHQx3SmYHUoSQDpVusONYtTnzyyrcuxo6Fkz" alt="Bendy and the Ink Machine" class="rounded-image">
-					</a>
-																	<a href="/games/bitlife.html" target="_self">
-																		<img src="https://bitlifefree.online/wp-content/uploads/2025/03/BitLife-Candywriter.webp" alt="Bitlife" class="rounded-image">
-					</a>
-																		<a href="/games/bitplanes.html" target="_self">
-																			<img src="https://rocketgames.imgix.net/uploads/games/b/bit-planes/bit-planes.16800f.jpg" alt="Bitplanes" class="rounded-image">
-					</a>
-																			<a href="/games/blockblast.html" target="_self">
-																				<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/6.png" alt="Block Blast" class="rounded-image">
-					</a>
-																				<a href="/games/blockpost.html"
-																					target="_self">
-																					<img src="https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=1200,height=1200,fit=cover,f=png/70c2a0deacc4cf2cb86add488199c56e/blockpost.png" alt="BlockPost" class="rounded-image">
-					</a>
-																					<a href="/games/bowmasters.html"
-																						target="_self">
-																						<img src="https://games.lol/wp-content/uploads/2020/12/bowmasters-free-full-version-1.jpg" alt="Bowmasters" class="rounded-image">
-					</a>
-																						<a href="/games/buckshotroulette.html"
-																							target="_self">
-																							<img src="https://buckshotroulette.com//data/image/game/buckshot-roulette-feature-image.jpg" alt="Buckshot Roulette" class="rounded-image">
-					</a>
-																							<a href="/games/checkers.html"
-																								target="_self">
-																								<img src="https://cdn.britannica.com/06/50606-050-81C1729E/Checkerboard-draughtboard-play.jpg" alt="Checkers" class="rounded-image">
-					</a>
-																								<a href="/games/chess.html"
-																									target="_self">
-																									<img src="https://chessfox.com/wp-content/uploads/2020/03/Queens-Indian-Defense.png" alt="Chess" class="rounded-image">
-					</a>
-																									<a href="/games/cookieclicker.html"
-																										target="_self">
-																										<img src="https://super142.wordpress.com/wp-content/uploads/2022/07/cookie-clicker.jpg?w=640" alt="Cookie Clicker" class="rounded-image">
-					</a>
-																										<a href="/games/crazycars.html"
-																											target="_self">
-																											<img src="https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=314,height=314,fit=cover,f=auto/2bc8004fcbb4387908a636e2a9d9ab4a/crazy-cars.png" alt="Crazy Cars" class="rounded-image">
-					</a>
-																											<a href="/games/crazycattle3d.html"
-																												target="_self">
-																												<img src="https://img02.symbaloo.com/I4peZApwJoBAIFSgyzpzvF_7QLg=/0x7:245x252/fit-in/252x252/filters:no_upscale()/smarkImages%2Fv1%2Fd1%2Fd5%2F1cbad2544788a399975998b6a3afd8fbb336704132e64cd00edee0355012.png" alt="Crazy Cattle 3D" class="rounded-image">
-					</a>
-																												<a href="/games/crossyroad.html"
-																													target="_self">
-																													<img src="https://images.squarespace-cdn.com/content/v1/5cedd5e7c6e7df0001bbb67c/219831ac-33a0-4701-b7bd-4f993a2e33d2/CRCastleConsole_Icon.png" alt="Crossy Road" class="rounded-image">
-					</a>
-																													<a href="/games/cuphead.html"
-																														target="_self">
-																														<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/465.png" alt="Cuphead" class="rounded-image">
-					</a>
-																														<a href="/games/cuttherope.html"
-																															target="_self">
-																															<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/85.png" alt="Cut the Rope" class="rounded-image">
-					</a>
-																															<a href="/games/driftboss.html"
-																																target="_self">
-																																<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/276.png" alt="Drift Boss" class="rounded-image">
-					</a>
-																																<a href="/games/drifthunters.html"
-																																	target="_self">
-																																	<img src="https://cdn.now.gg/apps-content/com.nowgg.h5.pub501.app51334/icon/drift-hunters.png" alt="Drift Hunters" class="rounded-image">
-					</a>
-																																	<a href="/games/eagler/index.html"
-																																		target="_self">
-																																		<img src="https://mexi.rest/previews/mc.webp" alt="Eaglercraft" class="rounded-image">
-					</a>
-																																		<a href="/games/fnaf.html"
-																																			target="_self">
-																																			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/38.png" alt="FNAF" class="rounded-image">
-					</a>
-																																			<a href="/games/fnf.html"
-																																				target="_self">
-																																				<img src="https://img.utdstc.com/icon/807/216/8072161110b1f6a2990a4baeb55eaaeab761fc199d9c001c7b6623f4cf8c6eb7:200" alt="Friday Night Funkin'" class="rounded-image">
-					</a>
-																																				<a href="/games/fruitninja.html"
-																																					target="_self">
-																																					<img src="https://play-lh.googleusercontent.com/eJ9OJnbRer1jjg5ZeNAnTXKcGd2B_NEqxCp2UsefcCABeFBaj_pNl_WKYBjup2GVGGc" alt="Fruit Ninja" class="rounded-image">
-					</a>
-																																					<a href="/games/geometrydash.html"
-																																						target="_self">
-																																						<img src="https://imgs.crazygames.com/games/geometry-dash-online/cover_1x1-1732744370684.png?format=auto&quality=70&metadata=none" alt="Geometry Dash" class="rounded-image">
-					</a>
-																																						<a href="/games/halflife.html"
-																																							target="_self">
-																																							<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/262.png" alt="Half Life" class="rounded-image">
-					</a>
-																																							<a href="/games/happywheels.html"
-																																								target="_self">
-																																								<img src="https://files.catbox.moe/2rqpv6.png" alt="Happy Wheels" class="rounded-image">
-					</a>
-																																								<a href="/games/hollowknight.html"
-																																									target="_self">
-																																									<img src="https://files.catbox.moe/llk0ps.png" alt="Hollow Knight" class="rounded-image">
-					</a>
-																																									<a href="/games/jetpackjoyride.html"
-																																										target="_self">
-																																										<img src="https://upload.wikimedia.org/wikipedia/en/9/90/Jetpack_Joyride_iOS.png" alt="Jetpack Joyride" class="rounded-image">
-					</a>
-																																										<a href="/games/kindergarten.html"
-																																											target="_self">
-																																											<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/445.png" alt="Kindergarten" class="rounded-image">
-					</a>
-																																											<a href="/games/obby99lose.html"
-																																												target="_self">
-																																												<img src="https://playgama.com/cdn-cgi/imagedelivery/LN2S-4p3-GgZvEx3IPaKUA/682b1c4f-c908-4292-f111-6e3552cadc00/enlarged" alt="Obby 99% Lose" class="rounded-image">
-					</a>
-																																												<a href="/games/omori.html"
-																																													target="_self">
-																																													<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/427.png" alt="OMORI" class="rounded-image">
-					</a>
-																																													<a href="/games/plantsvszombies.html"
-																																														target="_self">
-																																														<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/232.png" alt="Plants vs Zombies" class="rounded-image">
-					</a>
-																																														<a href="/games/repo.html"
-																																															target="_self">
-																																															<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/195.png" alt="R.E.P.O" class="rounded-image">
-					</a>
-																																															<a href="/games/rerun.html"
-																																																target="_self">
-																																																<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/260.png" alt="RE:RUN" class="rounded-image">
-					</a>
-																																																<a href="/games/rocketleague.html"
-																																																	target="_self">
-																																																	<img src="https://play-lh.googleusercontent.com/ZSLQpJsfi6GrsPoTpKh-IDkR_YcBdIG96pUi6KToYrHssFKkuV1lQQ5sLf08f5He3bE=w600-h300-pc0xffffff-pd" alt="Rocket Soccer Derby" class="rounded-image">
-					</a>
-																																																	<a href="/games/slitherio.html"
-																																																		target="_self">
-																																																		<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShOZewPD5j4nEvmMfAQB64wqNzVAggCKVOYctm-MK3vTW4FKkLdHysLoOBSRLNY8tstJE8hQ" alt="Slither.io" class="rounded-image">
-					</a>
-																																																		<a href="/games/slope.html"
-																																																			target="_self">
-																																																			<img src="https://slope-play.com/data/image/game/slope-logo-1.jpg" alt="Slope" class="rounded-image">
-					</a>
-																																																			<a href="/games/slope3.html"
-																																																				target="_self">
-																																																				<img src="https://files.catbox.moe/ea327u.png" alt="Slope 3" class="rounded-image">
-					</a>
-																																																				<a href="/games/spacewaves.html"
-																																																					target="_self">
-																																																					<img src="https://spacewaves.io/upload/imgs/options/space-waves.jpg" alt="Space Waves" class="rounded-image">
-					</a>
-																																																					<a href="/games/subwaysurfers/index.html"
-																																																						target="_self">
-																																																						<img src="https://files.catbox.moe/ocuwom.jpg" alt="Subway Surfers" class="rounded-image">
-					</a>
-																																																						<a href="/games/templerun2.html"
-																																																							target="_self">
-																																																							<img src="https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=314,height=314,fit=cover,f=auto/b5c8b617f65be7cc4d56dd3657590ae7/temple-run-2.png" alt="Temple Run 2" class="rounded-image">
-					</a>
-																																																							<a href="/games/tnmn.html"
-																																																								target="_self">
-																																																								<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/216.png" alt="That's not my Neighboor" class="rounded-image">
-					</a>
-																																																								<a href="/games/ultrakill.html"
-																																																									target="_self">
-																																																									<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/196.png" alt="ULTRAKILL" class="rounded-image">
-					</a>
-																																																									<a href="/games/undertale.html"
-																																																										target="_self">
-																																																										<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/184.png" alt="Undertale" class="rounded-image">
-					</a>
-																																																										<a href="/games/ws3d.html"
-																																																											target="_self">
-																																																											<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/15.png" alt="Water Sort 3D" class="rounded-image">
-					</a>
-		</div>
+			<img src="https://pizzaedition.win/images/games/10minstildawn-min.png" alt="10 Minutes Till Dawn" class="rounded-image" data-link="/games/10minutestilldawn.html">
+			<img src="https://games.lol/wp-content/uploads/2021/01/1v1-lol-free-full-version-2.jpg" alt="1v1 LOL" class="rounded-image" data-link="/games/1v1lol.html">
+			<img src="https://m.media-amazon.com/images/I/41RCIHMHFDL.png" alt="2048" class="rounded-image" data-link="/games/2048.html">
+			<img src="https://files.catbox.moe/wficgy.jpg" alt="2Doom" class="rounded-image" data-link="/games/2doom.html">
+			<img src="https://play-lh.googleusercontent.com/b-CitCFqGzCKgrR-FFm5diz9f1DL65SiIAw0d-_UwrL8agFmFRhQdG32kCuFduDs-w" alt="A Dark Room" class="rounded-image" data-link="/games/adarkroom.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/26.png" alt="Amaze" class="rounded-image" data-link="/games/amaze.html">
+			<img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRNvhZ998yrrgi4g9hczQZ1s36YCXR2ymVhv625GeyLdpdnYDhuH_YJxQZ8-Z5TEB6HrA4q" alt="Among Us" class="rounded-image" data-link="/games/amongus.html">
+			<img src="https://images.igdb.com/igdb/image/upload/t_cover_big_2x/co7ukb.jpg" alt="Aquapark.io" class="rounded-image" data-link="/games/aquapark.html">
+			<img src="https://pizzaedition.one/images/games/backrooms-min.jpg" alt="Backrooms" class="rounded-image" data-link="/games/backrooms.html">
+			<img src="https://play-lh.googleusercontent.com/qsajZ3WxItUCjA08_AaZyxbmRpPT87uHiYOyDU-e5444ALBZe23nPZYi7pTU5nFCOPk" alt="Backrooms 2D" class="rounded-image" data-link="/games/backrooms2d.html">
+			<img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQBDyhxOpQvRwMhREUu6CYRcurH_hlyPAvcv8IEgIWVMeln33BVRNt2XN5dSwIcBe82GiV5EzFfEar6-jNGubKh_HAeCzqNHtE4BfiPzCQ" alt="Bacon May Die" class="rounded-image" data-link="/games/baconmaydie.html">
+			<img src="https://m.media-amazon.com/images/M/MV5BMzUyMjM4NmUtMWU5MS00MjJhLTlkZmUtYmM0OGIyMWQ5MTRlXkEyXkFqcGc@._V1_QL75_UY281_CR0,0,500,281_.jpg" alt="Bad Parenting" class="rounded-image" data-link="/games/badparenting.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/467.png" alt="Baldi's Basics Plus" class="rounded-image" data-link="/games/bbp.html">
+			<img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSbpbkNjvZBueAv4k3aOJDEVVFbV0ZnQj1RwHQx3SmYHUoSQDpVusONYtTnzyyrcuxo6Fkz" alt="Bendy and the Ink Machine" class="rounded-image" data-link="/games/bendyandtheinkmachine.html">
+			<img src="https://bitlifefree.online/wp-content/uploads/2025/03/BitLife-Candywriter.webp" alt="Bitlife" class="rounded-image" data-link="/games/bitlife.html">
+			<img src="https://rocketgames.imgix.net/uploads/games/b/bit-planes/bit-planes.16800f.jpg" alt="Bitplanes" class="rounded-image" data-link="/games/bitplanes.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/6.png" alt="Block Blast" class="rounded-image" data-link="/games/blockblast.html">
+			<img src="https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=1200,height=1200,fit=cover,f=png/70c2a0deacc4cf2cb86add488199c56e/blockpost.png" alt="BlockPost" class="rounded-image" data-link="/games/blockpost.html">
+			<img src="https://games.lol/wp-content/uploads/2020/12/bowmasters-free-full-version-1.jpg" alt="Bowmasters" class="rounded-image" data-link="/games/bowmasters.html">
+			<img src="https://buckshotroulette.com//data/image/game/buckshot-roulette-feature-image.jpg" alt="Buckshot Roulette" class="rounded-image" data-link="/games/buckshotroulette.html">
+			<img src="https://cdn.britannica.com/06/50606-050-81C1729E/Checkerboard-draughtboard-play.jpg" alt="Checkers" class="rounded-image" data-link="/games/checkers.html">
+			<img src="https://chessfox.com/wp-content/uploads/2020/03/Queens-Indian-Defense.png" alt="Chess" class="rounded-image" data-link="/games/chess.html">
+			<img src="https://super142.wordpress.com/wp-content/uploads/2022/07/cookie-clicker.jpg?w=640" alt="Cookie Clicker" class="rounded-image" data-link="/games/cookieclicker.html">
+			<img src="https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=314,height=314,fit=cover,f=auto/2bc8004fcbb4387908a636e2a9d9ab4a/crazy-cars.png" alt="Crazy Cars" class="rounded-image" data-link="/games/crazycars.html">
+			<img src="https://img02.symbaloo.com/I4peZApwJoBAIFSgyzpzvF_7QLg=/0x7:245x252/fit-in/252x252/filters:no_upscale()/smarkImages%2Fv1%2Fd1%2Fd5%2F1cbad2544788a399975998b6a3afd8fbb336704132e64cd00edee0355012.png" alt="Crazy Cattle 3D" class="rounded-image" data-link="/games/crazycattle3d.html">
+			<img src="https://images.squarespace-cdn.com/content/v1/5cedd5e7c6e7df0001bbb67c/219831ac-33a0-4701-b7bd-4f993a2e33d2/CRCastleConsole_Icon.png" alt="Crossy Road" class="rounded-image" data-link="/games/crossyroad.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/465.png" alt="Cuphead" class="rounded-image" data-link="/games/cuphead.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/85.png" alt="Cut the Rope" class="rounded-image" data-link="/games/cuttherope.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/276.png" alt="Drift Boss" class="rounded-image" data-link="/games/driftboss.html">
+			<img src="https://cdn.now.gg/apps-content/com.nowgg.h5.pub501.app51334/icon/drift-hunters.png" alt="Drift Hunters" class="rounded-image" data-link="/games/drifthunters.html">
+			<img src="https://mexi.rest/previews/mc.webp" alt="Eaglercraft" class="rounded-image" data-link="/games/eagler/index.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/38.png" alt="FNAF" class="rounded-image" data-link="/games/fnaf.html">
+			<img src="https://img.utdstc.com/icon/807/216/8072161110b1f6a2990a4baeb55eaaeab761fc199d9c001c7b6623f4cf8c6eb7:200" alt="Friday Night Funkin'" class="rounded-image" data-link="/games/fnf.html">
+			<img src="https://play-lh.googleusercontent.com/eJ9OJnbRer1jjg5ZeNAnTXKcGd2B_NEqxCp2UsefcCABeFBaj_pNl_WKYBjup2GVGGc" alt="Fruit Ninja" class="rounded-image" data-link="/games/fruitninja.html">
+			<img src="https://imgs.crazygames.com/games/geometry-dash-online/cover_1x1-1732744370684.png?format=auto&quality=70&metadata=none" alt="Geometry Dash" class="rounded-image" data-link="/games/geometrydash.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/262.png" alt="Half Life" class="rounded-image" data-link="/games/halflife.html">
+			<img src="https://files.catbox.moe/2rqpv6.png" alt="Happy Wheels" class="rounded-image" data-link="/games/happywheels.html">
+			<img src="https://files.catbox.moe/llk0ps.png" alt="Hollow Knight" class="rounded-image" data-link="/games/hollowknight.html">
+			<img src="https://upload.wikimedia.org/wikipedia/en/9/90/Jetpack_Joyride_iOS.png" alt="Jetpack Joyride" class="rounded-image" data-link="/games/jetpackjoyride.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/445.png" alt="Kindergarten" class="rounded-image" data-link="/games/kindergarten.html">
+			<img src="https://playgama.com/cdn-cgi/imagedelivery/LN2S-4p3-GgZvEx3IPaKUA/682b1c4f-c908-4292-f111-6e3552cadc00/enlarged" alt="Obby 99% Lose" class="rounded-image" data-link="/games/obby99lose.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/427.png" alt="OMORI" class="rounded-image" data-link="/games/omori.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/232.png" alt="Plants vs Zombies" class="rounded-image" data-link="/games/plantsvszombies.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/195.png" alt="R.E.P.O" class="rounded-image" data-link="/games/repo.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/260.png" alt="RE:RUN" class="rounded-image" data-link="/games/rerun.html">
+			<img src="https://play-lh.googleusercontent.com/ZSLQpJsfi6GrsPoTpKh-IDkR_YcBdIG96pUi6KToYrHssFKkuV1lQQ5sLf08f5He3bE=w600-h300-pc0xffffff-pd" alt="Rocket Soccer Derby" class="rounded-image" data-link="/games/rocketleague.html">
+			<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShOZewPD5j4nEvmMfAQB64wqNzVAggCKVOYctm-MK3vTW4FKkLdHysLoOBSRLNY8tstJE8hQ" alt="Slither.io" class="rounded-image" data-link="/games/slitherio.html">
+			<img src="https://slope-play.com/data/image/game/slope-logo-1.jpg" alt="Slope" class="rounded-image" data-link="/games/slope.html">
+			<img src="https://files.catbox.moe/ea327u.png" alt="Slope 3" class="rounded-image" data-link="/games/slope3.html">
+			<img src="https://spacewaves.io/upload/imgs/options/space-waves.jpg" alt="Space Waves" class="rounded-image" data-link="/games/spacewaves.html">
+			<img src="https://files.catbox.moe/ocuwom.jpg" alt="Subway Surfers" class="rounded-image" data-link="/games/subwaysurfers/index.html">
+			<img src="https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=314,height=314,fit=cover,f=auto/b5c8b617f65be7cc4d56dd3657590ae7/temple-run-2.png" alt="Temple Run 2" class="rounded-image" data-link="/games/templerun2.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/216.png" alt="That's not my Neighboor" class="rounded-image" data-link="/games/tnmn.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/196.png" alt="ULTRAKILL" class="rounded-image" data-link="/games/ultrakill.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/184.png" alt="Undertale" class="rounded-image" data-link="/games/undertale.html">
+			<img src="https://cdn.jsdelivr.net/gh/gn-math/covers@main/15.png" alt="Water Sort 3D" class="rounded-image" data-link="/games/ws3d.html">
 	</div>
+		</div>
 
-	<script>
-		// collect all game names with images
-		var gameData = [];
-		var images = document.querySelectorAll('.rounded-image');
+		<div id="iframeViewer">
+			<div class="iframe-controls">
+				<button id="backBtn" title="Back"><i class="fas fa-arrow-left"></i></button>
+				<button id="refreshBtn" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+				<button id="fullscreenBtn" title="Fullscreen"><i class="fas fa-expand"></i></button>
+				<button id="aboutBlankBtn" title="Open in about:blank"><i class="fas fa-external-link-alt"></i></button>
+			</div>
+			<iframe id="gameFrame"></iframe>
+		</div>
+
+		<script>
+			const searchBar = document.getElementById('searchBar');
+		const suggestionsBox = document.getElementById('suggestions');
+		const images = document.querySelectorAll('.rounded-image');
+		const iframeViewer = document.getElementById('iframeViewer');
+		const gameFrame = document.getElementById('gameFrame');
+		const backBtn = document.getElementById('backBtn');
+		const refreshBtn = document.getElementById('refreshBtn');
+		const fullscreenBtn = document.getElementById('fullscreenBtn');
+		const aboutBlankBtn = document.getElementById('aboutBlankBtn');
+		const tooltip = document.getElementById('tooltip');
 		
-		for (var i = 0; i < images.length; i++) {
-			gameData.push({
-				name: images[i].alt,
-				link: images[i].parentElement.href,
-				image: images[i].src
-			});
-		}
+		let gameData = Array.from(images).map(img => ({
+			name: img.alt,
+			link: img.dataset.link,
+			image: img.src
+		}));
+		
+		let currentGameLink = '';
 
-		// tooltip stuff
-		var tooltip = document.getElementById('tooltip');
-
-		for (var i = 0; i < images.length; i++) {
-			images[i].addEventListener('mouseenter', function () {
+		// Tooltip functionality
+		images.forEach(img => {
+			img.addEventListener('mouseenter', function() {
 				tooltip.textContent = this.alt;
 				tooltip.style.display = 'block';
 			});
 
-			images[i].addEventListener('mousemove', function (e) {
+			img.addEventListener('mousemove', function(e) {
 				tooltip.style.left = (e.clientX + 10) + 'px';
 				tooltip.style.top = (e.clientY + 10) + 'px';
 			});
 
-			images[i].addEventListener('mouseleave', function () {
+			img.addEventListener('mouseleave', function() {
 				tooltip.style.display = 'none';
 			});
-		}
-
-		// search bar stuff
-		var searchBar = document.getElementById('searchBar');
-		var suggestionsBox = document.getElementById('suggestions');
-		var selectedIndex = -1;
-
-		searchBar.addEventListener('focus', function () {
-			this.classList.add('expanded');
 		});
 
-		searchBar.addEventListener('blur', function () {
-			// delay to allow clicking on suggestions
-			setTimeout(function() {
-				if (searchBar.value == '') {
-					searchBar.classList.remove('expanded');
-					searchBar.classList.remove('typing');
-				}
-				suggestionsBox.classList.remove('show');
-			}, 200);
+		// Click game to open iframe viewer
+		images.forEach(img => {
+			img.addEventListener('click', () => {
+				currentGameLink = img.dataset.link;
+				gameFrame.src = currentGameLink;
+				iframeViewer.classList.add('active');
+			});
 		});
 
-		// search filtering and suggestions
-		searchBar.addEventListener('input', function () {
-			var searchTerm = this.value.toLowerCase();
+		backBtn.addEventListener('click', () => {
+			iframeViewer.classList.remove('active');
+			gameFrame.src = '';
+		});
 
-			if (searchTerm.length > 0) {
-				this.classList.add('typing');
+		refreshBtn.addEventListener('click', () => {
+			gameFrame.src = gameFrame.src;
+		});
+
+		fullscreenBtn.addEventListener('click', () => {
+			if (gameFrame.requestFullscreen) {
+				gameFrame.requestFullscreen();
+			} else if (gameFrame.webkitRequestFullscreen) {
+				gameFrame.webkitRequestFullscreen();
+			} else if (gameFrame.msRequestFullscreen) {
+				gameFrame.msRequestFullscreen();
+			}
+		});
+
+		aboutBlankBtn.addEventListener('click', () => {
+			const win = window.open('about:blank', '_blank');
+			win.document.write(`<iframe src="${currentGameLink}" style="position:fixed;top:0;left:0;width:100%;height:100%;border:none;"></iframe>`);
+		});
+
+		// Search functionality
+		searchBar.addEventListener('input', function() {
+			const term = this.value.toLowerCase();
+			
+			if (term.length > 0) {
+				const matches = gameData.filter(g => g.name.toLowerCase().includes(term));
 				
-				// filter suggestions
-				var matches = gameData.filter(function(game) {
-					return game.name.toLowerCase().indexOf(searchTerm) !== -1;
-				});
-
-				// show suggestions with images
 				if (matches.length > 0) {
-					suggestionsBox.innerHTML = '';
-					matches.slice(0, 4).forEach(function(game) {
-						var item = document.createElement('div');
-						item.className = 'suggestion-item';
-						
-						var img = document.createElement('img');
-						img.src = game.image;
-						img.className = 'suggestion-image';
-						img.alt = game.name;
-						
-						var name = document.createElement('span');
-						name.className = 'suggestion-name';
-						name.textContent = game.name;
-						
-						item.appendChild(img);
-						item.appendChild(name);
-						
-						item.addEventListener('click', function() {
-							window.location.href = game.link;
+					suggestionsBox.innerHTML = matches.slice(0, 4).map(g => `
+						<div class="suggestion-item" data-link="${g.link}">
+							<img src="${g.image}" class="suggestion-image" alt="${g.name}">
+							<span>${g.name}</span>
+						</div>
+					`).join('');
+					
+					suggestionsBox.querySelectorAll('.suggestion-item').forEach(item => {
+						item.addEventListener('click', () => {
+							currentGameLink = item.dataset.link;
+							gameFrame.src = currentGameLink;
+							iframeViewer.classList.add('active');
 						});
-						
-						suggestionsBox.appendChild(item);
 					});
+					
 					suggestionsBox.classList.add('show');
-					selectedIndex = -1;
 				} else {
 					suggestionsBox.classList.remove('show');
 				}
+				
+				images.forEach(img => {
+					img.parentElement.style.display = img.alt.toLowerCase().includes(term) ? 'block' : 'none';
+				});
 			} else {
-				this.classList.remove('typing');
 				suggestionsBox.classList.remove('show');
-			}
-
-			// filter images
-			var imageContainers = document.querySelectorAll('.image-container');
-
-			for (var j = 0; j < imageContainers.length; j++) {
-				var container = imageContainers[j];
-				var imgs = container.querySelectorAll('.rounded-image');
-				var anyVisible = false;
-
-				for (var k = 0; k < imgs.length; k++) {
-					var img = imgs[k];
-					if (img.alt.toLowerCase().indexOf(searchTerm) !== -1) {
-						img.parentElement.style.display = "inline-block";
-						anyVisible = true;
-					} else {
-						img.parentElement.style.display = "none";
-					}
-				}
-
-				if (anyVisible) {
-					container.style.display = "grid";
-				} else {
-					container.style.display = "none";
-				}
+				images.forEach(img => img.parentElement.style.display = 'block');
 			}
 		});
 
-		// keyboard navigation for suggestions
-		searchBar.addEventListener('keydown', function(e) {
-			var suggestionItems = suggestionsBox.querySelectorAll('.suggestion-item');
-			
-			if (suggestionItems.length === 0) return;
-
-			if (e.key === 'ArrowDown') {
-				e.preventDefault();
-				selectedIndex = (selectedIndex + 1) % suggestionItems.length;
-				updateSelectedSuggestion(suggestionItems);
-			} else if (e.key === 'ArrowUp') {
-				e.preventDefault();
-				selectedIndex = selectedIndex <= 0 ? suggestionItems.length - 1 : selectedIndex - 1;
-				updateSelectedSuggestion(suggestionItems);
-			} else if (e.key === 'Enter' && selectedIndex >= 0) {
-				e.preventDefault();
-				suggestionItems[selectedIndex].click();
-			}
+		searchBar.addEventListener('blur', () => {
+			setTimeout(() => suggestionsBox.classList.remove('show'), 200);
 		});
-
-		function updateSelectedSuggestion(items) {
-			for (var i = 0; i < items.length; i++) {
-				items[i].classList.remove('active');
-			}
-			if (selectedIndex >= 0 && selectedIndex < items.length) {
-				items[selectedIndex].classList.add('active');
-			}
-		}
-	</script>
+		</script>
 </body>
 
 </html>
