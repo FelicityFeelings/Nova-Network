@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -13,6 +12,7 @@
 		body {
 			background-color: #0a0a0a;
 			margin: 0;
+			overflow: hidden;
 		}
 
 		#sidebar {
@@ -40,7 +40,12 @@
 			flex-direction: column;
 			height: 100%;
 			overflow-y: auto;
+			overflow-x: hidden;
 			padding: 0 0.5rem;
+		}
+
+		.sidebar-scroll::-webkit-scrollbar {
+			width: 0px;
 		}
 
 		#sidebar button {
@@ -129,9 +134,7 @@
 		}
 
 		@keyframes spin {
-			to {
-				transform: rotate(360deg);
-			}
+			to { transform: rotate(360deg); }
 		}
 
 		/* Music Player */
@@ -434,7 +437,6 @@
 
 		$('iframeViewer').onload = () => $('loadingOverlay').classList.remove('show');
 
-
 		// Music Toggle
 		$('musicToggleBtn').onclick = () => {
 			isMusicEnabled = !isMusicEnabled;
@@ -514,7 +516,4 @@
 		audio.volume = 0.7;
 	</script>
 </body>
-
-</html>
-
 </html>
