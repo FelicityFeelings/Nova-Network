@@ -350,7 +350,6 @@
 			</div>
 			<div id="bottomButtons">
 				<button id="musicToggleBtn" class="music-on"><i class="fas fa-music"></i><span class="label">Lobby Beats</span></button>
-				<button id="fullscreenBtn"><i class="fas fa-expand"></i><span class="label">Fullscreen</span></button>
 			</div>
 		</div>
 	</div>
@@ -435,14 +434,6 @@
 
 		$('iframeViewer').onload = () => $('loadingOverlay').classList.remove('show');
 
-		// Fullscreen
-		$('fullscreenBtn').onclick = () => {
-			if (!document.fullscreenElement) {
-				$('iframeViewer').parentElement.requestFullscreen();
-			} else {
-				document.exitFullscreen();
-			}
-		};
 
 		// Music Toggle
 		$('musicToggleBtn').onclick = () => {
