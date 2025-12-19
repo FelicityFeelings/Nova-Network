@@ -514,6 +514,51 @@
 		loadTrack(0);
 		updatePlaylist();
 		audio.volume = 0.7;
+
+		// DevTools Detection
+		(function() {
+			const threshold = 160;
+			let devtoolsOpen = false;
+
+			function checkDevTools() {
+				const widthDiff = window.outerWidth - window.innerWidth;
+				const heightDiff = window.outerHeight - window.innerHeight;
+				
+				if (widthDiff > threshold || heightDiff > threshold) {
+					if (!devtoolsOpen) {
+						devtoolsOpen = true;
+						window.location.href = 'https://classroom.google.com';
+					}
+				} else {
+					devtoolsOpen = false;
+				}
+			}
+
+			// Check every 500ms
+			setInterval(checkDevTools, 500);
+
+			// Additional detection using debugger timing
+			setInterval(function() {
+				const start = performance.now();
+				debugger;
+				const end = performance.now();
+				if (end - start > 100) {
+					window.location.href = 'https://classroom.google.com';
+				}
+			}, 1000);
+
+			// Console detection
+			const element = new Image();
+			Object.defineProperty(element, 'id', {
+				get: function() {
+					window.location.href = 'https://classroom.google.com';
+				}
+			});
+			setInterval(() => {
+				console.clear();
+				console.log(element);
+			}, 1000);
+		})();
 	</script>
 </body>
 </html>
